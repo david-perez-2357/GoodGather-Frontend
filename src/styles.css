@@ -10,3 +10,6 @@
   @tailwind utilities;
 }
 
+body {
+  overflow: hidden;
+}
