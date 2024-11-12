@@ -23,7 +23,7 @@ export class HeaderComponent {
     {
       label: 'Inicio',
       icon: 'pi pi-home',
-      routerLink: ['/']
+      routerLink: ['/page-index']
     },
     {
       label: 'Organizar un evento',
