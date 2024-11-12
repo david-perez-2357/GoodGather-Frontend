@@ -1,26 +1,24 @@
-<div class="w-full border border-1 border-green-600 p-2 gap-6 rounded-xl relative">
-  <div class="grid grid-cols-[auto_1fr] gap-3">
-    <img src="{{ event.image }}" alt="Event Image" class="rounded-xl w-[200px] h-[140px] object-cover">
+<div class="md:w-full w-64 md:pt-2 pt-8 md:pb-2 pb-6 md:grid grid-cols-[auto_1fr] gap-3 border border-1 border-green-600 p-2 rounded-xl relative">
+  <img src="{{ event.image }}" alt="Event Image" class="md:rounded-xl rounded w-full md:w-[200px] md:h-[140px] h-[130px] object-cover">
 
-    <div class="flex flex-col justify-between px-4 py-3 gap-4 h-full">
-      <div class="flex flex-col gap-1">
-        <h4 class="text-2xl font-bold text-gray-900 truncate">{{ event.name }}</h4>
-        <div class="text-gray-700 text-sm">
-          <i class="pi pi-map-marker me-2"></i>
-          <span class="truncate">{{ event.address }}, {{ event.province }}, {{ event.country }}</span>
-        </div>
+  <div class="flex flex-col justify-between px-4 py-3 gap-4 h-full">
+    <div class="flex flex-col gap-1">
+      <h4 class="text-2xl font-bold text-gray-900 truncate">{{ event.name }}</h4>
+      <div class="text-gray-700 text-sm truncate">
+        <i class="pi pi-map-marker me-2"></i>
+        <span>{{ event.address }}, {{ event.province }}, {{ event.country }}</span>
       </div>
+    </div>
 
-      <div class="max-w-80">
-        <p-progressBar [style]="{ borderRadius: '1rem', height: '15px' }" mode="determinate" class="w-full" [value]="calculateTicketPercentage()">
-          <ng-template pTemplate="content" let-value>
-          </ng-template>
-        </p-progressBar>
-        <span class="text-xs text-gray-700">{{ event.capacity - event.bought_tickets }} entradas disponibles</span>
-      </div>
+    <div class="max-w-80">
+      <p-progressBar [style]="{ borderRadius: '1rem', height: '15px' }" mode="determinate" class="w-full" [value]="calculateTicketPercentage()">
+        <ng-template pTemplate="content" let-value>
+        </ng-template>
+      </p-progressBar>
+      <span class="text-xs text-gray-700">{{ event.capacity - event.bought_tickets }} entradas disponibles</span>
     </div>
   </div>
 
-  <span class="text-sm absolute top-3 right-3">Dentro de {{ showStartDateDiff() }}</span>
-  <p-button [style]="{ width: '100%' }" label="{{ event.ticket_price }} €" icon="pi pi-ticket" iconPos="left" class="absolute bottom-3 right-3 min-w-24"></p-button>
+  <span class="text-sm text-gray-800 absolute md:top-3 top-2 md:right-3 right-1/2 translate-x-1/2 md:translate-x-0 transform">Dentro de {{ showStartDateDiff() }}</span>
+  <app-buy-ticket-button [price]=event.ticket_price [eventId]=event.id class="absolute md:bottom-3 -bottom-4 md:right-3 right-1/2 translate-x-1/2 md:translate-x-0 transform"></app-buy-ticket-button>
 </div>

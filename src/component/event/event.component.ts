@@ -5,15 +5,17 @@ import {Button} from 'primeng/button';
 import {Input} from '@angular/core';
 import Event from '../../interface/Event';
 import {convertSecondsToString} from '../../method/date-methods';
+import {BuyTicketButtonComponent} from "../buy-ticket-button/buy-ticket-button.component";
 
 @Component({
   selector: 'app-event',
   standalone: true,
-  imports: [
-    IconFieldModule,
-    ProgressBarModule,
-    Button
-  ],
+    imports: [
+        IconFieldModule,
+        ProgressBarModule,
+        Button,
+        BuyTicketButtonComponent
+    ],
   templateUrl: './event.component.html',
   styles: ``
 })
