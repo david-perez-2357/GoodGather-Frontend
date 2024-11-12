@@ -18,3 +18,8 @@ html, body {
   background: url('assets/gg-form-background.png') no-repeat center center fixed;
   background-size: cover;
 }
+
+.default-bg {
+  background: url('assets/gg-default-background.png') no-repeat center center fixed;
+  background-size: cover;
+}
