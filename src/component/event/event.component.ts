@@ -6,16 +6,18 @@ import {Input} from '@angular/core';
 import Event from '../../interface/Event';
 import {convertSecondsToString} from '../../method/date-methods';
 import {BuyTicketButtonComponent} from "../buy-ticket-button/buy-ticket-button.component";
+import {RouterLink} from "@angular/router";
 
 @Component({
   selector: 'app-event',
   standalone: true,
-    imports: [
-        IconFieldModule,
-        ProgressBarModule,
-        Button,
-        BuyTicketButtonComponent
-    ],
+  imports: [
+    IconFieldModule,
+    ProgressBarModule,
+    Button,
+    BuyTicketButtonComponent,
+    RouterLink
+  ],
   templateUrl: './event.component.html',
   styles: ``
 })
