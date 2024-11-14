@@ -4,8 +4,8 @@ interface Event {
   name: string;
   description: string;
   image: string;
-  start_date: Date;
-  end_date: Date;
+  start_date: string;
+  end_date: string;
   capacity: number;
   bought_tickets: number;
   address: string;

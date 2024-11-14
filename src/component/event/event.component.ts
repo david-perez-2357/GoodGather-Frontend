@@ -28,8 +28,8 @@ export class EventComponent {
     name: 'Event Name',
     description: 'Event Description',
     image: 'https://hips.hearstapps.com/hmg-prod/images/calendario-carreras-populares-running-sevilla-2023-1669049504.jpg',
-    start_date: new Date('2023-01-01 00:00:00'),
-    end_date: new Date('2023-01-01 01:00:00'),
+    start_date: '2023-01-01 00:00:00',
+    end_date: '2023-01-01 01:00:00',
     capacity: 100,
     bought_tickets: 25,
     address: 'The Address',
@@ -46,7 +46,7 @@ export class EventComponent {
   }
 
   showStartDateDiff() {
-    const diff = new Date().getTime() - this.event.start_date.getTime();
+    const diff = new Date().getTime() - new Date(this.event.start_date).getTime();
     return convertSecondsToString(diff / 1000);
   }
 }
