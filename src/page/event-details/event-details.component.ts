@@ -1,7 +1,8 @@
-import { Component, Renderer2, OnInit, OnDestroy } from '@angular/core';
+import {Component, Renderer2, OnInit, OnDestroy, ElementRef} from '@angular/core';
 import {CardModule} from 'primeng/card';
 import {BuyTicketButtonComponent} from '../../component/buy-ticket-button/buy-ticket-button.component';
 import {ProgressBarModule} from 'primeng/progressbar';
+import {putDefaultBackground} from '../../method/background-methods';
 
 @Component({
   selector: 'app-event-details',
@@ -16,10 +17,10 @@ import {ProgressBarModule} from 'primeng/progressbar';
 })
 
 export class EventDetailsComponent implements OnInit, OnDestroy {
-  constructor(private renderer: Renderer2) {}
+  constructor(private renderer: Renderer2, private el: ElementRef) {}
 
   ngOnInit() {
-    this.renderer.addClass(document.body, 'default-bg');
+    putDefaultBackground(this.renderer);
   }
 
   ngOnDestroy() {
