@@ -16,4 +16,5 @@ export class BuyTicketButtonComponent {
   @Input() eventId: number = 0;
   @Input() userId: number = 0;
   @Input() quantity: number = 1;
+  @Input() labelBeforePrice: string = '';
 }
