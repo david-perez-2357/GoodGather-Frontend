@@ -1,19 +1,44 @@
 
-<div class="grid grid-cols-[2fr_1fr] gap-12 mt-12">
-  <div class="bg-white rounded-xl w-full p-4 border border-1 border-gray-200">
-    Hola
+<div class="lg:grid grid-cols-[2fr_1fr] gap-12 mt-12 w-full max-w-[1500px] ml-auto mr-auto flex flex-col">
+  <div class="bg-white rounded-xl w-full p-6 border border-1 border-gray-300">
+    <div class="text-xl text-gray-700 mb-6 flex justify-center gap-3 items-center font-semibold">
+      <i class="pi pi-calendar text-2xl font-semibold"></i>
+      <span>12/23/3333 16:00 - 12:00</span>
+    </div>
+    <img src="https://hips.hearstapps.com/hmg-prod/images/calendario-carreras-populares-running-sevilla-2023-1669049504.jpg" alt="Imagen del evento" class="w-full h-80 object-cover rounded-xl">
+    <h2 class="text-3xl text-gray-900 text-center font-bold mt-6">Nombre del evento</h2>
+    <div class="flex items-center justify-center mt-1 gap-2 text-lg text-gray-700">
+      <i class="pi pi-map-marker"></i>
+      <span>Ubicación del evento</span>
+    </div>
+
+    <div class="w-full mt-4 flex justify-center max-h-40 overflow-y-auto">
+      <span class="text-gray-800 text-justify">
+        ¡Únete a la carrera benéfica en Sevilla y corre por una buena causa! Este domingo, el Parque de María Luisa se llenará de solidaridad y energía con una carrera para apoyar la investigación contra el cáncer infantil. Bajo el lema "Corremos Juntos", el evento invita a personas de todas las edades y niveles a participar en un recorrido de cinco kilómetros por los lugares más emblemáticos del parque. Además de la carrera, habrá actividades para toda la familia, música en vivo y puestos de comida saludable. Ven con tus amigos y familia y contribuye a marcar la diferencia. ¡Te esperamos!
+        ¡Únete a la carrera benéfica en Sevilla y corre por una buena causa! Este domingo, el Parque de María Luisa se llenará de solidaridad y energía con una carrera para apoyar la investigación contra el cáncer infantil. Bajo el lema "Corremos Juntos", el evento invita a personas de todas las edades y niveles a participar en un recorrido de cinco kilómetros por los lugares más emblemáticos del parque. Además de la carrera, habrá actividades para toda la familia, música en vivo y puestos de comida saludable. Ven con tus amigos y familia y contribuye a marcar la diferencia. ¡Te esperamos!
+      </span>
+    </div>
   </div>
 
   <div class="grid grid-rows-2 gap-6">
     <div>
-      <div class="bg-white rounded-xl w-full p-4 border border-1 border-gray-200">
+      <div class="bg-white text-center rounded-xl w-full p-4 border border-1 border-gray-300">
         *Componente de la causa*
       </div>
     </div>
 
     <div class="flex flex-col items-end">
-      <div class="bg-white rounded-xl w-full p-4 border border-1 border-gray-200 mt-auto">
-        Hola
+      <div class="bg-white flex flex-col gap-4 rounded-xl w-full p-6 border border-1 border-gray-300 pb-12 mt-auto relative">
+        <h5 class="text-xl text-gray-900 font-semibold text-center">75 entradas disponibles</h5>
+        <p-progressBar [style]="{ borderRadius: '1rem', height: '15px' }" mode="determinate" class="w-full" [value]="25">
+          <ng-template pTemplate="content" let-value>
+          </ng-template>
+        </p-progressBar>
+        <div class="flex flex-col py-2 gap-1 text-center text-gray-700 text-sm">
+          <span>25 vendidas en las últimas 24 horas</span>
+          <span>50 vendidas en total</span>
+        </div>
+        <app-buy-ticket-button [price]=10 labelBeforePrice="Comprar entrada por " class="absolute -bottom-4 right-1/2 translate-x-1/2 transform"></app-buy-ticket-button>
       </div>
     </div>
   </div>
