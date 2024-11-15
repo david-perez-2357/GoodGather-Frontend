@@ -70,5 +70,10 @@
         </div>
       </p-overlayPanel>
     </div>
+    <div>
+      <app-event *ngFor="let event of events" [event]="event"></app-event>
+    </div>
   </div>
+
 </div>
+<p-toast></p-toast>
