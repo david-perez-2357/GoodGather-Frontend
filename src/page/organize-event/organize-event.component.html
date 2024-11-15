@@ -1,0 +1,201 @@
+<div class="flex justify-center items-center p-2 box-border">
+  <div class="bg-white rounded-2xl p-5 shadow-md w-full max-w-[1200px] h-auto box-border">
+    <p-stepper [linear]="true" [style]="{'--step-header-number-bg-color': 'green', '--step-header-number-color': 'white'}">
+      <p-stepperPanel>
+        <ng-template pTemplate="content" let-nextCallback="nextCallback" let-index="index">
+          <div class="flex flex-col gap-6">
+            <div>
+              <h3 class="text-md font-semibold mb-2">Nombre del evento</h3>
+              <input type="text" placeholder="Escribe aquí un nombre corto y descriptivo para tu evento" pInputText class="p-component w-full" />
+            </div>
+            <div>
+              <h3 class="text-md font-semibold mb-2">Causa</h3>
+              <p-dropdown [style]="{'width': '100%'}"
+                [options]="causes"
+                [(ngModel)]="selectedCause"
+                optionLabel="name"
+                [filter]="true"
+                filterBy="name"
+                [showClear]="true"
+                placeholder="Selecciona una causa">
+                <ng-template pTemplate="selectedItem" let-selectedOption>
+                  <div class="flex align-items-center gap-2">
+                    <img
+                      src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                      [class]="'flag flag-' + selectedCause.code.toLowerCase()"
+                      style="width: 18px" />
+                    <div>{{ selectedOption.name }}</div>
+                  </div>
+                </ng-template>
+                <ng-template let-country pTemplate="item">
+                  <div class="flex align-items-center gap-2">
+                    <img
+                      src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                      [class]="'flag flag-' + country.code.toLowerCase()"
+                      style="width: 18px" />
+                    <div>{{ country.name }}</div>
+                  </div>
+                </ng-template>
+              </p-dropdown>
+              <a href="#" class="text-right block mt-2 text-blue-500">¿No encuentras tu causa? Creala aquí</a>
+            </div>
+            <div class="flex gap-4 w-full lg:grid grid-cols-[2fr_2fr_3fr] flex flex-col">
+              <div class="flex flex-col">
+                <h3 class="text-md font-semibold mb-2">País</h3>
+                <p-dropdown [style]="{'width': '100%'}"
+                  [options]="countries"
+                  [(ngModel)]="selectedCountry"
+                  optionLabel="name"
+                  [filter]="true"
+                  filterBy="name"
+                  [showClear]="true"
+                  placeholder="Selecciona un país">
+                  <ng-template pTemplate="selectedItem" let-selectedOption>
+                    <div class="flex align-items-center gap-2">
+                      <img
+                        src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                        [class]="'flag flag-' + selectedCountry.code.toLowerCase()"
+                        style="width: 18px" />
+                      <div>{{ selectedOption.name }}</div>
+                    </div>
+                  </ng-template>
+                  <ng-template let-country pTemplate="item">
+                    <div class="flex align-items-center gap-2">
+                      <img
+                        src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                        [class]="'flag flag-' + country.code.toLowerCase()"
+                        style="width: 18px" />
+                      <div>{{ country.name }}</div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+              </div>
+              <div class="flex flex-col">
+                <h3 class="text-md font-semibold mb-2">Provincia</h3>
+                <p-dropdown [style]="{'width': '100%'}"
+                  [options]="province"
+                  [(ngModel)]="selectedProvince"
+                  optionLabel="name"
+                  [filter]="true"
+                  filterBy="name"
+                  [showClear]="true"
+                  placeholder="Selecciona una provincia">
+                  <ng-template pTemplate="selectedItem" let-selectedOption>
+                    <div class="flex align-items-center gap-2">
+                      <img
+                        src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                        [class]="'flag flag-' + selectedProvince.code.toLowerCase()"
+                        style="width: 18px" />
+                      <div>{{ selectedOption.name }}</div>
+                    </div>
+                  </ng-template>
+                  <ng-template let-country pTemplate="item">
+                    <div class="flex align-items-center gap-2">
+                      <img
+                        src="https://primefaces.org/cdn/primeng/images/demo/flag/flag_placeholder.png"
+                        [class]="'flag flag-' + country.code.toLowerCase()"
+                        style="width: 18px" />
+                      <div>{{ country.name }}</div>
+                    </div>
+                  </ng-template>
+                </p-dropdown>
+              </div>
+              <div class="flex flex-col">
+                <h3 class="text-md font-semibold mb-2">Dirección</h3>
+                <input type="text" placeholder="¿Dónde se va a producir el evento?" pInputText class="p-component w-full" />
+              </div>
+            </div>
+            <div>
+              <h3 class="text-md font-semibold mb-2">Descripción Detallada</h3>
+              <textarea placeholder="¿De qué trata el evento?" pInputTextarea [autoResize]="true" class="w-full resize-none" rows="5"></textarea>
+            </div>
+          </div>
+          <div class="flex pt-4 justify-end">
+            <p-button label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (onClick)="nextCallback.emit()" />
+          </div>
+        </ng-template>
+      </p-stepperPanel>
+      <p-stepperPanel>
+        <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback" let-index="index">
+          <div class="grid gap-4 w-full grid-cols-1 lg:grid-cols-5">
+            <div class="bg-gray-50 p-4 rounded-lg col-span-1 lg:col-span-2 h-full flex flex-col">
+              <div class="flex items-center mb-4">
+                <i class="pi pi-ticket mr-2"></i>
+                <h3 class="text-md font-semibold">Ticket</h3>
+              </div>
+              <div class="flex flex-col gap-4 justify-between flex-grow">
+                <div class="flex flex-col">
+                  <div class="flex flex-row items-center gap-1.5">
+                    <h4 class="text-sm font-semibold mb-2">Precio del ticket</h4>
+                    <i class="pi pi-question-circle text-sm cursor-pointer" pTooltip="Se refiere al precio individual para asistir al evento"></i>
+                  </div>
+                  <div class="relative">
+                    <input type="number" step="0.01" placeholder="0.00" pInputText class="p-component w-full pr-10" min="0.01" max="1000.00" />
+                    <i class="pi pi-euro absolute right-2 top-1/2 transform -translate-y-1/2"></i>
+                  </div>
+                </div>
+                <div class="flex flex-col">
+                  <div class="flex flex-row items-center gap-1.5">
+                    <h4 class="text-sm font-semibold mb-2">Plazas Máximas</h4>
+                    <i class="pi pi-question-circle text-sm cursor-pointer" pTooltip="Se refiere al número máximo de tickets que se pueden vender en el evento"></i>
+                  </div>
+                  <input type="number" placeholder="0" pInputText class="p-component w-full"/>
+                </div>
+              </div>
+            </div>
+            <div class="bg-gray-50 p-4 rounded-lg col-span-1 lg:col-span-3 h-full flex flex-col">
+              <div class="flex items-center mb-4">
+                <i class="pi pi-calendar mr-2"></i>
+                <h3 class="text-md font-semibold">Calendario</h3>
+              </div>
+              <div class="flex flex-col gap-4 justify-between flex-grow">
+                <div>
+                  <h4 class="text-sm font-semibold mb-2">Inicio</h4>
+                  <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
+                    <div>
+                      <h5 class="text-xs font-semibold mb-2">Fecha</h5>
+                      <input type="date" pInputText class="p-component w-full" />
+                    </div>
+                    <div>
+                      <h5 class="text-xs font-semibold mb-2">Hora</h5>
+                      <input type="time" pInputText class="p-component w-full" />
+                    </div>
+                  </div>
+                </div>
+                <div>
+                  <h4 class="text-sm font-semibold mb-2">Fin</h4>
+                  <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
+                    <div>
+                      <h5 class="text-xs font-semibold mb-2">Fecha</h5>
+                      <input type="date" pInputText class="p-component w-full" />
+                    </div>
+                    <div>
+                      <h5 class="text-xs font-semibold mb-2">Hora</h5>
+                      <input type="time" pInputText class="p-component w-full" />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="flex pt-4 justify-between">
+            <p-button label="Atras" icon="pi pi-arrow-left" (onClick)="prevCallback.emit()" />
+            <p-button label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (onClick)="nextCallback.emit()" />
+          </div>
+        </ng-template>
+      </p-stepperPanel>
+      <p-stepperPanel>
+        <ng-template pTemplate="content" let-prevCallback="prevCallback" let-index="index">
+          <div class="flex flex-column h-auto">
+            <div class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
+              Content III
+            </div>
+          </div>
+          <div class="flex pt-4 justify-content-start">
+            <p-button label="Back" icon="pi pi-arrow-left" (onClick)="prevCallback.emit()" />
+          </div>
+        </ng-template>
+      </p-stepperPanel>
+    </p-stepper>
+  </div>
+</div>
