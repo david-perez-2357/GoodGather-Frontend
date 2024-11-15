@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import {IconFieldModule} from 'primeng/iconfield';
 import {ProgressBarModule} from 'primeng/progressbar';
-import {Button} from 'primeng/button';
 import {Input} from '@angular/core';
 import Event from '../../interface/Event';
 import {convertSecondsToString} from '../../method/date-methods';
@@ -14,7 +13,6 @@ import {RouterLink} from "@angular/router";
   imports: [
     IconFieldModule,
     ProgressBarModule,
-    Button,
     BuyTicketButtonComponent,
     RouterLink
   ],
