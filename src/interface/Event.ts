@@ -4,17 +4,17 @@ interface Event {
   name: string;
   description: string;
   image: string;
-  start_date: string;
-  end_date: string;
+  startDate: string;
+  endDate: string;
   capacity: number;
-  bought_tickets: number;
+  boughtTickets: number;
   address: string;
   province: string;
   country: string;
-  ticket_price: number;
+  ticketPrice: number;
   deleted: number;
-  id_owner: number;
-  id_cause: number;
+  idOwner: number;
+  idCause: number;
 }
 
 export default Event;

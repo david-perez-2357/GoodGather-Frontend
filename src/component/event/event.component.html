@@ -15,10 +15,10 @@
         <ng-template pTemplate="content" let-value>
         </ng-template>
       </p-progressBar>
-      <span class="text-xs text-gray-700">{{ event.capacity - event.bought_tickets }} entradas disponibles</span>
+      <span class="text-xs text-gray-700">{{ event.capacity - event.boughtTickets }} entradas disponibles</span>
     </div>
   </div>
 
   <span class="text-sm text-gray-800 absolute md:top-3 top-2 md:right-3 right-1/2 translate-x-1/2 md:translate-x-0 transform">Dentro de {{ showStartDateDiff() }}</span>
-  <app-buy-ticket-button [price]=event.ticket_price [eventId]=event.id class="absolute md:bottom-3 -bottom-4 md:right-3 right-1/2 translate-x-1/2 md:translate-x-0 transform"></app-buy-ticket-button>
+  <app-buy-ticket-button [price]=event.ticketPrice [eventId]=event.id class="absolute md:bottom-3 -bottom-4 md:right-3 right-1/2 translate-x-1/2 md:translate-x-0 transform"></app-buy-ticket-button>
 </div>
