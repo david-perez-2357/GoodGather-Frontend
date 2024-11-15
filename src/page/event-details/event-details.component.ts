@@ -9,9 +9,10 @@ import { HttpClientModule } from '@angular/common/http';
 import moment from 'moment';
 import {SkeletonModule} from 'primeng/skeleton';
 import {NgIf} from '@angular/common';
-import {handleResponse} from '../../method/response-mehods';
+import {callAPI} from '../../method/response-mehods';
 import {MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
+import ApiResponse from '../../interface/ApiResponse';
 
 @Component({
   selector: 'app-event-details',
@@ -27,6 +28,7 @@ import {ToastModule} from 'primeng/toast';
   ],
   templateUrl: './event-details.component.html',
   styles: ``,
+  providers: [MessageService]
 })
 
 export class EventDetailsComponent implements OnInit, OnDestroy {
@@ -49,7 +51,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     idCause: 0
   }
 
-  constructor(private renderer: Renderer2, private eventService: EventService) {}
+  constructor(private renderer: Renderer2, private eventService: EventService, private messageService: MessageService) { }
 
   calculateTicketPercentage() {
     return (this.event.boughtTickets / this.event.capacity) * 100;
@@ -81,23 +83,20 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-
-
-  getEventFromAPI() {
-    this.eventService.getEvent(1).subscribe({
-      next: (response: Event) => {
-        this.event = response;
-        this.eventLoaded = true;
-      },
-      error: (error: any) => {
-        handleResponse(error);
-      }
-    });
+  getEvent(response: ApiResponse): void {
+    console.log('response:', response);
+    if (response.status === 200) {
+      this.event = response.data;
+      this.eventLoaded = true;
+    } else if (response.toastMessage) {
+      console.log('mesageService:', this.messageService);
+      this.messageService.add(response.toastMessage);
+    }
   }
 
   ngOnInit() {
     putDefaultBackground(this.renderer);
-    this.getEventFromAPI();
+    callAPI(this.eventService.getEvent(1)).then((response) => this.getEvent(response));
   }
 
   ngOnDestroy() {
