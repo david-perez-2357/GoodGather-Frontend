@@ -1,13 +1,13 @@
 import { Component } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import {Button, ButtonDirective, ButtonModule} from 'primeng/button';
-import {Ripple} from 'primeng/ripple';
+import {RouterOutlet} from '@angular/router';
 import {HeaderComponent} from '../component/header/header.component';
+
+
 
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [RouterOutlet, Button, ButtonDirective, Ripple, HeaderComponent],
+  imports: [RouterOutlet, HeaderComponent],
   templateUrl: './app.component.html',
 })
 export class AppComponent {
