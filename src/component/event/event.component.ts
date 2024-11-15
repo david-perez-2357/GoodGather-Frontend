@@ -42,11 +42,11 @@ export class EventComponent {
   }
 
   calculateTicketPercentage() {
-    return (this.event.bought_tickets / this.event.capacity) * 100;
+    return (this.event.boughtTickets / this.event.capacity) * 100;
   }
 
   showStartDateDiff() {
-    const diff = new Date().getTime() - new Date(this.event.start_date).getTime();
+    const diff = new Date().getTime() - new Date(this.event.startDate).getTime();
     return convertSecondsToString(diff / 1000);
   }
 }
