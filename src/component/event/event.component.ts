@@ -28,17 +28,17 @@ export class EventComponent {
     name: 'Event Name',
     description: 'Event Description',
     image: 'https://hips.hearstapps.com/hmg-prod/images/calendario-carreras-populares-running-sevilla-2023-1669049504.jpg',
-    start_date: new Date('2023-01-01 00:00:00'),
-    end_date: new Date('2023-01-01 01:00:00'),
+    startDate: '2023-01-23 00:00:00',
+    endDate: '2024-01-30 13:00:00',
     capacity: 100,
-    bought_tickets: 25,
+    boughtTickets: 25,
     address: 'The Address',
     province: 'The Province',
     country: 'The Country',
-    ticket_price: 0,
+    ticketPrice: 0,
     deleted: 0,
-    id_owner: 0,
-    id_cause: 0
+    idOwner: 0,
+    idCause: 0
   }
 
   calculateTicketPercentage() {
@@ -46,7 +46,7 @@ export class EventComponent {
   }
 
   showStartDateDiff() {
-    const diff = new Date().getTime() - this.event.start_date.getTime();
+    const diff = new Date().getTime() - new Date(this.event.start_date).getTime();
     return convertSecondsToString(diff / 1000);
   }
 }

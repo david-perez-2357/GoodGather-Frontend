@@ -1,4 +1,4 @@
-<div class="md:w-full w-64 md:pt-2 pt-8 md:pb-2 pb-6 md:grid grid-cols-[auto_1fr] gap-3 border border-1 border-green-600 p-2 rounded-xl relative cursor-pointer hover:bg-green-50 hover:border-green-400 bg-white" routerLink="/view-event/{{ event.id }}">
+<div class="md:w-full w-64 md:pt-2 pt-8 md:pb-2 pb-6 md:grid grid-cols-[auto_1fr] gap-3 border border-1 border-green-600 p-2 rounded-xl relative cursor-pointer hover:bg-green-50 hover:border-green-400 bg-white" routerLink="/event/{{ event.id }}">
   <img src="{{ event.image }}" alt="Event Image" class="md:rounded-xl rounded w-full md:w-[200px] md:h-[140px] h-[130px] object-cover">
 
   <div class="flex flex-col justify-between px-4 py-3 gap-4 h-full">
@@ -15,10 +15,10 @@
         <ng-template pTemplate="content" let-value>
         </ng-template>
       </p-progressBar>
-      <span class="text-xs text-gray-700">{{ event.capacity - event.bought_tickets }} entradas disponibles</span>
+      <span class="text-xs text-gray-700">{{ event.capacity - event.boughtTickets }} entradas disponibles</span>
     </div>
   </div>
 
   <span class="text-sm text-gray-800 absolute md:top-3 top-2 md:right-3 right-1/2 translate-x-1/2 md:translate-x-0 transform">Dentro de {{ showStartDateDiff() }}</span>
-  <app-buy-ticket-button [price]=event.ticket_price [eventId]=event.id class="absolute md:bottom-3 -bottom-4 md:right-3 right-1/2 translate-x-1/2 md:translate-x-0 transform"></app-buy-ticket-button>
+  <app-buy-ticket-button [price]=event.ticketPrice [eventId]=event.id class="absolute md:bottom-3 -bottom-4 md:right-3 right-1/2 translate-x-1/2 md:translate-x-0 transform"></app-buy-ticket-button>
 </div>
