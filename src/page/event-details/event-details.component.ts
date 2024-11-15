@@ -49,7 +49,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     idCause: 0
   }
 
-  constructor(private renderer: Renderer2, private eventService: EventService, private messageService: MessageService) {}
+  constructor(private renderer: Renderer2, private eventService: EventService) {}
 
   calculateTicketPercentage() {
     return (this.event.boughtTickets / this.event.capacity) * 100;
@@ -90,7 +90,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
         this.eventLoaded = true;
       },
       error: (error: any) => {
-        this.messageService.add({ severity: 'error', summary: 'Error al obtener datos', detail: error.message });
+        handleResponse(error);
       }
     });
   }
