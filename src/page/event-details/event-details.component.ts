@@ -50,6 +50,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     idOwner: 0,
     idCause: 0
   }
+  ticketsBoughtInLast24h: number = 0;
 
   constructor(private renderer: Renderer2, private eventService: EventService, private messageService: MessageService) { }
 
