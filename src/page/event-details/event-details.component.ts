@@ -84,20 +84,23 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
-  getEvent(response: ApiResponse): void {
-    console.log('response:', response);
+  setEvent(response: ApiResponse): void {
     if (response.status === 200) {
       this.event = response.data;
       this.eventLoaded = true;
     } else if (response.toastMessage) {
-      console.log('mesageService:', this.messageService);
       this.messageService.add(response.toastMessage);
     }
   }
 
   ngOnInit() {
     putDefaultBackground(this.renderer);
-    callAPI(this.eventService.getEvent(1)).then((response) => this.getEvent(response));
+    callAPI(this.eventService.getEvent(1)).then((response) => this.setEvent(response));
+    callAPI(this.eventService.getTicketsBoughtInLast24h(1)).then((response) => {
+      if (response.status === 200) {
+        this.ticketsBoughtInLast24h = response.data.length;
+      }
+    });
   }
 
   ngOnDestroy() {
