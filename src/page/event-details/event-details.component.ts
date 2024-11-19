@@ -11,9 +11,9 @@ import moment from 'moment';
 import {SkeletonModule} from 'primeng/skeleton';
 import {NgIf} from '@angular/common';
 import {callAPI} from '../../method/response-mehods';
-import {MessageService} from 'primeng/api';
-import {ToastModule} from 'primeng/toast';
 import ApiResponse from '../../interface/ApiResponse';
+import {AppService} from '../../service/AppService';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-event-details',
@@ -25,15 +25,15 @@ import ApiResponse from '../../interface/ApiResponse';
     HttpClientModule,
     SkeletonModule,
     NgIf,
-    ToastModule,
   ],
   templateUrl: './event-details.component.html',
   styles: ``,
-  providers: [MessageService]
 })
 
 export class EventDetailsComponent implements OnInit, OnDestroy {
   eventLoaded: boolean = false;
+  eventId: number = 1;
+
   event: Event = {
     id: 0,
     name: 'Event Name',
@@ -53,7 +53,11 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   }
   ticketsBoughtInLast24h: number = 0;
 
-  constructor(private renderer: Renderer2, private eventService: EventService, private messageService: MessageService, private ticketService: TicketService) { }
+  constructor(private renderer: Renderer2,
+              private eventService: EventService,
+              private ticketService: TicketService,
+              private appService: AppService,
+              private route: ActivatedRoute) { }
 
   calculateTicketPercentage() {
     return (this.event.boughtTickets / this.event.capacity) * 100;
@@ -89,19 +93,30 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     if (response.status === 200) {
       this.event = response.data;
       this.eventLoaded = true;
-    } else if (response.toastMessage) {
-      this.messageService.add(response.toastMessage);
     }
   }
 
+  catchErrorMessage(error: any): void {
+    this.appService.showWErrorInApp(error);
+  }
+
   ngOnInit() {
+    this.eventId = Number(this.route.snapshot.paramMap.get('id'));
     putDefaultBackground(this.renderer);
-    callAPI(this.eventService.getEvent(1)).then((response) => this.setEvent(response));
-    callAPI(this.ticketService.getTicketsBoughtInLast24h(1)).then((response) => {
-      if (response.status === 200) {
-        this.ticketsBoughtInLast24h = response.data.length;
-      }
-    });
+    callAPI(this.eventService.getEvent(this.eventId))
+      .then((eventResponse: ApiResponse) => {
+        this.setEvent(eventResponse);
+
+        return callAPI(this.ticketService.getTicketsBoughtInLast24h(this.eventId));
+      })
+      .then((ticketResponse: ApiResponse) => {
+        if (ticketResponse.status !== 200) {
+          this.catchErrorMessage(ticketResponse);
+        }
+      })
+      .catch((error: any) => {
+        this.catchErrorMessage(error);
+      });
   }
 
   ngOnDestroy() {
