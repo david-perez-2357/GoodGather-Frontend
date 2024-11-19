@@ -16,63 +16,86 @@
       </div>
     </div>
   </div>
-  <div class="w-full p-4 bg-white rounded-2xl flex sm:flex-row  align-middle justify-center flex-col sm:gap-5 gap-5 items-center  border border-1 border-gray-300">
-    <div class="w-full flex flex-row align-middle justify-end items-center">
-      <p-iconField iconPosition="left" class="w-11/12">
-        <p-inputIcon styleClass="pi pi-search" />
-        <input type="text" pInputText placeholder="Buscar evento" class="rounded w-full"/>
-      </p-iconField>
-    </div>
-    <div class="sm:w-1/3 w-full flex justify-center sm:justify-normal">
-      <p-button
-        label="Filtrar"
-        icon="pi pi-sliders-v"
-        severity="secondary"
-        [loading]="loading"
-        class="p-button-rounded"
-        (onClick)="toggleOverlay($event)">
-      </p-button>
+  <div class="w-full p-4 bg-white rounded-2xl flex sm:flex-col  align-middle justify-center flex-col sm:gap-5 gap-5 items-center  border border-1 border-gray-300">
+    <div class="w-full p-4 bg-white rounded-2xl flex sm:flex-row  align-middle justify-center flex-col  items-center">
+      <div class="w-full flex flex-row align-middle justify-end items-center">
+        <p-iconField iconPosition="left" class="w-11/12">
+          <p-inputIcon styleClass="pi pi-search" />
+          <input type="text" pInputText placeholder="Buscar evento" class="rounded w-full"/>
+        </p-iconField>
+      </div>
+      <div class="sm:w-1/3 w-full flex justify-center">
+        <p-button
+          label="Filtrar"
+          icon="pi pi-sliders-v"
+          severity="secondary"
+          [loading]="loading"
+          class="p-button-rounded"
+          (onClick)="toggleOverlay($event)">
+        </p-button>
 
-      <p-overlayPanel #overlay>
-        <div class="flex flex-col gap-10 p-3 align-middle items-center">
-          <div class="flex flex-col gap-3 align-middle items-center">
-            <label class="font-semibold text-xl">Rango de busqueda</label>
-            <div class="flex gap-3 sm:flex-row flex-col">
-              <p-selectButton
-                [options]="stateOptions"
-                [(ngModel)]="value"
-                optionLabel="label"
-                optionValue="value"/>
-            </div>
-          </div>
-          <div class="flex flex-col gap-3 align-middle items-center">
-            <label class="font-semibold text-xl">Precio máximo</label>
-            <div class="flex sm:flex-row flex-col">
-              <div class="flex flex-col gap-5">
-                <p-inputNumber
-                  class=""
-                  [(ngModel)]="valueslider"
-                  mode="currency"
-                  inputId="currency-germany"
-                  currency="EUR"
-                  locale="de-DE" />
-                <p-slider [(ngModel)]="valueslider" class="w-full" />
+        <p-overlayPanel #overlay>
+          <div class="flex flex-col gap-10 p-3 align-middle items-center">
+            <div class="flex flex-col gap-3 align-middle items-center">
+              <label class="font-semibold text-xl">Rango de busqueda</label>
+              <div class="flex gap-3 sm:flex-row flex-col">
+                <p-selectButton
+                  [options]="stateOptions"
+                  [(ngModel)]="value"
+                  optionLabel="label"
+                  optionValue="value"/>
               </div>
             </div>
+            <div class="flex flex-col gap-3 align-middle items-center">
+              <label class="font-semibold text-xl">Precio máximo</label>
+              <div class="flex sm:flex-row flex-col">
+                <div class="flex flex-col gap-5">
+                  <p-inputNumber
+                    class=""
+                    [(ngModel)]="valueslider"
+                    mode="currency"
+                    inputId="currency-germany"
+                    currency="EUR"
+                    locale="de-DE" />
+                  <p-slider [(ngModel)]="valueslider" class="w-full" />
+                </div>
+              </div>
+            </div>
+            <div class="card flex justify-content-center">
+              <button
+                pButton
+                pRipple
+                label="Aplicar filtros">
+              </button>
+            </div>
           </div>
-          <div class="card flex justify-content-center">
-            <button
-              pButton
-              pRipple
-              label="Aplicar filtros">
-            </button>
-          </div>
+        </p-overlayPanel>
+      </div>
+    </div>
+    <div class="flex w-full flex-col">
+      <div class="flex w-full">
+        <div class="w-1/3 flex justify-center">
+          <p>Hola</p>
         </div>
-      </p-overlayPanel>
+        <div class="flex flex-col w-full gap-3 p-5">
+          <app-event *ngFor="let event of paginatedEvents" [event]="event"></app-event>
+        </div>
+      </div>
+      <div>
+        <div class="card flex justify-center">
+          <p-paginator
+            (onPageChange)="onPageChange($event)"
+            [first]="first"
+            [rows]="10"
+          [totalRecords]="totalRecords"
+          >
+          </p-paginator>
+        </div>
+      </div>
     </div>
-    <div>
-      <app-event *ngFor="let event of events" [event]="event"></app-event>
-    </div>
+
+
+
   </div>
 
 </div>
