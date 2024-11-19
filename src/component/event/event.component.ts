@@ -42,11 +42,16 @@ export class EventComponent {
   }
 
   calculateTicketPercentage() {
-    return (this.event.bought_tickets / this.event.capacity) * 100;
+    return (this.event.boughtTickets / this.event.capacity) * 100;
   }
 
   showStartDateDiff() {
-    const diff = new Date().getTime() - new Date(this.event.start_date).getTime();
+    const diff = new Date().getTime() - new Date(this.event.startDate).getTime();
     return convertSecondsToString(diff / 1000);
+  }
+
+  onImageError($event: ErrorEvent) {
+    const target = $event.target as HTMLImageElement;
+    target.src = 'gg-placeholder-image.png';
   }
 }

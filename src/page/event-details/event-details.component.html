@@ -53,10 +53,18 @@
         <p-skeleton height="2rem" styleClass="mb-2" borderRadius="15px" *ngIf="!eventLoaded" />
 
         <div class="flex flex-col py-2 gap-1 text-center text-gray-700 text-sm">
-          <span>x vendidas en las últimas 24 horas</span>
-          <span>{{ event.boughtTickets }} vendidas en total</span>
+          <span class="flex items-center justify-center gap-1">
+            <span *ngIf="eventLoaded">{{ ticketsBoughtInLast24h }}</span>
+            <p-skeleton height="1rem" width="2rem" borderRadius="15px" *ngIf="!eventLoaded" />
+            vendidas en las últimas 24 horas
+          </span>
+          <span class="flex items-center justify-center gap-1">
+            <span *ngIf="eventLoaded">{{ event.boughtTickets }}</span>
+            <p-skeleton height="1rem" width="2rem" borderRadius="15px" *ngIf="!eventLoaded" />
+            vendidas en total
+          </span>
         </div>
-        <app-buy-ticket-button [price]=event.ticketPrice labelBeforePrice="Comprar entrada por " class="absolute -bottom-4 right-1/2 translate-x-1/2 transform"></app-buy-ticket-button>
+        <app-buy-ticket-button [price]=event.ticketPrice [priceLoaded]="eventLoaded" labelBeforePrice="Comprar entrada por " class="absolute -bottom-4 right-1/2 translate-x-1/2 transform"></app-buy-ticket-button>
       </div>
     </div>
   </div>
