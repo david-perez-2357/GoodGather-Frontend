@@ -1,7 +1,7 @@
 function convertSecondsToString(seconds: any) {
   const metrics: { [key: string]: number } = {
     'años': 31536000,
-    'mes': 2628000,
+    'meses': 2628000,
     'días': 86400,
     'horas': 3600,
     'minutos': 60,
@@ -22,8 +22,10 @@ function convertSecondsToString(seconds: any) {
   }
 
   // Quitar la 's' si el número es 1
-  if (roundedNumber === 1) {
+  if (roundedNumber === 1 && metric !== 'meses') {
     metric = metric.slice(0, -1);
+  }else if (roundedNumber === 1) {
+    metric = 'mes';
   }
 
   // Crear el resultado
