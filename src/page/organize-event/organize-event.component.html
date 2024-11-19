@@ -127,7 +127,7 @@
                   <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
                     <div>
                       <h5 class="text-xs font-semibold mb-2">Fecha</h5>
-                      <input type="date" pInputText class="p-component w-full" [min]="startDateDate" [(ngModel)]="startDateDate" (change)="startDateChanged()"/>
+                      <input type="date" pInputText class="p-component w-full" [min]="minStartDateDate" [(ngModel)]="startDateDate"/>
                     </div>
                     <div>
                       <h5 class="text-xs font-semibold mb-2">Hora</h5>
@@ -164,8 +164,9 @@
               Content III
             </div>
           </div>
-          <div class="flex pt-4 justify-content-start">
+          <div class="flex pt-4 justify-between">
             <p-button label="Back" icon="pi pi-arrow-left" (onClick)="prevCallback.emit()" />
+            <p-button label="Guardar" icon="pi pi-check" (onClick)="onSubmit()" />
           </div>
         </ng-template>
       </p-stepperPanel>
