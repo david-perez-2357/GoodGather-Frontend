@@ -13,6 +13,7 @@ import {NgIf} from '@angular/common';
 import {callAPI} from '../../method/response-mehods';
 import ApiResponse from '../../interface/ApiResponse';
 import {AppService} from '../../service/AppService';
+import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-event-details',
@@ -31,6 +32,7 @@ import {AppService} from '../../service/AppService';
 
 export class EventDetailsComponent implements OnInit, OnDestroy {
   eventLoaded: boolean = false;
+  eventId: number = 1;
 
   event: Event = {
     id: 0,
@@ -54,7 +56,8 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   constructor(private renderer: Renderer2,
               private eventService: EventService,
               private ticketService: TicketService,
-              private appService: AppService) { }
+              private appService: AppService,
+              private route: ActivatedRoute) { }
 
   calculateTicketPercentage() {
     return (this.event.boughtTickets / this.event.capacity) * 100;
@@ -98,17 +101,22 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit() {
+    this.eventId = Number(this.route.snapshot.paramMap.get('id'));
     putDefaultBackground(this.renderer);
-    Promise.all([
-      callAPI(this.eventService.getEvent(1)),
-      callAPI(this.ticketService.getTicketsBoughtInLast24h(1))
-    ]).then(([eventResponse, ticketResponse]: [ApiResponse, ApiResponse]) => {
-      this.setEvent(eventResponse);
+    callAPI(this.eventService.getEvent(this.eventId))
+      .then((eventResponse: ApiResponse) => {
+        this.setEvent(eventResponse);
 
-      if (ticketResponse.status !== 200) {
-        this.catchErrorMessage(ticketResponse);
-      }
-    }).catch((error) => this.catchErrorMessage(error));
+        return callAPI(this.ticketService.getTicketsBoughtInLast24h(this.eventId));
+      })
+      .then((ticketResponse: ApiResponse) => {
+        if (ticketResponse.status !== 200) {
+          this.catchErrorMessage(ticketResponse);
+        }
+      })
+      .catch((error: any) => {
+        this.catchErrorMessage(error);
+      });
   }
 
   ngOnDestroy() {
