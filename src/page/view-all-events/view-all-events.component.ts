@@ -19,7 +19,7 @@ import { callAPI } from '../../method/response-mehods';
 import ApiResponse from '../../interface/ApiResponse';
 import Event from '../../interface/Event';
 import { EventComponent } from '../../component/event/event.component';
-import {HttpClientModule} from '@angular/common/http';
+import { HttpClientModule } from '@angular/common/http';
 
 @Component({
   selector: 'app-page-index',
@@ -51,10 +51,16 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   @ViewChild('overlay') overlay!: OverlayPanel;
 
   events: Event[] = [];
+  paginatedEvents: Event[] = [];
   loading = false;
   stateOptions: any[] = [{ label: 'En tu país', value: 'country' }, { label: 'En tu provincia', value: 'province' }];
   value: string = 'province';
   valueslider: number = 50;
+
+  // Paginación
+  first: number = 0;
+  rows: number = 10;
+  totalRecords: number = 0;
 
   constructor(private renderer: Renderer2, private eventService: EventService, private messageService: MessageService) {}
 
@@ -62,6 +68,8 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     console.log('response:', response);
     if (response.status === 200) {
       this.events = response.data;
+      this.totalRecords = this.events.length;
+      this.updatePaginatedEvents();
     } else if (response.toastMessage) {
       console.log('messageService:', this.messageService);
       this.messageService.add(response.toastMessage);
@@ -75,6 +83,19 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.renderer.removeClass(document.body, 'default-bg');
+  }
+
+  updatePaginatedEvents(): void {
+    const startIndex = this.first;
+    const endIndex = this.first + this.rows;
+    this.paginatedEvents = this.events.slice(startIndex, endIndex);
+  }
+
+  onPageChange(event: any): void {
+    this.first = event.first;
+    this.rows = event.rows;
+    this.updatePaginatedEvents();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
   load(): void {
