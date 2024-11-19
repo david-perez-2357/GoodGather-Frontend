@@ -20,6 +20,7 @@ import ApiResponse from '../../interface/ApiResponse';
 import Event from '../../interface/Event';
 import { EventComponent } from '../../component/event/event.component';
 import { HttpClientModule } from '@angular/common/http';
+import {CauseComponent} from '../../component/cause/cause.component';
 
 @Component({
   selector: 'app-page-index',
@@ -41,7 +42,8 @@ import { HttpClientModule } from '@angular/common/http';
     Ripple,
     ToastModule,
     HttpClientModule,
-    EventComponent
+    EventComponent,
+    CauseComponent
   ],
   templateUrl: './view-all-events.component.html',
   styleUrls: ['./view-all-events.component.css'],
