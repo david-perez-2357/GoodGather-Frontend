@@ -3,20 +3,22 @@ import ApiResponse from '../interface/ApiResponse';
 import {firstValueFrom, Observable} from 'rxjs';
 
 function callAPI(serviceCall: any): Promise<ApiResponse> {
-  return firstValueFrom(serviceCall).then(
-    (response: any) => ({
-      status: response.status,
-      message: response.message,
-      data: response.data,
-    }),
-    (error: any) => ({
-      status: error.status,
-      message: error.message,
-      data: error.data,
-      toastMessage: returnErrorMessage(error),
-    })
-  );
-}
+  return firstValueFrom(serviceCall)
+    .then((response: any) => {
+      return {
+        status: 200,
+        message: 'Operación exitosa',
+        data: response,
+      }}).catch((error: any) => {
+        const toastMessage = returnErrorMessage(error);
+        throw {
+          status: error.status || 500,
+          message: error.message || 'Error desconocido',
+          data: null,
+          toastMessage,
+        };
+      });
+    }
 
 function returnErrorMessage(error: any): Message {
   if (error.status === 404) {

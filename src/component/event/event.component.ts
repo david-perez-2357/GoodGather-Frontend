@@ -47,4 +47,9 @@ export class EventComponent {
     const diff = new Date().getTime() - new Date(this.event.startDate).getTime();
     return convertSecondsToString(diff / 1000);
   }
+
+  onImageError($event: ErrorEvent) {
+    const target = $event.target as HTMLImageElement;
+    target.src = 'gg-placeholder-image.png';
+  }
 }

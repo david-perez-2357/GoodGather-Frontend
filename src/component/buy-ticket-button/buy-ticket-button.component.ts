@@ -17,8 +17,17 @@ export class BuyTicketButtonComponent {
   @Input() userId: number = 0;
   @Input() quantity: number = 1;
   @Input() labelBeforePrice: string = '';
+  @Input() priceLoaded: boolean = true;
 
   getLabel(): string {
+    if (!this.priceLoaded) {
+      return 'Cargando precio...';
+    }
+
+    if (this.disabled) {
+      return 'AGOTADO';
+    }
+
     if (this.price === 0) {
       return 'GRATIS';
     }
