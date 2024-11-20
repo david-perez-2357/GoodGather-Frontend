@@ -87,7 +87,8 @@
             </div>
           </div>
           <div class="flex pt-4 justify-end">
-            <p-button label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (onClick)="nextCallback.emit()" />
+            <p-button label="Siguiente" icon="pi pi-arrow-right" class="hidden sm:block" iconPos="right" (onClick)="nextCallback.emit()" />
+            <p-button icon="pi pi-arrow-right" iconPos="right" class="block sm:hidden" (onClick)="nextCallback.emit()" />
           </div>
         </ng-template>
       </p-stepperPanel>
@@ -105,14 +106,14 @@
                     <h4 class="text-sm font-semibold mb-2">Precio del ticket</h4>
                     <i class="pi pi-question-circle text-sm cursor-pointer" pTooltip="Se refiere al precio individual para asistir al evento"></i>
                   </div>
-                  <p-inputNumber [min]="0.00" [max]="1000.00" [step]="0.01"  [(ngModel)]="event.ticketPrice" [mode]="'currency'" currency="EUR" [style]="{'width': '100%'}"></p-inputNumber>
+                  <p-inputNumber [min]="0.00" [max]="1000.00" [step]="0.01" currency="EUR" inputStyleClass="w-full" [(ngModel)]="event.ticketPrice" [mode]="'currency'"></p-inputNumber>
                 </div>
                 <div class="flex flex-col">
                   <div class="flex flex-row items-center gap-1.5">
                     <h4 class="text-sm font-semibold mb-2">Plazas Máximas</h4>
                     <i class="pi pi-question-circle text-sm cursor-pointer" pTooltip="Se refiere al número máximo de tickets que se pueden vender en el evento"></i>
                   </div>
-                  <input type="number" placeholder="0" pInputText class="p-component w-full" min="0" max="1000000" [(ngModel)]="event.capacity" />
+                  <p-inputNumber [min]="0" [max]="1000000" [step]="1" suffix=" personas" inputStyleClass="w-full" [(ngModel)]="event.capacity"/>
                 </div>
               </div>
             </div>
@@ -127,11 +128,11 @@
                   <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
                     <div>
                       <h5 class="text-xs font-semibold mb-2">Fecha</h5>
-                      <input type="date" pInputText class="p-component w-full" [min]="minStartDateDate" [(ngModel)]="startDateDate"/>
+                      <input type="date" pInputText class="p-component w-full" [min]="minStartDateDate" [(ngModel)]="startDateDate" (change)="dateAndTimeValidator($event)"/>
                     </div>
                     <div>
                       <h5 class="text-xs font-semibold mb-2">Hora</h5>
-                      <input type="time" pInputText class="p-component w-full" [(ngModel)]="startDateHour"/>
+                      <input type="time" pInputText class="p-component w-full" [(ngModel)]="startDateHour" (change)="dateAndTimeValidator($event)"/>
                     </div>
                   </div>
                 </div>
@@ -140,11 +141,11 @@
                   <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
                     <div>
                       <h5 class="text-xs font-semibold mb-2">Fecha</h5>
-                      <input type="date" pInputText class="p-component w-full" [min]="startDateDate" [(ngModel)]="endDateDate"/>
+                      <input type="date" pInputText class="p-component w-full" [min]="startDateDate" [(ngModel)]="endDateDate" (change)="dateAndTimeValidator($event)"/>
                     </div>
                     <div>
                       <h5 class="text-xs font-semibold mb-2">Hora</h5>
-                      <input type="time" pInputText class="p-component w-full" [(ngModel)]="endDateHour"/>
+                      <input type="time" pInputText class="p-component w-full" [(ngModel)]="endDateHour" (change)="dateAndTimeValidator($event)"/>
                     </div>
                   </div>
                 </div>
@@ -152,8 +153,10 @@
             </div>
           </div>
           <div class="flex pt-4 justify-between">
-            <p-button label="Atras" icon="pi pi-arrow-left" (onClick)="prevCallback.emit()" />
-            <p-button label="Siguiente" icon="pi pi-arrow-right" iconPos="right" (onClick)="nextCallback.emit()" />
+            <p-button label="Atras" icon="pi pi-arrow-left" class="hidden sm:block" (onClick)="prevCallback.emit()" />
+            <p-button label="Siguiente" icon="pi pi-arrow-right" iconPos="right" class="hidden sm:block" (onClick)="nextCallback.emit()" />
+            <p-button icon="pi pi-arrow-left" class="block sm:hidden" (onClick)="prevCallback.emit()" />
+            <p-button icon="pi pi-arrow-right" iconPos="right" class="block sm:hidden" (onClick)="nextCallback.emit()" />
           </div>
         </ng-template>
       </p-stepperPanel>
