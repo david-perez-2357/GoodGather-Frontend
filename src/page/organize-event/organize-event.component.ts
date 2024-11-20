@@ -10,7 +10,7 @@ import moment from 'moment';
 import Event from '../../interface/Event';
 import { putFormBackground, removeFormBackground } from '../../method/background-methods';
 import { callAPI } from '../../method/response-mehods';
-import { NgIf } from '@angular/common';
+import {NgClass, NgIf} from '@angular/common';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { EventService } from '../../service/EventService';
 
@@ -26,13 +26,14 @@ import { EventService } from '../../service/EventService';
     FormsModule,
     TooltipModule,
     NgIf,
-    InputNumberModule
+    InputNumberModule,
+    NgClass
   ],
   templateUrl: './organize-event.component.html',
   styles: ``
 })
+
 export class OrganizeEventComponent implements OnInit, OnDestroy {
-  eventForm: FormGroup;
   causes: any[] | undefined;
   countries: any[] | undefined;
   province: any[] | undefined;
@@ -40,6 +41,7 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
   endDateDate: string = '';
   startDateHour: string = '';
   endDateHour: string = '';
+  minStartDateDate: string = moment().format('YYYY-MM-DD');
 
   event: Event = {
     id: 0,
@@ -58,54 +60,35 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     idOwner: 0,
     idCause: 0
   }
-  minStartDateDate: string = moment().format('YYYY-MM-DD');
 
-  constructor(private renderer: Renderer2, private fb: FormBuilder, private eventService: EventService) {
-    this.eventForm = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(50)]],
-      description: ['', [Validators.required, Validators.maxLength(1000)]],
-      address: ['', [Validators.required, Validators.maxLength(100)]],
-      startDateDate: ['', Validators.required],
-      endDateDate: ['', Validators.required],
-      startDateHour: ['', Validators.required],
-      endDateHour: ['', Validators.required],
-      ticketPrice: [0, [Validators.required, Validators.min(0), Validators.max(1000)]],
-      capacity: [0, [Validators.required, Validators.min(0), Validators.max(1000000)]]
-    }, { validators: this.dateAndTimeValidator });
+  constructor(private renderer: Renderer2) {
+
   }
 
   ngOnInit(): void {
     putFormBackground(this.renderer);
-    callAPI(this.eventService.createEvent(this.eventForm.value)).then(response => {
-      if (response.status === 200) {
-        window.location.reload();
-      }
-    });
   }
 
   ngOnDestroy(): void {
     removeFormBackground(this.renderer);
   }
 
-  dateAndTimeValidator(group: FormGroup) {
-    const startDate = moment(group.get('startDateDate')?.value, 'YYYY-MM-DD');
-    const endDate = moment(group.get('endDateDate')?.value, 'YYYY-MM-DD');
-    const startHour = moment(group.get('startDateHour')?.value, 'HH:mm');
-    const endHour = moment(group.get('endDateHour')?.value, 'HH:mm');
+  dateAndTimeValidator($event: any): void {
 
-    if (startDate.isSame(endDate, 'day') && startDate.isSame(endDate, 'month') && startDate.isSame(endDate, 'year') && endHour.isBefore(startHour)) {
-      return { timeInvalid: true };
+    const startDate = moment(this.startDateDate, 'YYYY-MM-DD');
+    const endDate = moment(this.endDateDate, 'YYYY-MM-DD');
+    const startHour = moment(this.startDateHour, 'HH:mm');
+    const endHour = moment(this.endDateHour, 'HH:mm');
+
+    if (startDate.isSame(endDate) && endHour.isBefore(startHour)) {
+      this.endDateHour = this.startDateHour;
     }
-    return null;
+    if (endDate.isBefore(startDate)) {
+      this.endDateDate = this.startDateDate;
+    }
   }
 
   onSubmit(): void {
-    if (this.eventForm.valid) {
-      callAPI(this.eventService.createEvent(this.eventForm.value)).then(response => {
-        if (response.status === 200) {
-          window.location.reload();
-        }
-      });
-    }
+
   }
 }
