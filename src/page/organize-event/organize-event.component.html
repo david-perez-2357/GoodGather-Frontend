@@ -34,14 +34,7 @@
             <div class="flex gap-4 w-full lg:grid grid-cols-[2fr_2fr_3fr] flex flex-col">
               <div class="flex flex-col">
                 <h3 class="text-md font-semibold mb-2">País</h3>
-                <p-dropdown [style]="{'width': '100%'}"
-                  [options]="countries"
-                  [(ngModel)]="event.country"
-                  optionLabel="name"
-                  [filter]="true"
-                  filterBy="name"
-                  [showClear]="true"
-                  placeholder="Selecciona un país">
+                <p-dropdown [style]="{'width': '100%'}" [options]="countries" [(ngModel)]="event.country" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Selecciona un país" (change)="countryChange()">
                   <ng-template pTemplate="selectedItem" let-selectedOption>
                     <div class="flex align-items-center gap-2">
                       <div>{{ selectedOption.name }}</div>
@@ -56,14 +49,7 @@
               </div>
               <div class="flex flex-col">
                 <h3 class="text-md font-semibold mb-2">Provincia</h3>
-                <p-dropdown [style]="{'width': '100%'}"
-                  [options]="province"
-                  [(ngModel)]="event.province"
-                  optionLabel="name"
-                  [filter]="true"
-                  filterBy="name"
-                  [showClear]="true"
-                  placeholder="Selecciona una provincia">
+                <p-dropdown [style]="{'width': '100%'}" [options]="provinces" [(ngModel)]="event.province" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Selecciona una provincia" [disabled]="provinces.length==0">
                   <ng-template pTemplate="selectedItem" let-selectedOption>
                     <div class="flex align-items-center gap-2">
                       <div>{{ selectedOption.name }}</div>

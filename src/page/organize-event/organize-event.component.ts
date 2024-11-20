@@ -13,6 +13,10 @@ import { callAPI } from '../../method/response-mehods';
 import {NgClass, NgIf} from '@angular/common';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { EventService } from '../../service/EventService';
+import {LocationService} from '../../service/LocationService';
+import ApiResponse from '../../interface/ApiResponse';
+import {convertToLocationList} from '../../method/location-methods';
+import Location from '../../interface/Location';
 
 @Component({
   selector: 'app-organize-event',
@@ -36,7 +40,7 @@ import { EventService } from '../../service/EventService';
 export class OrganizeEventComponent implements OnInit, OnDestroy {
   causes: any[] | undefined;
   countries: any[] | undefined;
-  province: any[] | undefined;
+  provinces: Location[] = [];
   startDateDate: string = '';
   endDateDate: string = '';
   startDateHour: string = '';
@@ -61,12 +65,19 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     idCause: 0
   }
 
-  constructor(private renderer: Renderer2) {
+  constructor(private renderer: Renderer2, private locationService: LocationService) {
 
   }
 
   ngOnInit(): void {
     putFormBackground(this.renderer);
+    callAPI(this.locationService.getAllCountries())
+      .then((countryResponse: ApiResponse) => {
+        this.countries = convertToLocationList(countryResponse.data);
+      })
+      .catch((error: any) => {
+        console.error('Error getting countries:', error);
+      });
   }
 
   ngOnDestroy(): void {
@@ -86,6 +97,18 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     if (endDate.isBefore(startDate)) {
       this.endDateDate = this.startDateDate;
     }
+  }
+
+  countryChange(): void {
+    const countryCode = this.event.country;
+    console.log('Country code:', countryCode);
+    callAPI(this.locationService.getStatesByCountry(countryCode))
+      .then((stateResponse: ApiResponse) => {
+        this.provinces = convertToLocationList(stateResponse.data);
+      })
+      .catch((error: any) => {
+        console.error('Error getting states:', error);
+      });
   }
 
   onSubmit(): void {
