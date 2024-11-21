@@ -1,10 +1,13 @@
 import {Component, Input} from '@angular/core';
 import Cause from '../../interface/Cause';
+import {RouterLink} from '@angular/router';
 
 @Component({
   selector: 'app-cause',
   standalone: true,
-  imports: [],
+  imports: [
+    RouterLink
+  ],
   templateUrl: './cause.component.html',
   styles: ``
 })
