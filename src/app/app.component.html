@@ -2,6 +2,6 @@
 
 
 <div class="w-full p-5">
-  <router-outlet></router-outlet>
+  <router-outlet *ngIf="!error"></router-outlet>
+  <app-server-error [show]="error" [error]="errorText"></app-server-error>
 </div>
-
