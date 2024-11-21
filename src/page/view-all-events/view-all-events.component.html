@@ -20,8 +20,14 @@
     <div class="w-full p-4 bg-white rounded-2xl flex sm:flex-row  align-middle justify-center flex-col  items-center">
       <div class="w-full flex flex-row align-middle justify-end items-center">
         <p-iconField iconPosition="left" class="w-11/12">
-          <p-inputIcon styleClass="pi pi-search" />
-          <input type="text" pInputText placeholder="Buscar evento" class="rounded w-full"/>
+          <p-inputIcon styleClass="pi pi-search"></p-inputIcon>
+          <input
+            #searchInput
+            type="text"
+            pInputText
+            placeholder="Buscar evento"
+            class="rounded w-full"
+            (input)="onSearch(searchInput.value)" />
         </p-iconField>
       </div>
       <div class="sm:w-1/3 w-full flex justify-center">
@@ -31,7 +37,8 @@
           severity="secondary"
           [loading]="loading"
           class="p-button-rounded"
-          (onClick)="toggleOverlay($event)">
+          (onClick)="toggleOverlay($event)"
+          badge="">
         </p-button>
 
         <p-overlayPanel #overlay>
@@ -81,10 +88,10 @@
 
         <!-- Eventos relacionados a la derecha -->
         <div class="flex flex-col w-full gap-3 p-5">
-          <div class="flex flex-col gap-3" *ngIf="groupedEvents[cause.id]?.length">
-            <app-event *ngFor="let event of groupedEvents[cause.id]" [event]="event"></app-event>
+          <div class="flex flex-col gap-3" *ngIf="filteredGroupedEvents[cause.id]?.length">
+            <app-event *ngFor="let event of filteredGroupedEvents[cause.id]" [event]="event"></app-event>
           </div>
-          <div class="text-center text-gray-500" *ngIf="!groupedEvents[cause.id]?.length">
+          <div class="text-center text-gray-500" *ngIf="!filteredGroupedEvents[cause.id]?.length">
             <p>No hay eventos disponibles para esta causa.</p>
           </div>
         </div>

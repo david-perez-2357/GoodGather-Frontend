@@ -65,12 +65,16 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     { label: 'En tu provincia', value: 'province' },
   ];
   value: string = 'province';
-  valueslider: number = 50;
+  valueslider: number = 0;
   groupedEvents: { [causeId: number]: Event[] } = {};
 
   first: number = 0;
   rows: number = 10;
   totalRecords: number = 0;
+  searchQuery: string = '';
+  filteredEvents: Event[] = [];
+  filteredGroupedEvents: { [causeId: number]: Event[] } = {};
+
 
   constructor(
     private renderer: Renderer2,
@@ -94,11 +98,12 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
       if (eventsResponse.status === 200) {
         this.events = eventsResponse.data;
+        this.filteredEvents = [...this.events];
       } else if (eventsResponse.toastMessage) {
         this.messageService.add(eventsResponse.toastMessage);
       }
 
-      this.totalRecords = this.events.length;
+      this.totalRecords = this.filteredEvents.length;
       this.updatePaginatedCauses();
     });
   }
@@ -111,11 +116,10 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   updatePaginatedCauses(): void {
     const startIndex = this.first;
     const endIndex = this.first + this.rows;
-    this.paginatedEvents = this.events.slice(startIndex, endIndex);
-    this.groupedEvents = {};
-    console.log(this.causes);
 
-    this.groupedEvents = this.groupEventsByCause(this.paginatedEvents, this.causes);
+
+    this.paginatedEvents = this.filteredEvents.slice(startIndex, endIndex);
+    this.filteredGroupedEvents = this.groupEventsByCause(this.paginatedEvents, this.causes);
     this.paginatedCauses = this.getUsedCauses(this.paginatedEvents);
   }
 
@@ -136,6 +140,15 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       groupedEvents[cause.id] = events.filter((event) => event.idCause === cause.id);
     });
     return groupedEvents;
+  }
+
+  onSearch(query: string): void {
+    this.searchQuery = query.toLowerCase();
+    this.filteredEvents = this.events.filter(event =>
+      event.name.toLowerCase().includes(this.searchQuery)
+    );
+    this.totalRecords = this.filteredEvents.length;
+    this.updatePaginatedCauses();
   }
 
   onPageChange(event: any): void {
