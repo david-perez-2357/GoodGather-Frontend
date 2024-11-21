@@ -1,5 +1,5 @@
 import { Component, Renderer2, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import {NgForOf, NgIf} from '@angular/common';
+import { NgForOf, NgIf } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { ChipsModule } from 'primeng/chips';
@@ -73,7 +73,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   filteredEvents: Event[] = [];
   filteredGroupedEvents: { [causeId: number]: Event[] } = {};
 
-
   constructor(
     private renderer: Renderer2,
     private eventService: EventService,
@@ -107,7 +106,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     });
   }
 
-
   ngOnDestroy(): void {
     this.renderer.removeClass(document.body, 'default-bg');
   }
@@ -116,7 +114,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     const startIndex = this.first;
     const endIndex = this.first + this.rows;
 
-
+    // Apply price filter before pagination
     this.paginatedEvents = this.filteredEvents.slice(startIndex, endIndex);
     this.filteredGroupedEvents = this.groupEventsByCause(this.paginatedEvents, this.causes);
     this.paginatedCauses = this.getUsedCauses(this.paginatedEvents);
@@ -172,6 +170,8 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   }
 
   onSliderChange(): void {
+    this.filteredEvents = this.filterEventsByPrice();
+    this.updatePaginatedCauses();
     this.updateActiveFilters();
   }
 
@@ -181,6 +181,13 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
   onInputNumberChange(): void {
     this.updateActiveFilters();
+  }
+
+  filterEventsByPrice(): Event[] {
+    if (this.valueslider === 0) {
+      return this.events;
+    }
+    return this.events.filter(event => event.ticketPrice !== undefined && event.ticketPrice <= this.valueslider);
   }
 
   load(): void {
