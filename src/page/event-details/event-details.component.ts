@@ -68,8 +68,6 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     const startDate = moment(this.event.startDate, "YYYY-MM-DD HH:mm");
     const endDate = moment(this.event.endDate, "YYYY-MM-DD HH:mm");
 
-    console.log('startDate:', this.event.startDate);
-
     // Usa Moment.js para el formateo de fecha y hora
     const formattedStartDate = startDate.format("DD/MM/YYYY");
     const formattedEndDate = endDate.format("DD/MM/YYYY");
