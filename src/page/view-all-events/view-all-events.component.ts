@@ -113,8 +113,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   updatePaginatedCauses(): void {
     const startIndex = this.first;
     const endIndex = this.first + this.rows;
-
-    // Apply price filter before pagination
     this.paginatedEvents = this.filteredEvents.slice(startIndex, endIndex);
     this.filteredGroupedEvents = this.groupEventsByCause(this.paginatedEvents, this.causes);
     this.paginatedCauses = this.getUsedCauses(this.paginatedEvents);
@@ -151,7 +149,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   onPageChange(event: any): void {
     this.first = event.first;
     this.rows = event.rows;
-
     this.updatePaginatedCauses();
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
@@ -171,6 +168,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
   onSliderChange(): void {
     this.filteredEvents = this.filterEventsByPrice();
+    this.totalRecords = this.filteredEvents.length;
     this.updatePaginatedCauses();
     this.updateActiveFilters();
   }
