@@ -51,7 +51,7 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     id: 0,
     name: '',
     description: '',
-    image: '',
+    image: 'aqui va la imagen',
     startDate: '',
     endDate: '',
     capacity: 0,
@@ -61,11 +61,11 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     country: '',
     ticketPrice: 0,
     deleted: 0,
-    idOwner: 0,
-    idCause: 0
+    idOwner: 1,
+    idCause: 1
   }
 
-  constructor(private renderer: Renderer2, private locationService: LocationService) {
+  constructor(private renderer: Renderer2, private locationService: LocationService, private eventService: EventService) {
 
   }
 
@@ -101,6 +101,7 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
 
   countryChange(): void {
     const countryCode = this.event.country;
+    this.event.province = '';
     console.log('Country code:', countryCode);
     callAPI(this.locationService.getStatesByCountry(countryCode))
       .then((stateResponse: ApiResponse) => {
@@ -112,6 +113,14 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-
+    this.event.startDate = this.startDateDate+' '+this.startDateHour+':00',
+    this.event.endDate = this.endDateDate+' '+this.endDateHour+':00',
+    callAPI(this.eventService.createEvent(this.event))
+      .then((response: ApiResponse) => {
+        console.log('Event created:', response.data);
+      })
+      .catch((error: any) => {
+        console.error('Error creating event:', error);
+      });
   }
 }
