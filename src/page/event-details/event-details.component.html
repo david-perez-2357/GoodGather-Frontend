@@ -41,7 +41,7 @@
     </div>
 
     <div class="flex flex-col items-end lg:mb-0 mb-16">
-      <div class="bg-white flex flex-col gap-4 rounded-xl w-full p-6 border border-1 border-gray-300 pb-12 mt-auto relative">
+      <div class="bg-white flex flex-col gap-4 rounded-xl w-full p-6 border border-1 border-gray-300 pb-8 mt-auto relative">
         <h5 class="text-xl text-gray-900 font-semibold text-center" *ngIf="eventLoaded">{{ event.capacity - event.boughtTickets }} entradas disponibles</h5>
         <p-skeleton height="1.5rem"  *ngIf="!eventLoaded" />
 
@@ -64,7 +64,7 @@
             vendidas en total
           </span>
         </div>
-        <app-buy-ticket-button [price]=event.ticketPrice [priceLoaded]="eventLoaded" labelBeforePrice="Comprar entrada por " class="absolute -bottom-4 right-1/2 translate-x-1/2 transform"></app-buy-ticket-button>
+        <app-buy-ticket-button [price]=event.ticketPrice [priceLoaded]="eventLoaded" labelBeforePrice="Comprar entrada por " buttonClass="absolute -bottom-4 right-1/2 translate-x-1/2 transform"></app-buy-ticket-button>
       </div>
     </div>
   </div>
