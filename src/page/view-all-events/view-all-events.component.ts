@@ -198,4 +198,14 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   toggleOverlay(event: MouseEvent): void {
     this.overlay.toggle(event);
   }
+
+  onRecentClick(): void {
+    this.filteredEvents = [...this.events].sort((a, b) => {
+      const dateA = new Date(a.startDate).getTime();
+      const dateB = new Date(b.startDate).getTime();
+      return dateB - dateA;
+    });
+    this.totalRecords = this.filteredEvents.length;
+    this.updatePaginatedCauses();
+  }
 }
