@@ -10,14 +10,7 @@
             </div>
             <div>
               <h3 class="text-md font-semibold mb-2">Causa</h3>
-              <p-dropdown [style]="{'width': '100%'}"
-                [options]="causes"
-                [(ngModel)]="event.idCause"
-                optionLabel="name"
-                [filter]="true"
-                filterBy="name"
-                [showClear]="true"
-                placeholder="Selecciona una causa">
+              <p-dropdown [style]="{'width': '100%'}" [options]="causes" [(ngModel)]="event.idCause" optionValue="id" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Selecciona una causa">
                 <ng-template pTemplate="selectedItem" let-selectedOption>
                   <div class="flex align-items-center gap-2">
                     <div>{{ selectedOption.name }}</div>
@@ -34,7 +27,7 @@
             <div class="flex gap-4 w-full lg:grid grid-cols-[2fr_2fr_3fr] flex flex-col">
               <div class="flex flex-col">
                 <h3 class="text-md font-semibold mb-2">País</h3>
-                <p-dropdown [style]="{'width': '100%'}" [options]="countries" [(ngModel)]="event.country" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Selecciona un país" (change)="countryChange()">
+                <p-dropdown [style]="{'width': '100%'}" [options]="countries" [(ngModel)]="event.country"  optionValue="code" [showClear]="false" optionLabel="name" [filter]="true" filterBy="name"  placeholder="Selecciona un país" (onChange)="countryChange()">
                   <ng-template pTemplate="selectedItem" let-selectedOption>
                     <div class="flex align-items-center gap-2">
                       <div>{{ selectedOption.name }}</div>
@@ -49,7 +42,7 @@
               </div>
               <div class="flex flex-col">
                 <h3 class="text-md font-semibold mb-2">Provincia</h3>
-                <p-dropdown [style]="{'width': '100%'}" [options]="provinces" [(ngModel)]="event.province" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Selecciona una provincia" [disabled]="provinces.length==0">
+                <p-dropdown [style]="{'width': '100%'}" [options]="provinces" [(ngModel)]="event.province" [showClear]="false" optionValue="name" optionLabel="name" [filter]="true" filterBy="name" [showClear]="false" placeholder="Selecciona una provincia" [disabled]="provinces.length==0">
                   <ng-template pTemplate="selectedItem" let-selectedOption>
                     <div class="flex align-items-center gap-2">
                       <div>{{ selectedOption.name }}</div>
@@ -69,11 +62,11 @@
             </div>
             <div>
               <h3 class="text-md font-semibold mb-2">Descripción Detallada</h3>
-              <textarea placeholder="¿De qué trata el evento?" pInputTextarea [autoResize]="true" class="w-full resize-none" rows="5"></textarea>
+              <textarea placeholder="¿De qué trata el evento?" pInputTextarea [autoResize]="true" class="w-full resize-none" rows="5" [(ngModel)]="event.description"></textarea>
             </div>
           </div>
           <div class="flex pt-4 justify-end">
-            <p-button label="Siguiente" icon="pi pi-arrow-right" class="hidden sm:block" iconPos="right" (onClick)="nextCallback.emit()" />
+            <p-button label="Siguiente" icon="pi pi-arrow-right" class="hidden sm:block" iconPos="right" [text]="true" (onClick)="nextCallback.emit()" />
             <p-button icon="pi pi-arrow-right" iconPos="right" class="block sm:hidden" (onClick)="nextCallback.emit()" />
           </div>
         </ng-template>
@@ -92,14 +85,14 @@
                     <h4 class="text-sm font-semibold mb-2">Precio del ticket</h4>
                     <i class="pi pi-question-circle text-sm cursor-pointer" pTooltip="Se refiere al precio individual para asistir al evento"></i>
                   </div>
-                  <p-inputNumber [min]="0.00" [max]="1000.00" [step]="0.01" currency="EUR" inputStyleClass="w-full" [(ngModel)]="event.ticketPrice" [mode]="'currency'"></p-inputNumber>
+                  <p-inputNumber [min]="0.00" [max]="1000.00" [step]="0.01" currency="EUR" class="w-full" styleClass="w-full" inputStyleClass="w-full" [(ngModel)]="event.ticketPrice" [mode]="'currency'"></p-inputNumber>
                 </div>
                 <div class="flex flex-col">
                   <div class="flex flex-row items-center gap-1.5">
                     <h4 class="text-sm font-semibold mb-2">Plazas Máximas</h4>
                     <i class="pi pi-question-circle text-sm cursor-pointer" pTooltip="Se refiere al número máximo de tickets que se pueden vender en el evento"></i>
                   </div>
-                  <p-inputNumber [min]="0" [max]="1000000" [step]="1" suffix=" personas" inputStyleClass="w-full" [(ngModel)]="event.capacity"/>
+                  <p-inputNumber [min]="0" [max]="1000000" [step]="1" suffix=" personas" class="w-full" styleClass="w-full" inputStyleClass="w-full" [(ngModel)]="event.capacity"/>
                 </div>
               </div>
             </div>
@@ -139,8 +132,8 @@
             </div>
           </div>
           <div class="flex pt-4 justify-between">
-            <p-button label="Atras" icon="pi pi-arrow-left" class="hidden sm:block" (onClick)="prevCallback.emit()" />
-            <p-button label="Siguiente" icon="pi pi-arrow-right" iconPos="right" class="hidden sm:block" (onClick)="nextCallback.emit()" />
+            <p-button label="Atras" icon="pi pi-arrow-left" class="hidden sm:block" [text]="true" (onClick)="prevCallback.emit()" />
+            <p-button label="Siguiente" icon="pi pi-arrow-right" iconPos="right" class="hidden sm:block" [text]="true" (onClick)="nextCallback.emit()" />
             <p-button icon="pi pi-arrow-left" class="block sm:hidden" (onClick)="prevCallback.emit()" />
             <p-button icon="pi pi-arrow-right" iconPos="right" class="block sm:hidden" (onClick)="nextCallback.emit()" />
           </div>
@@ -154,8 +147,10 @@
             </div>
           </div>
           <div class="flex pt-4 justify-between">
-            <p-button label="Back" icon="pi pi-arrow-left" (onClick)="prevCallback.emit()" />
-            <p-button label="Guardar" icon="pi pi-check" (onClick)="onSubmit()" />
+            <p-button label="Back" icon="pi pi-arrow-left" class="hidden sm:block" [text]="true" (onClick)="prevCallback.emit()" />
+            <p-button label="Guardar" icon="pi pi-check" class="hidden sm:block" [text]="true" (onClick)="onSubmit()" />
+            <p-button icon="pi pi-arrow-left" class="block sm:hidden" (onClick)="prevCallback.emit()" />
+            <p-button icon="pi pi-check" class="block sm:hidden" (onClick)="onSubmit()" />
           </div>
         </ng-template>
       </p-stepperPanel>
