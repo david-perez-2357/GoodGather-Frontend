@@ -113,8 +113,8 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    this.event.startDate = this.startDateDate+' '+this.startDateHour+':00',
-    this.event.endDate = this.endDateDate+' '+this.endDateHour+':00',
+    this.event.startDate = this.startDateDate+' '+this.startDateHour,
+    this.event.endDate = this.endDateDate+' '+this.endDateHour,
     callAPI(this.eventService.createEvent(this.event))
       .then((response: ApiResponse) => {
         console.log('Event created:', response.data);
