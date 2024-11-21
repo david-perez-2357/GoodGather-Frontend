@@ -16,7 +16,6 @@ import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 import { EventService } from '../../service/EventService';
 import { callAPI } from '../../method/response-mehods';
-import ApiResponse from '../../interface/ApiResponse';
 import Event from '../../interface/Event';
 import { EventComponent } from '../../component/event/event.component';
 import { HttpClientModule } from '@angular/common/http';
@@ -66,8 +65,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   ];
   value: string = 'province';
   valueslider: number = 0;
-  groupedEvents: { [causeId: number]: Event[] } = {};
-
   first: number = 0;
   rows: number = 10;
   totalRecords: number = 0;
