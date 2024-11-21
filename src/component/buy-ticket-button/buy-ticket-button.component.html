@@ -6,4 +6,4 @@
           class="min-w-24 whitespace-nowrap {{ buttonClass }}"
           (click)="showDialog=true">
 </p-button>
-<app-buy-ticket-dialog [visible]="showDialog" (close)="showDialog = false"></app-buy-ticket-dialog>
+<app-buy-ticket-dialog [visible]="showDialog" (closeTicketDialog)="showDialog = false" [eventId]="eventId" [ticketPrice]="price"></app-buy-ticket-dialog>
