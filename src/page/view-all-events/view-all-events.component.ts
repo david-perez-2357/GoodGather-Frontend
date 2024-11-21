@@ -197,11 +197,14 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.overlay.toggle(event);
   }
 
-  onNearbyClick(): void {
-    if (this.activeFilter === 'nearby') {
+  onCheapestClick(): void {
+    if (this.activeFilter === 'cheapest') {
       this.resetFilter();
     } else {
-      this.activeFilter = 'nearby';
+      this.activeFilter = 'cheapest';
+      this.filteredEvents = [...this.events].sort((a, b) => a.ticketPrice - b.ticketPrice);
+      this.totalRecords = this.filteredEvents.length;
+      this.updatePaginatedCauses();
     }
   }
 
