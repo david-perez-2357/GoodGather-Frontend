@@ -1,5 +1,5 @@
 import { Component, Renderer2, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { NgForOf, NgIf } from '@angular/common';
+import {NgClass, NgForOf, NgIf} from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { ChipsModule } from 'primeng/chips';
@@ -46,6 +46,7 @@ import Cause from '../../interface/Cause';
     EventComponent,
     CauseComponent,
     NgIf,
+    NgClass,
   ],
   templateUrl: './view-all-events.component.html',
   styleUrls: ['./view-all-events.component.css'],
@@ -72,6 +73,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   searchQuery: string = '';
   filteredEvents: Event[] = [];
   filteredGroupedEvents: { [causeId: number]: Event[] } = {};
+  activeFilter: string | null = null;
 
   constructor(
     private renderer: Renderer2,
@@ -199,13 +201,45 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.overlay.toggle(event);
   }
 
+  onNearbyClick(): void {
+    if (this.activeFilter === 'nearby') {
+      this.resetFilter();
+    } else {
+      this.activeFilter = 'nearby';
+      // Implementa aquí la lógica de "Cerca de ti".
+    }
+  }
+
+  onPopularClick(): void {
+    if (this.activeFilter === 'popular') {
+      this.resetFilter();
+    } else {
+      this.activeFilter = 'popular';
+      this.filteredEvents = [...this.events].sort((a, b) => b.boughtTickets - a.boughtTickets);
+      this.totalRecords = this.filteredEvents.length;
+      this.updatePaginatedCauses();
+    }
+  }
+
   onRecentClick(): void {
-    this.filteredEvents = [...this.events].sort((a, b) => {
-      const dateA = new Date(a.startDate).getTime();
-      const dateB = new Date(b.startDate).getTime();
-      return dateB - dateA;
-    });
+    if (this.activeFilter === 'recent') {
+      this.resetFilter();
+    } else {
+      this.activeFilter = 'recent';
+      this.filteredEvents = [...this.events].sort(
+        (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
+      );
+      this.totalRecords = this.filteredEvents.length;
+      this.updatePaginatedCauses();
+    }
+  }
+
+  resetFilter(): void {
+    this.activeFilter = null;
+    this.filteredEvents = [...this.events];
     this.totalRecords = this.filteredEvents.length;
     this.updatePaginatedCauses();
   }
+
+
 }
