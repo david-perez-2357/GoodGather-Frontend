@@ -38,21 +38,23 @@
           [loading]="loading"
           class="p-button-rounded"
           (onClick)="toggleOverlay($event)"
-          badge="">
+          [badge]="activeFilters > 0 ? activeFilters.toString() : undefined">
         </p-button>
-
         <p-overlayPanel #overlay>
           <div class="flex flex-col gap-10 p-3 align-middle items-center">
             <div class="flex flex-col gap-3 align-middle items-center">
-              <label class="font-semibold text-xl">Rango de busqueda</label>
+              <label class="font-semibold text-xl">Rango de búsqueda</label>
               <div class="flex gap-3 sm:flex-row flex-col">
                 <p-selectButton
                   [options]="stateOptions"
                   [(ngModel)]="value"
                   optionLabel="label"
-                  optionValue="value"/>
+                  optionValue="value"
+                  (ngModelChange)="onSelectChange()">
+                </p-selectButton>
               </div>
             </div>
+
             <div class="flex flex-col gap-3 align-middle items-center">
               <label class="font-semibold text-xl">Precio máximo</label>
               <div class="flex sm:flex-row flex-col">
@@ -63,17 +65,15 @@
                     mode="currency"
                     inputId="currency-germany"
                     currency="EUR"
-                    locale="de-DE" />
-                  <p-slider [(ngModel)]="valueslider" class="w-full" />
+                    locale="de-DE"
+                    (ngModelChange)="onInputNumberChange()" />
+                  <p-slider [(ngModel)]="valueslider" class="w-full" (onChange)="onSliderChange()" />
                 </div>
               </div>
             </div>
+
             <div class="card flex justify-content-center">
-              <button
-                pButton
-                pRipple
-                label="Aplicar filtros">
-              </button>
+              <button pButton pRipple label="Aplicar filtros"></button>
             </div>
           </div>
         </p-overlayPanel>

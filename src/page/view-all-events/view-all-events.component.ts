@@ -65,6 +65,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   ];
   value: string = 'province';
   valueslider: number = 0;
+  activeFilters: number = 0;
   first: number = 0;
   rows: number = 10;
   totalRecords: number = 0;
@@ -102,6 +103,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
       this.totalRecords = this.filteredEvents.length;
       this.updatePaginatedCauses();
+      this.updateActiveFilters();
     });
   }
 
@@ -154,6 +156,31 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
     this.updatePaginatedCauses();
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  updateActiveFilters(): void {
+    this.activeFilters = 0;
+    if (this.valueslider > 0) {
+      this.activeFilters++;
+    }
+    if (this.value === 'province') {
+      this.activeFilters++;
+    }
+    if (this.value === 'country') {
+      this.activeFilters++;
+    }
+  }
+
+  onSliderChange(): void {
+    this.updateActiveFilters();
+  }
+
+  onSelectChange(): void {
+    this.updateActiveFilters();
+  }
+
+  onInputNumberChange(): void {
+    this.updateActiveFilters();
   }
 
   load(): void {
