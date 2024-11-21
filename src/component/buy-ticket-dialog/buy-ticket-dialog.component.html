@@ -1,1 +1,62 @@
-<p>buy-ticket-dialog works!</p>
+<p-dialog
+  header="Header"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '35rem', 'border-radius': '1rem', 'overflow': 'hidden' }"
+  [closable]="false">
+  <ng-template pTemplate="header">
+    <div class="flex items-center justify-center gap-2">
+      <p-avatar class="rounded overflow-hidden h-[32px]" image="https://api.dicebear.com/9.x/thumbs/svg?seed=Pepe123" size="normal"/>
+      <span class="font-bold white-space-nowrap">Pepe rodriguez torres</span>
+    </div>
+  </ng-template>
+  <p-stepper [(activeStep)]="StepActive">
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+        <p-button (click)="onClick.emit()" icon="pi pi-ticket" [outlined]="index > StepActive" [severity]="index <= StepActive ? 'primary' : 'secondary'">
+        </p-button>
+      </ng-template>
+      <ng-template pTemplate="content" let-nextCallback="nextCallback">
+        <div class="flex pt-4 justify-between w-full">
+          <p-button
+            label="Cancelar"
+            icon="pi pi-times"
+            [text]="true"
+            severity="danger"
+            (onClick)="closeDialog()" />
+          <p-button (onClick)="nextCallback.emit()" [text]="true" label="Siguiente" icon="pi pi-arrow-right" iconPos="right" />
+        </div>
+      </ng-template>
+    </p-stepperPanel>
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+        <p-button (click)="onClick.emit()" icon="pi pi-credit-card" [outlined]="index > StepActive" [severity]="index <= StepActive ? 'primary' : 'secondary'">
+        </p-button>
+      </ng-template>
+      <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback">
+        <div class="flex pt-4 justify-between w-full">
+          <p-button (onClick)="prevCallback.emit()" [text]="true" label="Atras" severity="secondary" icon="pi pi-arrow-left" />
+          <p-button (onClick)="nextCallback.emit()" [text]="true" label="Siguiente" icon="pi pi-arrow-right" iconPos="right" />
+        </div>
+      </ng-template>
+    </p-stepperPanel>
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+        <p-button (click)="onClick.emit()"  icon="pi pi-check-square" [outlined]="index > StepActive" [severity]="index <= StepActive ? 'primary' : 'secondary'">
+        </p-button>
+      </ng-template>
+      <ng-template pTemplate="content" let-prevCallback="prevCallback">
+        <div class="flex pt-4 justify-between w-full">
+          <p-button (onClick)="prevCallback.emit()" [text]="true" label="Atras" severity="secondary" icon="pi pi-arrow-left" />
+          <p-button
+            label="Comprar"
+            icon="pi pi-check"
+            severity="primary"
+            (onClick)="closeDialog()"
+          />
+        </div>
+      </ng-template>
+    </p-stepperPanel>
+  </p-stepper>
+</p-dialog>
+
