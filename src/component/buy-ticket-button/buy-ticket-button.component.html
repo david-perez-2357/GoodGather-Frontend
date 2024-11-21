@@ -3,5 +3,7 @@
           label="{{ getLabel() }}"
           icon="pi pi-ticket"
           iconPos="left"
-          class="min-w-24 right-1/2 translate-x-1/2 md:translate-x-0 transform whitespace-nowrap">
+          class="min-w-24 whitespace-nowrap {{ buttonClass }}"
+          (click)="showDialog=true">
 </p-button>
+<app-buy-ticket-dialog [visible]="showDialog" (close)="showDialog = false"></app-buy-ticket-dialog>
