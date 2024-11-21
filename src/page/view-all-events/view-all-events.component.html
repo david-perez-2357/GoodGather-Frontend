@@ -66,25 +66,49 @@
                   [(ngModel)]="value"
                   optionLabel="label"
                   optionValue="value"
-                  (ngModelChange)="onSelectChange()">
+                  (ngModelChange)="value">
                 </p-selectButton>
               </div>
             </div>
 
             <div class="flex flex-col gap-3 align-middle items-center">
-              <label class="font-semibold text-xl">Precio máximo</label>
+              <label class="font-semibold text-xl">Precio</label>
               <div class="flex sm:flex-row flex-col">
                 <div class="flex flex-col gap-5">
-                  <p-inputNumber
-                    class=""
-                    [(ngModel)]="valueslider"
-                    mode="currency"
-                    inputId="currency-germany"
-                    currency="EUR"
-                    locale="de-DE"
-                    (ngModelChange)="onInputNumberChange()" />
-                  <p-slider [(ngModel)]="valueslider" class="w-full" (onChange)="onSliderChange()" />
+                  <div class="flex gap-3">
+                    <p-inputNumber
+                      class="w-24"
+                      inputStyleClass = "w-24"
+                      styleClass="w-24"
+                      [(ngModel)]="rangeValues[0]"
+                      mode="currency"
+                      inputId="min-price"
+                      currency="EUR"
+                      locale="de-DE"
+                      (ngModelChange)="onRangeChange()"
+                    ></p-inputNumber>
+                    <p-inputNumber
+                      class="w-24"
+                      inputStyleClass = "w-24"
+                      styleClass="w-24"
+                      [max]="1000"
+                      [(ngModel)]="rangeValues[1]"
+                      mode="currency"
+                      inputId="max-price"
+                      currency="EUR"
+                      locale="de-DE"
+                      (ngModelChange)="onRangeChange()"
+                    ></p-inputNumber>
+                  </div>
+
+                  <p-slider
+                    [(ngModel)]="rangeValues"
+                    [range]="true"
+                    class="w-full"
+                    (onChange)="onRangeChange()"
+                  ></p-slider>
                 </div>
+
               </div>
             </div>
 

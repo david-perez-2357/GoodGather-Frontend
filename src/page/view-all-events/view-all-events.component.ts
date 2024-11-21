@@ -1,5 +1,5 @@
 import { Component, Renderer2, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import {NgClass, NgForOf, NgIf} from '@angular/common';
+import { NgClass, NgForOf, NgIf } from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { ChipsModule } from 'primeng/chips';
@@ -65,7 +65,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     { label: 'En tu provincia', value: 'province' },
   ];
   value: string = 'province';
-  valueslider: number = 0;
+  rangeValues: [number, number] = [0, 1000];
   activeFilters: number = 0;
   first: number = 0;
   rows: number = 10;
@@ -87,7 +87,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
     Promise.all([
       callAPI(this.causeService.getAllCauses()),
-      callAPI(this.eventService.getAllEvents())
+      callAPI(this.eventService.getAllEvents()),
     ]).then(([causesResponse, eventsResponse]) => {
       if (causesResponse.status === 200) {
         this.causes = causesResponse.data;
@@ -141,7 +141,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
   onSearch(query: string): void {
     this.searchQuery = query.toLowerCase();
-    this.filteredEvents = this.events.filter(event =>
+    this.filteredEvents = this.events.filter((event) =>
       event.name.toLowerCase().includes(this.searchQuery)
     );
     this.totalRecords = this.filteredEvents.length;
@@ -157,7 +157,8 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
   updateActiveFilters(): void {
     this.activeFilters = 0;
-    if (this.valueslider > 0) {
+    const [minPrice, maxPrice] = this.rangeValues;
+    if (minPrice > 0 || maxPrice < 100) {
       this.activeFilters++;
     }
     if (this.value === 'province') {
@@ -168,26 +169,21 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSliderChange(): void {
+  onRangeChange(): void {
     this.filteredEvents = this.filterEventsByPrice();
     this.totalRecords = this.filteredEvents.length;
     this.updatePaginatedCauses();
     this.updateActiveFilters();
   }
 
-  onSelectChange(): void {
-    this.updateActiveFilters();
-  }
-
-  onInputNumberChange(): void {
-    this.updateActiveFilters();
-  }
-
   filterEventsByPrice(): Event[] {
-    if (this.valueslider === 0) {
-      return this.events;
-    }
-    return this.events.filter(event => event.ticketPrice !== undefined && event.ticketPrice <= this.valueslider);
+    const [minPrice, maxPrice] = this.rangeValues;
+    return this.events.filter(
+      (event) =>
+        event.ticketPrice !== undefined &&
+        event.ticketPrice >= minPrice &&
+        event.ticketPrice <= maxPrice
+    );
   }
 
   load(): void {
@@ -206,7 +202,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.resetFilter();
     } else {
       this.activeFilter = 'nearby';
-      // Implementa aquí la lógica de "Cerca de ti".
     }
   }
 
@@ -240,6 +235,4 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.totalRecords = this.filteredEvents.length;
     this.updatePaginatedCauses();
   }
-
-
 }
