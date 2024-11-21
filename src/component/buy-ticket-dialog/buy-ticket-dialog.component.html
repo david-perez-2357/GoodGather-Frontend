@@ -17,6 +17,72 @@
         </p-button>
       </ng-template>
       <ng-template pTemplate="content" let-nextCallback="nextCallback">
+        <div class="flex flex-col gap-8">
+          <p-accordion class="rounded w-full bg-gray-50">
+            <p-accordionTab>
+              <ng-template pTemplate="header" class="flex items-center gap-3">
+                <span class="text-lg">Entradas compradas para este evento</span>
+                <p-badge value="4" class="ml-auto mr-2" />
+              </ng-template>
+              <div class="grid grid-cols-3 justify-items-center gap-4 justify-center">
+                <div style="background-image: url('/gg-ticket-template.png')" class="w-[112px] flex justify-center items-center h-[50px] bg-cover bg-no-repeat">
+                  <span class="text-white font-bold mr-1">20/10/2024</span>
+                </div>
+
+                <div style="background-image: url('/gg-ticket-template.png')" class="w-[112px] flex justify-center items-center h-[50px] bg-cover bg-no-repeat">
+                  <span class="text-white font-bold mr-1">20/10/2024</span>
+                </div>
+
+                <div style="background-image: url('/gg-ticket-template.png')" class="w-[112px] flex justify-center items-center h-[50px] bg-cover bg-no-repeat">
+                  <span class="text-white font-bold mr-1">20/10/2024</span>
+                </div>
+
+                <div style="background-image: url('/gg-ticket-template.png')" class="w-[112px] flex justify-center items-center h-[50px] bg-cover bg-no-repeat">
+                  <span class="text-white font-bold mr-1">20/10/2024</span>
+                </div>
+              </div>
+              <div class="flex items-center mt-5 gap-4 px-4 p-2 bg-cyan-100 rounded text-cyan-700">
+                <i class="pi pi-info-circle"></i>
+                <span>La fecha que se muestra en la entrada es la fecha en la que se realizó la compra</span>
+              </div>
+            </p-accordionTab>
+          </p-accordion>
+
+          <div class="flex justify-around items-start">
+            <div class="flex flex-col gap-3 justify-center items-center">
+              <div class="flex items-center gap-3">
+                <i class="pi pi-user text-lg"></i>
+                <h3 class="text-lg">Cantidad de entradas</h3>
+              </div>
+
+              <p-inputNumber
+                [(ngModel)]="quantity"
+                [showButtons]="true"
+                buttonLayout="horizontal"
+                [step]="1"
+                decrementButtonClass="p-button-outlined"
+                incrementButtonClass="p-button-outlined"
+                incrementButtonIcon="pi pi-plus"
+                decrementButtonIcon="pi pi-minus"
+                inputStyleClass="text-center"
+                [size]="2"
+              />
+            </div>
+
+            <div class="flex flex-col gap-3 justify-center items-center">
+              <div class="flex items-center gap-3">
+                <i class="pi pi-wallet text-lg"></i>
+                <h3 class="text-lg">Precio total</h3>
+              </div>
+
+              <div class="flex items center gap-3">
+                <h1 class="text-2xl font-bold">{{ quantity * ticketPrice }} €</h1>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
         <div class="flex pt-4 justify-between w-full">
           <p-button
             label="Cancelar"
