@@ -18,13 +18,13 @@
       <h2 class="mb-9 text-center text-l font-bold tracking-tight text-gray-600">¡Bienvendido de vuelta!</h2>
       <div class="w-full space-y-4">
         <div class="flex flex-col">
-          <label for="login-username" class="block text-sm font-medium">Nombre de Usuario</label>
-          <input class="mt-1" id="login-username" type="text" pInputText/>
+          <label for="login-username" class="block text-m font-medium text-gray-700">Nombre de Usuario</label>
+          <input class="mb-4" id="login-username" type="text" pInputText/>
         </div>
         <div class="flex flex-col">
-          <label for="login-password" class=" block text-sm font-medium">Contraseña</label>
-          <p-password id="login-password" type="password" [feedback]="false" placeholder="Contraseña"
-                      styleClass="p-password p-component p-inputwrapper p-input-icon-right p-mb-4 mt-1"
+          <label for="login-password" class=" block text-m font-medium text-gray-700">Contraseña</label>
+          <p-password id="login-password" type="password" [feedback]="false"
+                      styleClass="p-password p-component p-inputwrapper p-input-icon-right mb-4"
                       [style]="{'width':'100%'}"
                       [inputStyle]="{'width':'100%'}" [toggleMask]="true"></p-password>
         </div>
@@ -43,23 +43,23 @@
       <div  class="w-full space-y-4">
 
         <div  class="flex flex-col">
-          <label for="register-username" class="text-m font-medium">Nombre de Usuario</label>
+          <label for="register-username" class="block text-m font-medium text-gray-700">Nombre de Usuario</label>
           <input type="text" id="register-username" pInputText
-                 class="mt-1 p-2 border border-gray-300 rounded"
-                 placeholder="Ingrese su nombre de usuario"
+                 class="p-2 border border-gray-300 rounded"
                  [(ngModel)]="username"
                  (ngModelChange)="validateUsername()"
                  />
           <p-message
             *ngIf="usernameError"
-            class=" bg-red-600 "
-            [text]="usernameError">
+            class=" text-red-600 "
+            [text]="usernameError"
+          size=2>
           </p-message>
         </div>
 
 
         <div class="flex flex-col">
-          <label class=" block text-m font-medium">Contraseña</label>
+          <label class=" block text-m font-medium text-gray-700">Contraseña</label>
           <p-password [(ngModel)]="password" [toggleMask]="true" (ngModelChange)="validatePassword()"
                       class="text-red-600"
                       styleClass="w-full"
@@ -72,12 +72,12 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div class="flex flex-col">
-                    <label for="mail" class="text-m font-medium">Email</label>
+                    <label for="mail" class="block text-m font-medium text-gray-700">Email</label>
                     <input
                       type="email"
                       id="mail"
                       pInputText
-                      class="mt-1 p-2 border border-gray-300 rounded"
+                      class="p-2 border border-gray-300 rounded"
                       [(ngModel)]="email"
                       (ngModelChange)="validateEmail()"
 
@@ -91,7 +91,7 @@
         </div>
 
         <div class="flex flex-col">
-          <label for="birthdate" class=" mt-1 block text-m font-medium border">
+          <label for="birthdate" class="block  text-m font-medium text-gray-700">
             Fecha de nacimiento
           </label>
           <input
@@ -113,11 +113,12 @@
 
         <div  class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="">
-            <label class="text-m mb-2">País</label>
+            <label class="block text-m font-medium text-gray-700">País</label>
             <p-dropdown [style]="{'width': '100%'}" [options]="countries"
                         optionValue="code" optionLabel="name"
                         [(ngModel)]="user.country"
-                        filterBy="name"  placeholder="Selecciona un país" (onChange)="countryChange()">
+                         placeholder="Selecciona un país" (onChange)="countryChange()"
+                        [filter]="true" filterBy="name">
               <ng-template pTemplate="selectedItem" let-selectedOption>
                 <div class="flex align-items-center gap-2">
                   <div>{{ selectedOption.name }}</div>
@@ -131,11 +132,12 @@
             </p-dropdown>
 
           </div>
-          <div class="">
-            <label class="text-m  mb-2">Provincia</label>
+          <div class="  ">
+            <label class="block text-m font-medium-text text-gray-700">Provincia</label>
             <p-dropdown [style]="{'width': '100%'}" [options]="provinces"
                         optionLabel="name"
                         [ngModel]="user.province"
+                        [filter]="true" filterBy="name">
                         placeholder="Selecciona una provincia" [disabled]="provinces.length==0">
               <ng-template pTemplate="selectedItem" let-selectedOption>
                 <div class="flex align-items-center gap-2">
@@ -153,8 +155,11 @@
 
         </div>
 
-        <p-button [style]="{'width':'80%', 'margin':'2rem'}"   icon="pi pi-user"
-                  styleClass="icon-button" type="submit" label="Registrarse"></p-button>
+        <p-button  [style]="{'width':'80%', 'margin-top':' 3rem', 'margin-left':'2rem'}"
+                   type="submit"
+                   label="Registrarse"
+                   icon="pi pi-user"
+                   styleClass="icon-button"></p-button>
       </div>
     </div>
   </div>
