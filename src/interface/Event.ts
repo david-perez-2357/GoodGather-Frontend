@@ -12,7 +12,7 @@ interface Event {
   province: string;
   country: string;
   ticketPrice: number;
-  deleted: boolean;
+  deleted: number;
   idOwner: number;
   idCause: number;
 }
