@@ -75,6 +75,8 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
   username: string = '';
   usernameError: string = '';
 
+  submitted: boolean = false;
+
 
   constructor(private renderer: Renderer2,
              private locationService:LocationService, private route: ActivatedRoute) {
@@ -99,51 +101,48 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
 
   }
-  validateUsername() {
-    if (!this.username.trim()) {
-      this.usernameError = 'El nombre de usuario no puede estar vacío';
-    } else {
-      this.usernameError = '';
-    }
+  validateUsername() : boolean{
+    const isValid = !!this.username.trim();
+    this.usernameError = isValid ? '' : 'El nombre de usuario no puede estar vacío';
+    return isValid;
   }
 
-  validatePassword(){
+  validatePassword():boolean{
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[_!@#$%^&*])(?=.{8,})/;
-    if (!passwordRegex.test(this.password)){
-      this.passwordError = 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial';
-    }else{
-      this.passwordError = '';
-    }
+    const isValid = passwordRegex.test(this.password);
+    this.passwordError = isValid ? '' : 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial';
+    return isValid;
+
   }
+
 
   validateEmail() {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(this.email)) {
-      this.emailError = 'Por favor ingrese un email válido';
-    } else {
-      this.emailError = '';
-    }
+    const isValid = emailRegex.test(this.email);
+    this.emailError = isValid ? '' : 'Formato erróneo';
+    return isValid;
   }
 
-  validateBirthdate(){
+
+  validateBirthdate():boolean{
     if (!this.birthdate){
-      this.birthdateError = 'Fecha de nacimiento es requerida';
-      return;
+      this.birthdateError = 'Campo obligatorio';
+      return false;
     }
     const today = new Date();
     const birthDate = new Date(this.birthdate);
     let age = today.getFullYear() - birthDate.getFullYear();
     const monthDiff = today.getMonth() - birthDate.getMonth();
 
-    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())){
+    if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
       age--;
     }
-    if (age < 18){
-      this.birthdateError = 'Debes ser mayor de 18 años';
-    }else{
-      this.birthdateError = '';
-    }
+    const isValid = age >= 18;
+    this.birthdateError = isValid ? '' : 'Debes ser mayor de 18 años';
+    return isValid;
   }
+
+
 
   countryChange() {
     const countryCode:string = this.user.country;
@@ -160,16 +159,17 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
   }
 
 
-// // onSubmit(){
-// //   callAPI(this.eventService.createEvent(this.event))
-// //     .then((response: ApiResponse) => {
-// //       console.log('Event created:', response.data);
-// //     })
-// //     .catch((error: any) => {
-// //       console.error('Error creating event:', error);
-// //     });
-// // }
-// }
+  onSubmit() {
+    const isUsernameValid = this.validateUsername();
+    const isPasswordValid = this.validatePassword();
+    const isEmailValid = this.validateEmail();
+    const isBirthdateValid = this.validateBirthdate();
+
+    if (isUsernameValid && isPasswordValid && isEmailValid && isBirthdateValid) {
+      // Proceed with form submission
+      console.log('Form is valid');
+    }
+  }
 
 
  ngOnDestroy() {
