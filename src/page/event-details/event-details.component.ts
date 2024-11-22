@@ -109,7 +109,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
       })
       .then((ticketResponse: ApiResponse) => {
         if (ticketResponse.status == 200) {
-          this.ticketsBoughtInLast24h = ticketResponse.data;
+          this.ticketsBoughtInLast24h = ticketResponse.data ?? 0;
         }
       })
       .catch((error: any) => {

@@ -64,7 +64,7 @@
             vendidas en total
           </span>
         </div>
-        <app-buy-ticket-button [price]=event.ticketPrice [priceLoaded]="eventLoaded" [ticketsLeft]="event.capacity - event.boughtTickets" labelBeforePrice="Comprar por " buttonClass="absolute -bottom-4 right-1/2 translate-x-1/2 transform"></app-buy-ticket-button>
+        <app-buy-ticket-button [eventName]="event.name" [price]=event.ticketPrice [priceLoaded]="eventLoaded" [ticketsLeft]="event.capacity - event.boughtTickets" labelBeforePrice="Comprar por " buttonClass="absolute -bottom-4 right-1/2 translate-x-1/2 transform"></app-buy-ticket-button>
       </div>
     </div>
   </div>
