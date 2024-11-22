@@ -37,3 +37,8 @@ html, body {
     overflow: hidden !important;
   }
 }
+
+.p-panel-content {
+  padding: 0 !important;
+  border: none !important;
+}
