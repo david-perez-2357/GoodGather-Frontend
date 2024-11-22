@@ -70,6 +70,11 @@
                       mediumLabel="Fortaleza media"
                       strongLabel="Fortaleza alta"
           />
+          <p-message
+            *ngIf="submitted && !validatePassword()"
+            class="text-red-600"
+            [text]="countryError">
+          </p-message>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -132,6 +137,11 @@
                 </div>
               </ng-template>
             </p-dropdown>
+            <p-message
+              *ngIf="submitted && !validateCountry()"
+              class="text-red-600"
+              [text]="countryError">
+            </p-message>
 
           </div>
           <div class="  ">
@@ -153,6 +163,11 @@
                 </div>
               </ng-template>
             </p-dropdown>
+            <p-message
+              *ngIf="submitted && !validateProvince()"
+              class="text-red-600"
+              [text]="provinceError">
+            </p-message>
           </div>
 
 
