@@ -114,6 +114,119 @@
         </p-button>
       </ng-template>
       <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback">
+        <p-blockUI [target]="pnl" [blocked]="ticketPrice == 0">
+          <div class="flex items-center flex-col text-center gap-3 max-w-40 bg-white p-4 rounded-xl">
+            <i class="pi pi-star-fill text-3xl text-yellow-500"></i>
+            <h3 class="text-md">Evento gratuito</h3>
+          </div>
+        </p-blockUI>
+        <p-panel #pnl [showHeader]="false">
+          <div class="grid sm:grid-cols-2 grid-cols-1 gap-4 mb-7">
+              <div *ngFor="let paymentMethod of paymentMethods" class="cursor-pointer">
+                <label [for]="paymentMethod.value" class="cursor-pointer gap-3 border flex justify-center border-1 p-4 relative rounded {{ selectedPaymentMethod == paymentMethod.value ? 'bg-cyan-100 text-cyan-700 border-cyan-600' : 'border-gray-400 bg-gray-100 text-gray-800'}}">
+                  <i class="{{ paymentMethod.icon }} text-center text-2xl {{ selectedPaymentMethod == paymentMethod.value ? '' : 'text-gray-500'}}"></i>
+                  <p-radioButton
+                    [inputId]="paymentMethod.value"
+                    name="category"
+                    [value]="paymentMethod.value"
+                    class="absolute top-2 right-2"
+                    [(ngModel)]="selectedPaymentMethod" />
+
+                  {{ paymentMethod.label }}
+                </label>
+              </div>
+            </div>
+
+          <div class="grid p-2 gap-5" *ngIf="selectedPaymentMethod == 'creditCard'">
+            <div>
+              <label for="accountOwner" class="block text-sm font-medium text-gray-700">Titular de la cuenta</label>
+              <input
+                type="text"
+                id="accountOwner"
+                name="accountOwner"
+                pInputText
+                class="w-full"
+              />
+            </div>
+
+            <div class="grid sm:grid-cols-2 grid-cols-1 gap-4">
+              <div>
+                <label for="cardType" class="block text-sm font-medium text-gray-700">Tipo de tarjeta</label>
+                <p-dropdown
+                  [options]="cardTypes"
+                  [(ngModel)]="selectedCardType"
+                  (onChange)="onCardTypeChange($event)"
+                  id="cardType"
+                  optionLabel="label"
+                  class="w-full"
+                  styleClass="w-full"
+                  placeholder="Selecciona un tipo de tarjeta" />
+              </div>
+
+              <div>
+                <label for="accountNumber" class="block text-sm font-medium text-gray-700">Número de cuenta</label>
+                <p-inputMask
+                  [mask]="selectedCardType.mask"
+                  [(ngModel)]="accountNumber"
+                  id="accountNumber"
+                  styleClass="w-full"
+                  [placeholder]="selectedCardType.mask"/>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 grid-cols-1 gap-4">
+              <div>
+                <label for="expirationDate" class="block text-sm font-medium text-gray-700">Fecha de expiración</label>
+                <p-inputMask
+                  mask="99/99"
+                  [(ngModel)]="expirationDate"
+                  id="expirationDate"
+                  placeholder="MM/AA"
+                  styleClass="w-full"
+                ></p-inputMask>
+              </div>
+
+              <div>
+                <label for="cvv" class="block text-sm font-medium text-gray-700">CVV</label>
+                <p-inputMask
+                  mask="999"
+                  [(ngModel)]="cvv"
+                  id="cvv"
+                  placeholder="CVV"
+                  styleClass="w-full"
+                ></p-inputMask>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid p-2 gap-5" *ngIf="selectedPaymentMethod == 'paypal'">
+            <div>
+              <label for="paypalEmail" class="block text-sm font-medium text-gray-700">Email de paypal</label>
+              <input
+                type="text"
+                id="paypalEmail"
+                name="paypalEmail"
+                [(ngModel)]="paypalEmail"
+                pInputText
+                class="w-full"
+              />
+            </div>
+
+            <div>
+              <label for="paypalPassword" class="block text-sm font-medium text-gray-700">Contraseña de paypal</label>
+              <p-password
+                id="paypalPassword"
+                name="paypalPassword"
+                [(ngModel)]="paypalPassword"
+                inputStyleClass="w-full"
+                styleClass="w-full"
+                [feedback]="false"
+                [toggleMask]="true"
+              />
+            </div>
+          </div>
+        </p-panel>
+
         <div class="flex pt-4 justify-between w-full">
           <p-button (onClick)="prevCallback.emit()" [text]="true" label="Atras" severity="secondary" icon="pi pi-arrow-left" />
           <p-button (onClick)="nextCallback.emit()" [text]="true" label="Siguiente" icon="pi pi-arrow-right" iconPos="right" />
@@ -126,6 +239,38 @@
         </p-button>
       </ng-template>
       <ng-template pTemplate="content" let-prevCallback="prevCallback">
+        <div class="flex flex-col gap-4 rounded-lg text-center justify-center  mr-auto ml-auto bg-gray-100 p-5">
+          <h2 class="text-2xl font-bold text-gray-800">Resumen de la compra</h2>
+          <div class="flex flex-col gap-2 text-gray-700 ">
+            <div class="flex items-center gap-x-3 flex-col sm:flex-row">
+              <span>Evento:</span>
+              <span class="font-bold">{{ eventName }}</span>
+            </div>
+
+            <div class="flex items-center gap-x-3 flex-col sm:flex-row">
+              <span>Fecha de compra:</span>
+              <span class="font-bold">{{ currentDate }}</span>
+            </div>
+
+            <div class="flex items-center gap-x-3 flex-col sm:flex-row">
+              <span>Cantidad de entradas:</span>
+              <span class="font-bold">{{ quantity }}</span>
+            </div>
+
+            <div class="flex items-center gap-x-3 flex-col sm:flex-row">
+              <span>Validez del metodo de pago:</span>
+              <span class="text-green-600 flex gap-2 items-center">
+                <i class="pi pi-check text-sm"></i>
+                <span>Evento gratuito</span>
+              </span>
+            </div>
+
+            <div class="flex text-gray-800 mt-5 items-center gap-3 text-xl">
+              <span>Precio total:</span>
+              <span class="font-bold">{{ ticketPrice * quantity }} €</span>
+            </div>
+          </div>
+        </div>
         <div class="flex pt-4 justify-between w-full">
           <p-button (onClick)="prevCallback.emit()" [text]="true" label="Atras" severity="secondary" icon="pi pi-arrow-left" />
           <p-button
