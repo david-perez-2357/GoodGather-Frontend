@@ -17,6 +17,8 @@ import {LocationService} from '../../service/LocationService';
 import ApiResponse from '../../interface/ApiResponse';
 import {convertToLocationList} from '../../method/location-methods';
 import Location from '../../interface/Location';
+import {MessageService} from 'primeng/api';
+import {ToastModule} from 'primeng/toast';
 
 @Component({
   selector: 'app-organize-event',
@@ -31,10 +33,12 @@ import Location from '../../interface/Location';
     TooltipModule,
     NgIf,
     InputNumberModule,
-    NgClass
+    NgClass,
+    ToastModule
   ],
   templateUrl: './organize-event.component.html',
-  styles: ``
+  styles: ``,
+  providers: [MessageService]
 })
 
 export class OrganizeEventComponent implements OnInit, OnDestroy {
@@ -46,6 +50,7 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
   startDateHour: string = '';
   endDateHour: string = '';
   minStartDateDate: string = moment().format('YYYY-MM-DD');
+  formValid: boolean = false;
 
   event: Event = {
     id: 0,
@@ -65,7 +70,7 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     idCause: 1
   }
 
-  constructor(private renderer: Renderer2, private locationService: LocationService, private eventService: EventService) {
+  constructor(private renderer: Renderer2, private locationService: LocationService, private eventService: EventService, private messageService: MessageService) {
 
   }
 
@@ -112,15 +117,33 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
       });
   }
 
+  validateForm(): boolean {
+    return this.formValid = this.event.name !== '' &&
+      this.event.description !== '' &&
+      this.event.startDate.trim() !== '' &&
+      this.event.endDate.trim() !== '' &&
+      this.event.capacity > 0 &&
+      this.event.address !== '' &&
+      this.event.province !== '' &&
+      this.event.country !== '';
+  }
+
   onSubmit(): void {
-    this.event.startDate = this.startDateDate+' '+this.startDateHour,
-    this.event.endDate = this.endDateDate+' '+this.endDateHour,
-    callAPI(this.eventService.createEvent(this.event))
-      .then((response: ApiResponse) => {
-        console.log('Event created:', response.data);
-      })
-      .catch((error: any) => {
-        console.error('Error creating event:', error);
-      });
+    this.event.startDate = this.startDateDate + ' ' + this.startDateHour;
+    this.event.endDate = this.endDateDate + ' ' + this.endDateHour;
+    if (!this.validateForm()) {
+      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Por favor, rellena todos los campos'});
+      return;
+    }
+      callAPI(this.eventService.createEvent(this.event))
+        .then((response: ApiResponse) => {
+          if (response.status === 200) {
+            this.messageService.add({severity: 'success', summary: 'Evento creado', detail: 'El evento se ha creado correctamente'});
+          } else if (response.toastMessage) {
+            this.messageService.add(response.toastMessage);
+          }
+        }).catch((error: any) => {
+          this.messageService.add(error.toastMessage);
+        });
   }
 }
