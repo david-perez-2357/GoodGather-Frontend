@@ -47,7 +47,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     province: 'The Province',
     country: 'The Country',
     ticketPrice: 0,
-    deleted: false,
+    deleted: 0,
     idOwner: 0,
     idCause: 0
   }
@@ -110,8 +110,8 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
         return callAPI(this.ticketService.getTicketsBoughtInLast24h(this.eventId));
       })
       .then((ticketResponse: ApiResponse) => {
-        if (ticketResponse.status !== 200) {
-          this.catchErrorMessage(ticketResponse);
+        if (ticketResponse.status == 200) {
+          this.ticketsBoughtInLast24h = ticketResponse.data;
         }
       })
       .catch((error: any) => {
