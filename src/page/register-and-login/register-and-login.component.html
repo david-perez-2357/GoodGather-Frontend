@@ -19,7 +19,8 @@
       <div class="w-full space-y-4">
         <div class="flex flex-col">
           <label for="login-username" class="block text-m font-medium text-gray-700">Nombre de Usuario</label>
-          <input class="mb-4" id="login-username" type="text" pInputText/>
+          <input class="mb-4" id="login-username" type="text" pInputText
+          />
         </div>
         <div class="flex flex-col">
           <label for="login-password" class=" block text-m font-medium text-gray-700">Contraseña</label>
@@ -37,7 +38,7 @@
         ></p-button>
       </div>
     </div>
-    <div class="flex flex-col items-center p-4" *ngIf="activeForm=='register'">
+    <div  class="flex flex-col items-center p-4" *ngIf="activeForm=='register'">
       <h2 class="mb-2 text-center text-2xl font-bold tracking-tight text-gray-800">Registro</h2>
       <h2 class="mb-9 text-center text-l font-bold tracking-tight text-gray-600">¡Ayuda y diviértete al mismo tiempo!</h2>
       <div  class="w-full space-y-4">
@@ -48,12 +49,13 @@
                  class="p-2 border border-gray-300 rounded"
                  [(ngModel)]="username"
                  (ngModelChange)="validateUsername()"
+
                  />
           <p-message
             *ngIf="usernameError"
-            class=" text-red-600 "
+            class=" text-red-600"
             [text]="usernameError"
-          size=2>
+          >
           </p-message>
         </div>
 
@@ -136,6 +138,7 @@
             <label class="block text-m font-medium-text text-gray-700">Provincia</label>
             <p-dropdown [style]="{'width': '100%'}" [options]="provinces"
                         optionLabel="name"
+                        optionValue="name"
                         [ngModel]="user.province"
                         [filter]="true" filterBy="name">
                         placeholder="Selecciona una provincia" [disabled]="provinces.length==0">
@@ -157,6 +160,7 @@
 
         <p-button  [style]="{'width':'80%', 'margin-top':' 3rem', 'margin-left':'2rem'}"
                    type="submit"
+                   (onClick)="onSubmit()"
                    label="Registrarse"
                    icon="pi pi-user"
                    styleClass="icon-button"></p-button>
