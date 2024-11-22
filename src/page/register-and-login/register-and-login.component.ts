@@ -75,7 +75,10 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
   username: string = '';
   usernameError: string = '';
 
-  submitted: boolean = false;
+
+  submitted = false;
+  countryError = '';
+  provinceError = '';
 
 
   constructor(private renderer: Renderer2,
@@ -108,9 +111,13 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
   }
 
   validatePassword():boolean{
+    // if (!this.password.trim()) {
+    //   this.passwordError = 'El campo contraseña está vacío';
+    //   return false;}
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[_!@#$%^&*])(?=.{8,})/;
     const isValid = passwordRegex.test(this.password);
     this.passwordError = isValid ? '' : 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial';
+
     return isValid;
 
   }
@@ -142,6 +149,18 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     return isValid;
   }
 
+  validateCountry():boolean{
+    const isValid = !!this.user.country.trim();
+    this.countryError = isValid ? '' : 'Campo vacío';
+    return isValid;
+  }
+
+  validateProvince():boolean{
+    const isValid = !!this.user.province.trim();
+    this.provinceError = isValid ? '' : 'Campo vacío';
+    return isValid;
+  }
+
 
 
   countryChange() {
@@ -160,10 +179,13 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
 
   onSubmit() {
+    this.submitted = true;
     const isUsernameValid = this.validateUsername();
     const isPasswordValid = this.validatePassword();
     const isEmailValid = this.validateEmail();
     const isBirthdateValid = this.validateBirthdate();
+    const isCountryValid = this.validateCountry();
+    const isProvinceValid = this.validateProvince();
 
     if (isUsernameValid && isPasswordValid && isEmailValid && isBirthdateValid) {
       // Proceed with form submission
