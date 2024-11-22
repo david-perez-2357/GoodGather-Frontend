@@ -60,7 +60,7 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     province: '',
     country: '',
     ticketPrice: 0,
-    deleted: false,
+    deleted: 0,
     idOwner: 1,
     idCause: 1
   }
