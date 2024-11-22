@@ -47,7 +47,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     province: 'The Province',
     country: 'The Country',
     ticketPrice: 0,
-    deleted: 0,
+    deleted: false,
     idOwner: 0,
     idCause: 0
   }
