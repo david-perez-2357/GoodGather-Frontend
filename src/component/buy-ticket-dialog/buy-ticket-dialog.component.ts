@@ -1,10 +1,10 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {DialogModule} from 'primeng/dialog';
 import {Button} from 'primeng/button';
 import {InputTextModule} from 'primeng/inputtext';
 import {AvatarModule} from 'primeng/avatar';
 import {StepperModule} from 'primeng/stepper';
-import {NgClass} from '@angular/common';
+import {NgClass, NgIf} from '@angular/common';
 import {IconFieldModule} from 'primeng/iconfield';
 import {InputIconModule} from 'primeng/inputicon';
 import {PasswordModule} from 'primeng/password';
@@ -33,21 +33,31 @@ import {FormsModule} from '@angular/forms';
     BadgeModule,
     MessagesModule,
     InputNumberModule,
-    FormsModule
+    FormsModule,
+    NgIf
   ],
   templateUrl: './buy-ticket-dialog.component.html',
   styles: ``
 })
-export class BuyTicketDialogComponent {
+export class BuyTicketDialogComponent implements OnInit {
   @Input() visible: boolean = false;
   @Input() eventId: number = 0;
   @Input() ticketPrice: number = 0;
+  @Input() ticketsLeft: number = 10;
   @Output() closeTicketDialog = new EventEmitter<void>();
   StepActive: number = 0;
   quantity: number = 1;
+  maxQuantity: number = 10;
+  ticketsBought: number = 4;
+  currentMaxQuantity: number = 10;
+
+  ngOnInit() {
+    this.currentMaxQuantity = this.maxQuantity - this.ticketsBought;
+  }
 
   closeDialog() {
     this.visible = false;
     this.closeTicketDialog.emit();
   }
+
 }
