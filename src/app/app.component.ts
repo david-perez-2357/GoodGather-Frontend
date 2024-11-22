@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import {Button, ButtonDirective, ButtonModule} from 'primeng/button';
 import {Ripple} from 'primeng/ripple';
