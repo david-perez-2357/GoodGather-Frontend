@@ -22,9 +22,9 @@
             <p-accordionTab>
               <ng-template pTemplate="header" class="flex items-center gap-3">
                 <span class="text-lg">Entradas compradas para este evento</span>
-                <p-badge value="4" class="ml-auto mr-2" />
+                <p-badge [value]="ticketsBought" class="ml-auto mr-2" />
               </ng-template>
-              <div class="grid grid-cols-3 justify-items-center gap-4 justify-center">
+              <div class="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-3 justify-center">
                 <div style="background-image: url('/gg-ticket-template.png')" class="w-[112px] flex justify-center items-center h-[50px] bg-cover bg-no-repeat">
                   <span class="text-white font-bold mr-1">20/10/2024</span>
                 </div>
@@ -48,7 +48,7 @@
             </p-accordionTab>
           </p-accordion>
 
-          <div class="flex justify-around items-start">
+          <div class="flex flex-col sm:grid grid-cols-2 justify-center items-center gap-10">
             <div class="flex flex-col gap-3 justify-center items-center">
               <div class="flex items-center gap-3">
                 <i class="pi pi-user text-lg"></i>
@@ -66,6 +66,9 @@
                 decrementButtonIcon="pi pi-minus"
                 inputStyleClass="text-center"
                 [size]="2"
+                [max]="currentMaxQuantity"
+                [min]="1"
+                class="{{quantity > ticketsLeft ? 'ng-invalid' : ''}}"
               />
             </div>
 
@@ -79,11 +82,22 @@
                 <h1 class="text-2xl font-bold">{{ quantity * ticketPrice }} €</h1>
               </div>
             </div>
-          </div>
 
+            <div class="flex flex-col gap-3 justify-center items-center col-span-2" *ngIf="quantity == currentMaxQuantity || quantity > ticketsLeft">
+                <div class="flex items-center gap-4 px-4 p-2 bg-cyan-100 rounded text-cyan-700 w-full"  *ngIf="quantity == currentMaxQuantity">
+                  <i class="pi pi-info-circle"></i>
+                  <span>No se pueden comprar más de 10 entradas por persona, cree una nueva cuenta para comprar más entradas</span>
+                </div>
+
+                <div class="flex items-center gap-4 px-4 p-2 bg-red-100 rounded text-red-700 w-full"  *ngIf="quantity > ticketsLeft">
+                  <i class="pi pi-times-circle"></i>
+                  <span>No hay suficientes entradas disponibles para la cantidad seleccionada</span>
+                </div>
+              </div>
+            </div>
         </div>
 
-        <div class="flex pt-4 justify-between w-full">
+        <div class="flex pt-8 justify-between w-full">
           <p-button
             label="Cancelar"
             icon="pi pi-times"
