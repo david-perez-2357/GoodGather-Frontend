@@ -75,6 +75,11 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
   username: string = '';
   usernameError: string = '';
 
+  firstname: string = '';
+  firstnameError: string = '';
+  surname: string = '';
+  surnameError: string = '';
+
 
   submitted = false;
   countryError = '';
@@ -106,14 +111,12 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
   }
   validateUsername() : boolean{
     const isValid = !!this.username.trim();
-    this.usernameError = isValid ? '' : 'El nombre de usuario no puede estar vacío';
+    this.usernameError = isValid ? '' : 'Campo obligatorio';
     return isValid;
   }
 
+
   validatePassword():boolean{
-    // if (!this.password.trim()) {
-    //   this.passwordError = 'El campo contraseña está vacío';
-    //   return false;}
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)(?=.*[_!@#$%^&*])(?=.{8,})/;
     const isValid = passwordRegex.test(this.password);
     this.passwordError = isValid ? '' : 'La contraseña debe tener al menos 8 caracteres, una mayúscula, un número y un carácter especial';
@@ -161,6 +164,19 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     return isValid;
   }
 
+  validateFirstname(): boolean {
+    const isValid = !!this.firstname.trim();
+    this.firstnameError = isValid ? '' : 'Campo obligatorio';
+    return isValid;
+  }
+
+
+  validateSurname(): boolean {
+    const isValid = !!this.surname.trim();
+    this.surnameError = isValid ? '' : 'Campo obligatorio';
+    return isValid;
+  }
+
 
 
   countryChange() {
@@ -186,8 +202,10 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     const isBirthdateValid = this.validateBirthdate();
     const isCountryValid = this.validateCountry();
     const isProvinceValid = this.validateProvince();
+    const isFirstnameValid = this.validateFirstname();
+    const isSurnameValid = this.validateSurname();
 
-    if (isUsernameValid && isPasswordValid && isEmailValid && isBirthdateValid) {
+    if (isUsernameValid && isPasswordValid && isEmailValid && isBirthdateValid && isFirstnameValid && isSurnameValid) {
       // Proceed with form submission
       console.log('Form is valid');
     }
