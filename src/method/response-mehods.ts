@@ -1,7 +1,7 @@
 import {Message} from 'primeng/api';
-import ApiResponse from '../interface/ApiResponse';
+import ApiResponse from '@/interface/ApiResponse';
 import {firstValueFrom} from 'rxjs';
-import {returnErrorMessage} from './error-methods';
+import {returnErrorMessage} from '@/method/error-methods';
 
 function callAPI(serviceCall: any): Promise<ApiResponse> {
   return firstValueFrom(serviceCall)

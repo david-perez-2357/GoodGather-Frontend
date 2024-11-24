@@ -1,4 +1,4 @@
-import Location from '../interface/Location';
+import Location from '@/interface/Location';
 
 function convertToLocation(object: any): Location {
   return {
