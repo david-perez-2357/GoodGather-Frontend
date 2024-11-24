@@ -1,3 +1,5 @@
+import moment from 'moment';
+
 export interface ValidationRule {
   validate: (value: string) => boolean;
   message: string;
@@ -32,12 +34,19 @@ export const ValidationRules: { [key: string]: ValidationRule | ((...args: any[]
       /^[0-9]+$/.test(value),
     message: 'Solo se permiten números'
   },
-  dateRange: (min: Date, max: Date) => ({
+  dateRange: (min: string, max: string) => ({
     validate: (value: string) => {
-      const date = new Date(value);
-      return date >= min && date <= max;
+      const date = moment(value, 'YYYY-MM-DD', true);
+      return date.isValid() && date.isBetween(moment(min, 'YYYY-MM-DD'), moment(max, 'YYYY-MM-DD'), 'day', '[]');
     },
-    message: `La fecha debe estar entre ${min.toDateString()} y ${max.toDateString()}`
+    message: `La fecha debe estar entre ${moment(min).format('DD/MM/YYYY')} y ${moment(max).format('DD/MM/YYYY')}`
+  }),
+  timeRange: (min: string, max: string) => ({
+    validate: (value: string) => {
+      const time = moment(value, 'HH:mm', true);
+      return time.isValid() && time.isBetween(moment(min, 'HH:mm'), moment(max, 'HH:mm'), 'minute', '[]');
+    },
+    message: `La hora debe estar entre ${moment(min, 'HH:mm').format('HH:mm')} y ${moment(max, 'HH:mm').format('HH:mm')}`
   }),
   allowedValues: (values: string[]) => ({
     validate: (value: string) => values.includes(value),
