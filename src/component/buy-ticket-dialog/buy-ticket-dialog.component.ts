@@ -25,11 +25,11 @@ import {ConfirmationService, MessageService} from 'primeng/api';
 import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {RouterLink} from '@angular/router';
-import Ticket from '../../interface/Ticket';
-import PaymentMethod from '../../interface/PaymentMethod';
-import CardType from '../../interface/CardType';
-import {TicketService} from '../../service/TicketService';
-import {callAPI} from '../../method/response-mehods';
+import Ticket from '@/interface/Ticket';
+import PaymentMethod from '@/interface/PaymentMethod';
+import CardType from '@/interface/CardType';
+import {TicketService} from '@/service/TicketService';
+import {callAPI} from '@/method/response-mehods';
 import moment from 'moment';
 import {ToastModule} from 'primeng/toast';
 

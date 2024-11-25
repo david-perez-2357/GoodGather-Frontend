@@ -1,6 +1,6 @@
 import {Component, Input, ViewChild} from '@angular/core';
 import {Button} from 'primeng/button';
-import {BuyTicketDialogComponent} from '../buy-ticket-dialog/buy-ticket-dialog.component';
+import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket-dialog.component';
 
 @Component({
   selector: 'app-buy-ticket-button',
