@@ -1,5 +1,5 @@
 import {Renderer2} from '@angular/core';
-import Background from '../interface/Background';
+import Background from '@/interface/Background';
 
 
 const defaultBackground: Background = {
