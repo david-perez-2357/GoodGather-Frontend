@@ -22,6 +22,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { CauseComponent } from '../../component/cause/cause.component';
 import { CauseService } from '../../service/CauseService';
 import Cause from '../../interface/Cause';
+import {AppService} from '../../service/AppService';
 
 @Component({
   selector: 'app-page-index',
@@ -79,7 +80,8 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     private renderer: Renderer2,
     private eventService: EventService,
     private causeService: CauseService,
-    private messageService: MessageService
+    private messageService: MessageService,
+    private appService: AppService,
   ) {}
 
   ngOnInit(): void {
@@ -105,6 +107,8 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.totalRecords = this.filteredEvents.length;
       this.updatePaginatedCauses();
       this.updateActiveFilters();
+    }).catch((error) => {
+      this.appService.showWErrorInApp(error);
     });
   }
 
@@ -173,15 +177,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.applyFilters();
   }
 
-  filterEventsByPrice(): Event[] {
-    const [minPrice, maxPrice] = this.rangeValues;
-    return this.events.filter(
-      (event) =>
-        event.ticketPrice !== undefined &&
-        event.ticketPrice >= minPrice &&
-        event.ticketPrice <= maxPrice
-    );
-  }
 
   applyFilters(): void {
     let result = [...this.events];
