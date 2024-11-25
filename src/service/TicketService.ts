@@ -1,6 +1,7 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
+import Ticket from '../interface/Ticket';
 
 @Injectable({providedIn: 'root'})
 export class TicketService {
@@ -9,5 +10,13 @@ export class TicketService {
 
   getTicketsBoughtInLast24h(id: number): Observable<number> {
     return this.http.get<number>(`/api/ticket/byEvent/${id}/boughtInLast/24h`, { withCredentials: true });
+  }
+
+  getTicketsBoughtByUserAndEvent(Userid: number, eventId: number): Observable<number> {
+    return this.http.get<number>(`/api/ticket/byEvent/${eventId}/byUser/${Userid}`, { withCredentials: true });
+  }
+
+  buyTicket(ticket: Ticket): Observable<void> {
+    return this.http.post<void>('/api/ticket', ticket, { withCredentials: true });
   }
 }
