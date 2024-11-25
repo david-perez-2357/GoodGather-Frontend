@@ -55,7 +55,7 @@
                 inputStyleClass="text-center"
                 [size]="2"
                 [max]="currentMaxQuantity"
-                [min]="currentMaxQuantity == maxQuantity ? 1 : 0"
+                [min]="currentMaxQuantity == 0 ? 0 : 1"
                 class="{{quantity > ticketsLeft ? 'ng-invalid' : ''}}"
               />
             </div>
@@ -321,8 +321,7 @@
         icon="pi pi-home"
         [text]="true"
         severity="primary"
-        routerLink = "/"
-        (onClick)="closePurchaseProcessDialog()" />
+        routerLink = "/"/>
     </div>
   </div>
 </p-dialog>
