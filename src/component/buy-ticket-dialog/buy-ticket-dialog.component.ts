@@ -32,6 +32,7 @@ import {TicketService} from '@/service/TicketService';
 import {callAPI} from '@/method/response-mehods';
 import moment from 'moment';
 import {ToastModule} from 'primeng/toast';
+import {validateField, ValidationRule, ValidationRules} from '@/method/validate-methods';
 
 @Component({
   selector: 'app-buy-ticket-dialog',
@@ -112,6 +113,50 @@ export class BuyTicketDialogComponent implements OnInit {
   cvv: number = 0;
   paypalEmail: string = '';
   paypalPassword: string = '';
+
+  creditCardFormData: { [key: string]: string } = {
+    accountNumber: '',
+    expirationDate: '',
+    cvv: ''
+  };
+
+  paypalFormData: { [key: string]: string } = {
+    email: '',
+    password: ''
+  };
+
+  errors: { [key: string]: string } = {};
+
+  // export const ValidationRules: { [key: string]: ValidationRule | ((...args: any[]) => ValidationRule) } = {
+
+  fieldRules: { [key: string]: ValidationRule[] } = {
+    accountNumber: [
+      ValidationRules['required'],
+      // @ts-ignore
+      ValidationRules['lengthRange'](16, 16),
+      ValidationRules['onlyNumbers'],
+    ],
+    expirationDate: [
+      // @ts-ignore
+      ValidationRules['required'],
+    ],
+    cvv: [
+      ValidationRules['required'],
+      // @ts-ignore
+      ValidationRules['lengthRange'](3, 4),
+      ValidationRules['onlyNumbers'],
+    ],
+    paypalEmail: [
+      // @ts-ignore
+      ValidationRules['required'],
+      // @ts-ignore
+      ValidationRules['email'],
+    ],
+    paypalPassword: [
+      // @ts-ignore
+      ValidationRules['required'],
+    ],
+  };
 
   // Fecha actual
   currentDate: string = moment().format('DD/MM/YYYY');
@@ -199,6 +244,7 @@ export class BuyTicketDialogComponent implements OnInit {
     this.purchaseProcessDialogVisible = false;
     this.purchaseProcessDialogStepActive = 0;
     this.resetTicketDialog();
+    window.location.reload();
   }
 
   // Resetear el diálogo de compra
@@ -258,5 +304,14 @@ export class BuyTicketDialogComponent implements OnInit {
     }
   }
 
-  protected readonly moment = moment;
+  // Validación de campos
+  validateField(fieldName: string): void {
+    const value = this.creditCardFormData[fieldName] || this.paypalFormData[fieldName];
+    const rules = this.fieldRules[fieldName];
+    this.errors[fieldName] = rules ? validateField(value, rules) || '' : '';
+  }
+
+  isFieldValid(fieldName: string): boolean {
+    return !!this.errors[fieldName];
+  }
 }
