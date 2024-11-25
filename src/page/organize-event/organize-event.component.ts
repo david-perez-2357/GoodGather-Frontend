@@ -70,9 +70,9 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     idOwner: 1,
     idCause: 1
   }
-
-  constructor(private renderer: Renderer2, private locationService: LocationService, private eventService: EventService, private messageService: MessageService) {
-
+  country: Location = {
+    name: '',
+    code: ''
   }
 
   ngOnInit(): void {
@@ -106,7 +106,8 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
   }
 
   countryChange(): void {
-    const countryCode = this.event.country;
+    const countryCode = this.country.code;
+    this.event.country = this.country.name;
     this.event.province = '';
     console.log('Country code:', countryCode);
     callAPI(this.locationService.getStatesByCountry(countryCode))

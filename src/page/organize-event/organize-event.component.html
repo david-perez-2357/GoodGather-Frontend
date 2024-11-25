@@ -32,7 +32,7 @@
             <div class="flex gap-4 w-full lg:grid grid-cols-[2fr_2fr_3fr] flex flex-col">
               <div class="flex flex-col">
                 <h3 class="text-md font-semibold mb-2">País</h3>
-                <p-dropdown [style]="{'width': '100%'}" [options]="countries" [(ngModel)]="event.country"  optionValue="code" [showClear]="false" optionLabel="name" [filter]="true" filterBy="name"  placeholder="Selecciona un país" (onChange)="countryChange()">
+                <p-dropdown [style]="{'width': '100%'}" [options]="countries" [(ngModel)]="country"  [showClear]="false" optionLabel="name" [filter]="true" filterBy="name"  placeholder="Selecciona un país" (onChange)="countryChange()">
                   <ng-template pTemplate="selectedItem" let-selectedOption>
                     <div class="flex align-items-center gap-2">
                       <div>{{ selectedOption.name }}</div>
