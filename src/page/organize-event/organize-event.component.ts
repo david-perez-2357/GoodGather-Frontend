@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, Renderer2 } from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
 import { StepperModule } from 'primeng/stepper';
 import { Button } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -19,6 +19,10 @@ import {convertToLocationList} from '../../method/location-methods';
 import Location from '../../interface/Location';
 import {MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
+import * as UC from '@uploadcare/file-uploader';
+import "@uploadcare/file-uploader/web/uc-file-uploader-regular.min.css"
+
+UC.defineComponents(UC);
 
 @Component({
   selector: 'app-organize-event',
@@ -38,7 +42,8 @@ import {ToastModule} from 'primeng/toast';
   ],
   templateUrl: './organize-event.component.html',
   styles: ``,
-  providers: [MessageService]
+  providers: [MessageService],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
 export class OrganizeEventComponent implements OnInit, OnDestroy {
@@ -74,6 +79,9 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     name: '',
     code: ''
   }
+  constructor(private renderer: Renderer2, private locationService: LocationService, private eventService: EventService, private messageService: MessageService) {}
+
+  @ViewChild('ctxProvider', {static: true}) ctxProvider!: ElementRef<typeof UC.UploadCtxProvider.prototype>;
 
   ngOnInit(): void {
     putFormBackground(this.renderer);
@@ -84,6 +92,19 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
       .catch((error: any) => {
         console.error('Error getting countries:', error);
       });
+    this.ctxProvider.nativeElement.addEventListener('data-output', this.handleUploadEvenet);
+    this.ctxProvider.nativeElement.addEventListener('done-flow', this.handleDoneFlow);
+  }
+
+  handleUploadEvenet(e: any) {
+    if (!(e instanceof CustomEvent)) {
+      return;
+    }
+    console.log(e.detail);
+  }
+
+  handleDoneFlow() {
+    console.log('handleDoneFlow');
   }
 
   ngOnDestroy(): void {

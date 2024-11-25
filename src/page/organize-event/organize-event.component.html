@@ -157,8 +157,10 @@
         </ng-template>
         <ng-template pTemplate="content" let-prevCallback="prevCallback" let-index="index">
           <div class="flex flex-column h-auto">
-            <div class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
-              Content III
+            <div class="flex-auto flex justify-content-center align-items-center font-medium">
+              <uc-config ctx-name="my-uploader" removeCopyright="true" source-list="local, url, gdrive" pubkey="d1b9085e489afdaa5ef9"></uc-config>
+              <uc-file-uploader-regular ctx-name="my-uploader" class="uc-light uc-green"></uc-file-uploader-regular>
+              <uc-upload-ctx-provider ctx-name="my-uploader" #ctxProvider class="uc-light uc-green"></uc-upload-ctx-provider>
             </div>
           </div>
           <div class="flex pt-4 justify-between">
