@@ -1,4 +1,4 @@
-import {Component, Input} from '@angular/core';
+import {Component, Input, ViewChild} from '@angular/core';
 import {Button} from 'primeng/button';
 import {BuyTicketDialogComponent} from '../buy-ticket-dialog/buy-ticket-dialog.component';
 
@@ -22,7 +22,9 @@ export class BuyTicketButtonComponent {
   @Input() labelBeforePrice: string = '';
   @Input() priceLoaded: boolean = true;
   @Input() buttonClass: string = '';
-  showDialog: boolean = false;
+  dialogVisible: boolean = false;
+
+  @ViewChild(BuyTicketDialogComponent) child!: BuyTicketDialogComponent;
 
   getLabel(): string {
     if (!this.priceLoaded) {
@@ -38,5 +40,10 @@ export class BuyTicketButtonComponent {
     }
 
     return this.labelBeforePrice + this.price + '€';
+  }
+
+  showDialog() {
+    this.dialogVisible = true;
+    this.child.showDialog();
   }
 }
