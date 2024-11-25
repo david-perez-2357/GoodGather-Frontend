@@ -1,7 +1,12 @@
 <div class="flex justify-center items-center p-2 box-border">
   <div class="bg-white rounded-2xl p-5 shadow-md w-full max-w-[1200px] h-auto box-border">
-    <p-stepper [linear]="true" [style]="{'--step-header-number-bg-color': 'green', '--step-header-number-color': 'white'}">
+    <p-stepper [(activeStep)]="stepActive">
       <p-stepperPanel>
+        <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+          <p-button (click)="onClick.emit()" [outlined]="index > stepActive" [severity]="index <= stepActive ? 'primary' : 'secondary'">
+            {{index + 1}}
+          </p-button>
+        </ng-template>
         <ng-template pTemplate="content" let-nextCallback="nextCallback" let-index="index">
           <div class="flex flex-col gap-6">
             <div>
@@ -72,6 +77,11 @@
         </ng-template>
       </p-stepperPanel>
       <p-stepperPanel>
+        <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+          <p-button (click)="onClick.emit()" [outlined]="index > stepActive" [severity]="index <= stepActive ? 'primary' : 'secondary'">
+            {{index + 1}}
+          </p-button>
+        </ng-template>
         <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback" let-index="index">
           <div class="grid gap-4 w-full grid-cols-1 lg:grid-cols-5">
             <div class="bg-gray-50 p-4 rounded-lg col-span-1 lg:col-span-2 h-full flex flex-col">
@@ -140,6 +150,11 @@
         </ng-template>
       </p-stepperPanel>
       <p-stepperPanel>
+        <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+          <p-button (click)="onClick.emit()" [outlined]="index > stepActive" [severity]="index <= stepActive ? 'primary' : 'secondary'">
+            {{index + 1}}
+          </p-button>
+        </ng-template>
         <ng-template pTemplate="content" let-prevCallback="prevCallback" let-index="index">
           <div class="flex flex-column h-auto">
             <div class="border-2 border-dashed surface-border border-round surface-ground flex-auto flex justify-content-center align-items-center font-medium">
@@ -147,10 +162,9 @@
             </div>
           </div>
           <div class="flex pt-4 justify-between">
-            <p-button label="Back" icon="pi pi-arrow-left" class="hidden sm:block" [text]="true" (onClick)="prevCallback.emit()" />
-            <p-button label="Guardar" icon="pi pi-check" class="hidden sm:block" [text]="true" (onClick)="onSubmit()" />
-            <p-button icon="pi pi-arrow-left" class="block sm:hidden" (onClick)="prevCallback.emit()" />
-            <p-button icon="pi pi-check" class="block sm:hidden" (onClick)="onSubmit()" />
+            <p-button label="Back" icon="pi pi-arrow-left" class="hidden sm:block" [text]="true" (onClick)="prevCallback.emit()"/>
+            <p-button icon="pi pi-arrow-left" class="block sm:hidden" (onClick)="prevCallback.emit()"/>
+            <p-button label="Guardar" icon="pi pi-check" (onClick)="onSubmit()"/>
           </div>
         </ng-template>
       </p-stepperPanel>

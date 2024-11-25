@@ -51,6 +51,7 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
   endDateHour: string = '';
   minStartDateDate: string = moment().format('YYYY-MM-DD');
   formValid: boolean = false;
+  stepActive: number = 0;
 
   event: Event = {
     id: 0,
