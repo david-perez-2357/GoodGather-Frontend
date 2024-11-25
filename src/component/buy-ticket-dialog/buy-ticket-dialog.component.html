@@ -7,38 +7,26 @@
   <ng-template pTemplate="header">
     <div class="flex items-center justify-center gap-2">
       <p-avatar class="rounded overflow-hidden h-[32px]" image="https://api.dicebear.com/9.x/thumbs/svg?seed=Pepe123" size="normal"/>
-      <span class="font-bold white-space-nowrap">Pepe rodriguez torres</span>
+      <span class="font-bold white-space-nowrap">Pepe rodriguez torres</span> <!-- TODO: Change to user name -->
     </div>
   </ng-template>
-  <p-stepper [(activeStep)]="StepActive">
+  <p-stepper [(activeStep)]="stepActive">
     <p-stepperPanel>
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
-        <p-button (click)="onClick.emit()" icon="pi pi-ticket" [outlined]="index > StepActive" [severity]="index <= StepActive ? 'primary' : 'secondary'">
+        <p-button (click)="onClick.emit()" icon="pi pi-ticket" [outlined]="index > stepActive" [severity]="index <= stepActive ? 'primary' : 'secondary'">
         </p-button>
       </ng-template>
       <ng-template pTemplate="content" let-nextCallback="nextCallback">
         <div class="flex flex-col gap-8">
-          <p-accordion class="rounded w-full bg-gray-50">
+          <p-accordion class="rounded w-full bg-gray-50" *ngIf="ticketsBought.length > 0">
             <p-accordionTab>
               <ng-template pTemplate="header" class="flex items-center gap-3">
                 <span class="text-lg">Entradas compradas para este evento</span>
-                <p-badge [value]="ticketsBought" class="ml-auto mr-2" />
+                <p-badge [value]="numTicketsBought" class="ml-auto mr-2" />
               </ng-template>
               <div class="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-3 justify-center">
-                <div style="background-image: url('/gg-ticket-template.png')" class="w-[112px] flex justify-center items-center h-[50px] bg-cover bg-no-repeat">
-                  <span class="text-white font-bold mr-1">20/10/2024</span>
-                </div>
-
-                <div style="background-image: url('/gg-ticket-template.png')" class="w-[112px] flex justify-center items-center h-[50px] bg-cover bg-no-repeat">
-                  <span class="text-white font-bold mr-1">20/10/2024</span>
-                </div>
-
-                <div style="background-image: url('/gg-ticket-template.png')" class="w-[112px] flex justify-center items-center h-[50px] bg-cover bg-no-repeat">
-                  <span class="text-white font-bold mr-1">20/10/2024</span>
-                </div>
-
-                <div style="background-image: url('/gg-ticket-template.png')" class="w-[112px] flex justify-center items-center h-[50px] bg-cover bg-no-repeat">
-                  <span class="text-white font-bold mr-1">20/10/2024</span>
+                <div style="background-image: url('/gg-ticket-template.png')" class="w-[112px] flex justify-center items-center h-[50px] bg-cover bg-no-repeat" *ngFor="let date of ticketsBoughtDates">
+                  <span class="text-white font-bold mr-1">{{ date }}</span>
                 </div>
               </div>
               <div class="flex items-center mt-5 gap-4 px-4 p-2 bg-cyan-100 rounded text-cyan-700">
@@ -67,7 +55,7 @@
                 inputStyleClass="text-center"
                 [size]="2"
                 [max]="currentMaxQuantity"
-                [min]="1"
+                [min]="currentMaxQuantity == maxQuantity ? 1 : 0"
                 class="{{quantity > ticketsLeft ? 'ng-invalid' : ''}}"
               />
             </div>
@@ -110,7 +98,7 @@
     </p-stepperPanel>
     <p-stepperPanel>
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
-        <p-button (click)="onClick.emit()" icon="pi pi-credit-card" [outlined]="index > StepActive" [severity]="index <= StepActive ? 'primary' : 'secondary'">
+        <p-button (click)="onClick.emit()" icon="pi pi-credit-card" [outlined]="index > stepActive" [severity]="index <= stepActive ? 'primary' : 'secondary'">
         </p-button>
       </ng-template>
       <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback">
@@ -155,7 +143,6 @@
                 <p-dropdown
                   [options]="cardTypes"
                   [(ngModel)]="selectedCardType"
-                  (onChange)="onCardTypeChange($event)"
                   id="cardType"
                   optionLabel="label"
                   class="w-full"
@@ -235,11 +222,11 @@
     </p-stepperPanel>
     <p-stepperPanel>
       <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
-        <p-button (click)="onClick.emit()"  icon="pi pi-check-square" [outlined]="index > StepActive" [severity]="index <= StepActive ? 'primary' : 'secondary'">
+        <p-button (click)="onClick.emit()" icon="pi pi-check-square" [outlined]="index > stepActive" [severity]="index <= stepActive ? 'primary' : 'secondary'">
         </p-button>
       </ng-template>
       <ng-template pTemplate="content" let-prevCallback="prevCallback">
-        <div class="flex flex-col gap-4 rounded-lg text-center justify-center  mr-auto ml-auto bg-gray-100 p-5">
+        <div class="flex mb-3 flex-col gap-4 rounded-lg text-center justify-center  mr-auto ml-auto bg-gray-100 p-5">
           <h2 class="text-2xl font-bold text-gray-800">Resumen de la compra</h2>
           <div class="flex flex-col gap-2 text-gray-700 ">
             <div class="flex items-center gap-x-3 flex-col sm:flex-row">
@@ -272,16 +259,71 @@
           </div>
         </div>
         <div class="flex pt-4 justify-between w-full">
+
           <p-button (onClick)="prevCallback.emit()" [text]="true" label="Atras" severity="secondary" icon="pi pi-arrow-left" />
           <p-button
             label="Comprar"
             icon="pi pi-check"
             severity="primary"
-            (onClick)="closeDialog()"
+            (onClick)="confirmPurchase($event)"
           />
         </div>
       </ng-template>
     </p-stepperPanel>
   </p-stepper>
+  <p-confirmDialog />
 </p-dialog>
 
+<p-dialog
+  [(visible)]="purchaseProcessDialogVisible"
+  header="Procesando compra"
+  [modal]="true"
+  [style]="{ width: '35rem', 'border-radius': '1rem', 'overflow': 'hidden' }"
+  [closable]="false">
+  <ng-template pTemplate="header">
+    <div class="flex items-center justify-center gap-2">
+      <p-avatar class="rounded overflow-hidden h-[32px]" image="https://api.dicebear.com/9.x/thumbs/svg?seed=Pepe123" size="normal"/>
+      <span class="font-bold white-space-nowrap">Pepe rodriguez torres</span> <!-- TODO: Change to user name -->
+    </div>
+  </ng-template>
+
+  <div class="flex flex-col gap-3 mt-6 mb-3 items-center justify-center" *ngIf="purchaseProcessDialogStepActive==1">
+    <p-progressSpinner ariaLabel="loading" />
+    <h2 class="text-xl font-semibold text-gray-700">Procesando compra</h2>
+  </div>
+
+  <div class="flex w-full flex-col gap-8 mt-6" *ngIf="purchaseProcessDialogStepActive>1">
+    <div class="flex items-center gap-5 flex-col justify-center" *ngIf="purchaseProcessDialogStepActive==2">
+      <i class="pi pi-check-circle text-8xl text-green-500"></i>
+      <h2 class="text-xl font-semibold text-gray-700">{{ quantity }} {{ quantity > 1 ? 'entradas compradas' : 'entrada comprada' }} con éxito</h2>
+    </div>
+
+    <div class="flex items-center gap-5 flex-col justify-center" *ngIf="purchaseProcessDialogStepActive==3">
+      <i class="pi pi-times-circle text-8xl text-red-500"></i>
+      <h2 class="text-xl font-semibold text-gray-700">Error al procesar la compra</h2>
+    </div>
+
+    <div class="flex items-center gap-5 flex-col justify-center" *ngIf="purchaseProcessDialogStepActive==4">
+      <i class="pi pi-times-circle text-8xl text-red-500"></i>
+      <h2 class="text-xl font-semibold text-gray-700">No se pueden comprar más de {{ maxQuantity }} entradas por persona</h2>
+    </div>
+
+    <div class="flex gap-2 justify-between w-full">
+      <p-button
+        label="Cerrar"
+        icon="pi pi-times"
+        [text]="true"
+        severity="secondary"
+        (onClick)="closePurchaseProcessDialog()" />
+
+      <p-button
+        label="Volver al inicio"
+        icon="pi pi-home"
+        [text]="true"
+        severity="primary"
+        routerLink = "/"
+        (onClick)="closePurchaseProcessDialog()" />
+    </div>
+  </div>
+</p-dialog>
+<p-toast></p-toast>
