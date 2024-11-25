@@ -170,10 +170,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   }
 
   onRangeChange(): void {
-    this.filteredEvents = this.filterEventsByPrice();
-    this.totalRecords = this.filteredEvents.length;
-    this.updatePaginatedCauses();
-    this.updateActiveFilters();
+    this.applyFilters();
   }
 
   filterEventsByPrice(): Event[] {
@@ -186,6 +183,29 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     );
   }
 
+  applyFilters(): void {
+    let result = [...this.events];
+
+    if (this.rangeValues[0] !== 0 || this.rangeValues[1] !== Infinity) {
+      result = result.filter(event =>
+        event.ticketPrice >= this.rangeValues[0] && event.ticketPrice <= this.rangeValues[1]
+      );
+    }
+
+    if (this.activeFilter === 'popular') {
+      result = result.sort((a, b) => b.boughtTickets - a.boughtTickets);
+    } else if (this.activeFilter === 'recent') {
+      result = result.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
+    } else if (this.activeFilter === 'cheapest') {
+      result = result.sort((a, b) => (a.ticketPrice || Infinity) - (b.ticketPrice || Infinity));
+    }
+
+    this.filteredEvents = result;
+    this.totalRecords = this.filteredEvents.length;
+    this.updatePaginatedCauses();
+  }
+
+
   load(): void {
     this.loading = true;
     setTimeout(() => {
@@ -197,25 +217,21 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.overlay.toggle(event);
   }
 
-  onCheapestClick(): void {
-    if (this.activeFilter === 'cheapest') {
-      this.resetFilter();
-    } else {
-      this.activeFilter = 'cheapest';
-      this.filteredEvents = [...this.events].sort((a, b) => a.ticketPrice - b.ticketPrice);
-      this.totalRecords = this.filteredEvents.length;
-      this.updatePaginatedCauses();
-    }
-  }
-
   onPopularClick(): void {
     if (this.activeFilter === 'popular') {
       this.resetFilter();
     } else {
       this.activeFilter = 'popular';
-      this.filteredEvents = [...this.events].sort((a, b) => b.boughtTickets - a.boughtTickets);
-      this.totalRecords = this.filteredEvents.length;
-      this.updatePaginatedCauses();
+      this.applyFilters();
+    }
+  }
+
+  onCheapestClick(): void {
+    if (this.activeFilter === 'cheapest') {
+      this.resetFilter();
+    } else {
+      this.activeFilter = 'cheapest';
+      this.applyFilters();
     }
   }
 
@@ -224,11 +240,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.resetFilter();
     } else {
       this.activeFilter = 'recent';
-      this.filteredEvents = [...this.events].sort(
-        (a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime()
-      );
-      this.totalRecords = this.filteredEvents.length;
-      this.updatePaginatedCauses();
+      this.applyFilters();
     }
   }
 
