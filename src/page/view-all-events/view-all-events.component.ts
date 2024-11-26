@@ -22,8 +22,8 @@ import { HttpClientModule } from '@angular/common/http';
 import { CauseComponent } from '../../component/cause/cause.component';
 import { CauseService } from '../../service/CauseService';
 import Cause from '../../interface/Cause';
-import {AppService} from '../../service/AppService';
-import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import { AppService } from '../../service/AppService';
+import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-page-index',
@@ -67,9 +67,9 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     { label: 'En tu país', value: 'country' },
     { label: 'En tu provincia', value: 'province' },
   ];
-  value: string = 'province';
+  value: string = 'province'; // Inicialización con el valor por defecto
   rangeValues: [number, number] = [0, 1000];
-  activeFilters: number = 0;
+  activeFilters: number = 1; // Se establece a 1 por defecto, ya que 'province' está seleccionado
   first: number = 0;
   rows: number = 10;
   totalRecords: number = 0;
@@ -78,6 +78,9 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   filteredGroupedEvents: { [causeId: number]: Event[] } = {};
   activeFilter: string | null = null;
   loadingData: boolean = true;
+
+  sliderFilterActive: boolean = false;
+  selectFilterActive: boolean = true;
 
   constructor(
     private renderer: Renderer2,
@@ -91,30 +94,30 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.renderer.addClass(document.body, 'default-bg');
     this.loadingData = true;
 
-    Promise.all([
-      callAPI(this.causeService.getAllCauses()),
-      callAPI(this.eventService.getAllEvents()),
-    ]).then(([causesResponse, eventsResponse]) => {
-      if (causesResponse.status === 200) {
-        this.causes = causesResponse.data;
-      } else if (causesResponse.toastMessage) {
-        this.messageService.add(causesResponse.toastMessage);
-      }
+    // Cargar los eventos y causas
+    Promise.all([callAPI(this.causeService.getAllCauses()), callAPI(this.eventService.getAllEvents())])
+      .then(([causesResponse, eventsResponse]) => {
+        if (causesResponse.status === 200) {
+          this.causes = causesResponse.data;
+        } else if (causesResponse.toastMessage) {
+          this.messageService.add(causesResponse.toastMessage);
+        }
 
-      if (eventsResponse.status === 200) {
-        this.events = eventsResponse.data;
-        this.filteredEvents = [...this.events];
-      } else if (eventsResponse.toastMessage) {
-        this.messageService.add(eventsResponse.toastMessage);
-      }
+        if (eventsResponse.status === 200) {
+          this.events = eventsResponse.data;
+          this.filteredEvents = [...this.events];
+        } else if (eventsResponse.toastMessage) {
+          this.messageService.add(eventsResponse.toastMessage);
+        }
 
-      this.totalRecords = this.filteredEvents.length;
-      this.updatePaginatedCauses();
-      this.updateActiveFilters();
-      this.loadingData = false;
-    }).catch((error) => {
-      this.appService.showWErrorInApp(error);
-    });
+        this.totalRecords = this.filteredEvents.length;
+        this.updatePaginatedCauses();
+        this.updateActiveFilters(); // Verifica los filtros activos al cargar la página
+        this.loadingData = false;
+      })
+      .catch((error) => {
+        this.appService.showWErrorInApp(error);
+      });
   }
 
   ngOnDestroy(): void {
@@ -165,23 +168,39 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   }
 
   updateActiveFilters(): void {
-    this.activeFilters = 0;
+    this.activeFilters = 0; // Reinicia el contador
     const [minPrice, maxPrice] = this.rangeValues;
-    if (minPrice > 0 || maxPrice < 100) {
-      this.activeFilters++;
+    if (minPrice > 0 || maxPrice < 1000) {
+      this.activeFilters++; // Si el slider tiene algún filtro activado
     }
-    if (this.value === 'province') {
-      this.activeFilters++;
-    }
-    if (this.value === 'country') {
-      this.activeFilters++;
+    if (this.value) {
+      this.activeFilters++; // Si el select tiene una opción seleccionada
     }
   }
 
   onRangeChange(): void {
+    if (!this.sliderFilterActive) {
+      this.sliderFilterActive = true;
+      this.activeFilters++; // Aumenta el contador cuando el slider cambia
+    }
     this.applyFilters();
+    this.updateActiveFilters(); // Actualiza los filtros
   }
 
+  onSelectChange(): void {
+    if (this.value && !this.selectFilterActive) {
+      this.selectFilterActive = true;
+      this.activeFilters++; // Aumenta el contador cuando se selecciona una opción válida
+    } else if (!this.value && this.selectFilterActive) {
+      this.selectFilterActive = false;
+      this.activeFilters--; // Decrementa el contador si no hay opción seleccionada
+    }
+    this.updateActiveFilters(); // Actualiza los filtros
+  }
+
+  incrementFilters(): void {
+    this.activeFilters++;
+  }
 
   applyFilters(): void {
     let result = [...this.events];
@@ -204,7 +223,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.totalRecords = this.filteredEvents.length;
     this.updatePaginatedCauses();
   }
-
 
   load(): void {
     this.loading = true;
@@ -247,11 +265,14 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     searchInput.value = '';
   }
 
-
   resetFilter(): void {
     this.activeFilter = null;
     this.filteredEvents = [...this.events];
     this.totalRecords = this.filteredEvents.length;
+    this.sliderFilterActive = false;
+    this.selectFilterActive = false;
+    this.activeFilters = 0; // Reset to 0
+    this.value = '';
     this.updatePaginatedCauses();
   }
 }
