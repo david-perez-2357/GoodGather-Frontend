@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
-import {PageNotFoundComponent} from '../page/page-not-found/page-not-found.component';
-import {ViewAllEventsComponent} from '../page/view-all-events/view-all-events.component';
-import {EventDetailsComponent} from '../page/event-details/event-details.component';
+import {PageNotFoundComponent} from '@/page/page-not-found/page-not-found.component';
+import {ViewAllEventsComponent} from '@/page/view-all-events/view-all-events.component';
+import {EventDetailsComponent} from '@/page/event-details/event-details.component';
 
 
 export const routes: Routes = [
