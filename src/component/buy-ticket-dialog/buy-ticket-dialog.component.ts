@@ -309,11 +309,11 @@ export class BuyTicketDialogComponent implements OnInit {
   }
 
   isCreditCardFormValid(): boolean {
-    return Object.keys(this.creditCardFormData).every((key) => this.creditCardFormData[key] !== '');
+    return Object.keys(this.creditCardFormData).every((key) => this.creditCardFormData[key] !== '' && !this.isFieldInvalid(key));
   }
 
   isPaypalFormValid(): boolean {
-    return Object.keys(this.paypalFormData).every((key) => this.paypalFormData[key] !== '');
+    return Object.keys(this.paypalFormData).every((key) => this.paypalFormData[key] !== '' && !this.isFieldInvalid(key));
   }
 
   validateField(fieldName: string): void {
