@@ -2,9 +2,9 @@ import { Component } from '@angular/core';
 import {IconFieldModule} from 'primeng/iconfield';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {Input} from '@angular/core';
-import Event from '../../interface/Event';
-import {convertSecondsToString} from '../../method/date-methods';
-import {BuyTicketButtonComponent} from "../buy-ticket-button/buy-ticket-button.component";
+import Event from '@/interface/Event';
+import {convertSecondsToString} from '@/method/date-methods';
+import {BuyTicketButtonComponent} from "@/component/buy-ticket-button/buy-ticket-button.component";
 import {RouterLink} from "@angular/router";
 
 @Component({
