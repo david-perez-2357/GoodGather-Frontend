@@ -32,7 +32,7 @@ import {TicketService} from '@/service/TicketService';
 import {callAPI} from '@/method/response-mehods';
 import moment from 'moment';
 import {ToastModule} from 'primeng/toast';
-import {validateField, ValidationRule, ValidationRules} from '@/method/validate-methods';
+import {validateField, ValidationRule, StaticValidationRules, DynamicValidationRules} from '@/method/validate-methods';
 
 @Component({
   selector: 'app-buy-ticket-dialog',
@@ -108,53 +108,43 @@ export class BuyTicketDialogComponent implements OnInit {
   selectedCardType: CardType = this.cardTypes[0];
 
   // Información del pago
-  accountNumber: string = '';
-  expirationDate: string = '';
-  cvv: number = 0;
-  paypalEmail: string = '';
-  paypalPassword: string = '';
-
   creditCardFormData: { [key: string]: string } = {
+    accountOwner: '',
     accountNumber: '',
     expirationDate: '',
     cvv: ''
   };
 
   paypalFormData: { [key: string]: string } = {
-    email: '',
-    password: ''
+    paypalEmail: '',
+    paypalPassword: ''
   };
 
   errors: { [key: string]: string } = {};
 
-  // export const ValidationRules: { [key: string]: ValidationRule | ((...args: any[]) => ValidationRule) } = {
 
   fieldRules: { [key: string]: ValidationRule[] } = {
+    accountOwner: [
+      StaticValidationRules['required'],
+    ],
     accountNumber: [
-      ValidationRules['required'],
-      // @ts-ignore
-      ValidationRules['lengthRange'](16, 16),
-      ValidationRules['onlyNumbers'],
+      StaticValidationRules['required'],
+      StaticValidationRules['onlyNumbersAndSpaces'],
     ],
     expirationDate: [
-      // @ts-ignore
-      ValidationRules['required'],
+      StaticValidationRules['required'],
     ],
     cvv: [
-      ValidationRules['required'],
-      // @ts-ignore
-      ValidationRules['lengthRange'](3, 4),
-      ValidationRules['onlyNumbers'],
+      StaticValidationRules['required'],
+      DynamicValidationRules['lengthRange'](3, 3),
+      StaticValidationRules['onlyNumbers'],
     ],
     paypalEmail: [
-      // @ts-ignore
-      ValidationRules['required'],
-      // @ts-ignore
-      ValidationRules['email'],
+      StaticValidationRules['required'],
+      StaticValidationRules['email'],
     ],
     paypalPassword: [
-      // @ts-ignore
-      ValidationRules['required'],
+      StaticValidationRules['required'],
     ],
   };
 
@@ -252,11 +242,20 @@ export class BuyTicketDialogComponent implements OnInit {
     this.quantity = 1;
     this.selectedPaymentMethod = 'creditCard';
     this.selectedCardType = this.cardTypes[0];
-    this.accountNumber = '';
-    this.expirationDate = '';
-    this.cvv = 0;
-    this.paypalEmail = '';
-    this.paypalPassword = '';
+    // this.accountNumber = '';
+    // this.expirationDate = '';
+    // this.cvv = 0;
+    // this.paypalEmail = '';
+    // this.paypalPassword = '';
+    this.creditCardFormData = {
+      accountNumber: '',
+      expirationDate: '',
+      cvv: ''
+    };
+    this.paypalFormData = {
+      email: '',
+      password: ''
+    };
     this.updateMaxQuantity();
     this.stepActive = 0;
   }
@@ -305,13 +304,26 @@ export class BuyTicketDialogComponent implements OnInit {
   }
 
   // Validación de campos
+  selectedFormIsValid(): boolean {
+    return this.selectedPaymentMethod === 'creditCard' ? this.isCreditCardFormValid() : this.isPaypalFormValid();
+  }
+
+  isCreditCardFormValid(): boolean {
+    return Object.keys(this.creditCardFormData).every((key) => this.creditCardFormData[key] !== '');
+  }
+
+  isPaypalFormValid(): boolean {
+    return Object.keys(this.paypalFormData).every((key) => this.paypalFormData[key] !== '');
+  }
+
   validateField(fieldName: string): void {
     const value = this.creditCardFormData[fieldName] || this.paypalFormData[fieldName];
     const rules = this.fieldRules[fieldName];
     this.errors[fieldName] = rules ? validateField(value, rules) || '' : '';
+    console.log(value, this.errors[fieldName]);
   }
 
-  isFieldValid(fieldName: string): boolean {
+  isFieldInvalid(fieldName: string): boolean {
     return !!this.errors[fieldName];
   }
 }
