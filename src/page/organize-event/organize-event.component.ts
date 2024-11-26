@@ -19,6 +19,11 @@ import {convertToLocationList} from '@/method/location-methods';
 import Location from '@/interface/Location';
 import {MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
+import {StaticValidationRules, validateField, ValidationRule} from '@/method/validate-methods';
+import * as UC from '@uploadcare/file-uploader';
+import "@uploadcare/file-uploader/web/uc-file-uploader-regular.min.css";
+
+UC.defineComponents(UC);
 
 @Component({
   selector: 'app-organize-event',
@@ -46,36 +51,68 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
   causes: any[] | undefined;
   countries: any[] | undefined;
   provinces: Location[] = [];
-  startDateDate: string = '';
-  endDateDate: string = '';
-  startDateHour: string = '';
-  endDateHour: string = '';
   minStartDateDate: string = moment().format('YYYY-MM-DD');
-  formValid: boolean = false;
   stepActive: number = 0;
 
-  event: Event = {
-    id: 0,
+  formData: { [key: string]: any } = {
     name: '',
     description: '',
-    image: 'aqui va la imagen',
+    image: '',
     startDate: '',
     endDate: '',
-    capacity: 0,
-    boughtTickets: 0,
+    capacity: 1,
     address: '',
     province: '',
     country: '',
-    ticketPrice: 0,
-    deleted: 0,
-    idOwner: 1,
-    idCause: 1
-  }
-  country: Location = {
-    name: '',
-    code: ''
-  }
+    ticketPrice: 0.0,
+    cause: 1,
+    startTime: '',
+    endTime: ''
+  };
 
+  errors: { [key: string]: string } = {};
+
+  fieldRules: { [key: string]: ValidationRule[] } = {
+    name: [
+      StaticValidationRules['required']
+    ],
+    image: [
+      StaticValidationRules['required']
+    ],
+    description: [
+      StaticValidationRules['required']
+    ],
+    startDate: [
+      StaticValidationRules['required']
+    ],
+    endDate: [
+      StaticValidationRules['required']
+    ],
+    capacity: [
+      StaticValidationRules['required']
+    ],
+    address: [
+      StaticValidationRules['required']
+    ],
+    province: [
+      StaticValidationRules['required']
+    ],
+    country: [
+      StaticValidationRules['required']
+    ],
+    ticketPrice: [
+      StaticValidationRules['required']
+    ],
+    cause: [
+      StaticValidationRules['required']
+    ],
+    startTime: [
+      StaticValidationRules['required']
+    ],
+    endTime: [
+      StaticValidationRules['required']
+    ]
+  }
   constructor(private renderer: Renderer2, private locationService: LocationService, private eventService: EventService, private messageService: MessageService) {}
 
   ngOnInit(): void {
@@ -118,7 +155,7 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     const imageSrc = styleAttribute?.split(' ')[1]?.slice(5, -2)?.split('-/')[0];
 
     if (imageSrc) {
-      this.event.image = imageSrc;
+      this.formData['image'] = imageSrc;
     }
   }
 
@@ -148,23 +185,22 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
 
   dateAndTimeValidator($event: any): void {
 
-    const startDate = moment(this.startDateDate, 'YYYY-MM-DD');
-    const endDate = moment(this.endDateDate, 'YYYY-MM-DD');
-    const startHour = moment(this.startDateHour, 'HH:mm');
-    const endHour = moment(this.endDateHour, 'HH:mm');
+    const startDate = moment(this.formData['startDate'], 'YYYY-MM-DD');
+    const endDate = moment(this.formData['endDate'], 'YYYY-MM-DD');
+    const startHour = moment(this.formData['startTime'], 'HH:mm');
+    const endHour = moment(this.formData['endTime'], 'HH:mm');
 
     if (startDate.isSame(endDate) && endHour.isBefore(startHour)) {
-      this.endDateHour = this.startDateHour;
+      this.formData['endTime'] = this.formData['startTime'];
     }
     if (endDate.isBefore(startDate)) {
-      this.endDateDate = this.startDateDate;
+      this.formData['endDate'] = this.formData['startDate'];
     }
   }
 
   countryChange(): void {
-    const countryCode = this.country.code;
-    this.event.country = this.country.name;
-    this.event.province = '';
+    const countryCode = this.formData['country']?.code;
+    this.formData['province'] = '';
 
     callAPI(this.locationService.getStatesByCountry(countryCode))
       .then((stateResponse: ApiResponse) => {
@@ -175,25 +211,33 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
       });
   }
 
-  validateForm(): boolean {
-    return this.formValid = this.event.name !== '' &&
-      this.event.description !== '' &&
-      this.event.startDate.trim() !== '' &&
-      this.event.endDate.trim() !== '' &&
-      this.event.capacity > 0 &&
-      this.event.address !== '' &&
-      this.event.province !== '' &&
-      this.event.country !== '';
+  convertFormDataToEvent(): Event {
+    return {
+      id: 0,
+      name: this.formData['name'],
+      description: this.formData['description'],
+      image: this.formData['image'],
+      startDate: this.formData['startDate']+ ' ' + this.formData['startTime'],
+      endDate: this.formData['endDate']+ ' ' + this.formData['endTime'],
+      capacity: this.formData['capacity'],
+      boughtTickets: 0,
+      address: this.formData['address'],
+      province: this.formData['province'],
+      country: this.formData['country'].name,
+      ticketPrice: this.formData['ticketPrice'],
+      deleted: 0,
+      idOwner: 1,
+      idCause: this.formData['cause']
+    }
   }
 
   onSubmit(): void {
-    this.event.startDate = this.startDateDate + ' ' + this.startDateHour;
-    this.event.endDate = this.endDateDate + ' ' + this.endDateHour;
-    if (!this.validateForm()) {
+    const event = this.convertFormDataToEvent();
+    if (!this.isFormValid()) {
       this.messageService.add({severity: 'error', summary: 'Error', detail: 'Por favor, rellena todos los campos'});
       return;
     }
-      callAPI(this.eventService.createEvent(this.event))
+    callAPI(this.eventService.createEvent(event))
         .then((response: ApiResponse) => {
           if (response.status === 200) {
             this.messageService.add({severity: 'success', summary: 'Evento creado', detail: 'El evento se ha creado correctamente'});
@@ -205,8 +249,21 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
         });
   }
 
+  isFormValid(): boolean {
+    return Object.keys(this.formData).every((key) => this.formData[key] !== '' && !this.isFieldInvalid(key));
+  }
+
   onImageError($event: ErrorEvent) {
     const target = $event.target as HTMLImageElement;
     target.src = 'gg-placeholder-image.png';
+  }
+  validateField(fieldName: string): void {
+    const value = this.formData[fieldName];
+    const rules = this.fieldRules[fieldName];
+    this.errors[fieldName] = rules? validateField(value, rules) || '':'';
+  }
+
+  isFieldInvalid(fieldName: string): boolean {
+    return !!this.errors[fieldName];
   }
 }
