@@ -23,6 +23,7 @@ import { CauseComponent } from '../../component/cause/cause.component';
 import { CauseService } from '../../service/CauseService';
 import Cause from '../../interface/Cause';
 import {AppService} from '../../service/AppService';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
 
 @Component({
   selector: 'app-page-index',
@@ -48,6 +49,7 @@ import {AppService} from '../../service/AppService';
     CauseComponent,
     NgIf,
     NgClass,
+    ProgressSpinnerModule,
   ],
   templateUrl: './view-all-events.component.html',
   styleUrls: ['./view-all-events.component.css'],
@@ -75,6 +77,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   filteredEvents: Event[] = [];
   filteredGroupedEvents: { [causeId: number]: Event[] } = {};
   activeFilter: string | null = null;
+  loadingData: boolean = true;
 
   constructor(
     private renderer: Renderer2,
@@ -86,6 +89,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.renderer.addClass(document.body, 'default-bg');
+    this.loadingData = true;
 
     Promise.all([
       callAPI(this.causeService.getAllCauses()),
@@ -107,6 +111,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.totalRecords = this.filteredEvents.length;
       this.updatePaginatedCauses();
       this.updateActiveFilters();
+      this.loadingData = false;
     }).catch((error) => {
       this.appService.showWErrorInApp(error);
     });
@@ -212,32 +217,36 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.overlay.toggle(event);
   }
 
-  onPopularClick(): void {
+  onPopularClick(searchInput: HTMLInputElement): void {
     if (this.activeFilter === 'popular') {
       this.resetFilter();
     } else {
       this.activeFilter = 'popular';
       this.applyFilters();
     }
+    searchInput.value = '';
   }
 
-  onCheapestClick(): void {
+  onCheapestClick(searchInput: HTMLInputElement): void {
     if (this.activeFilter === 'cheapest') {
       this.resetFilter();
     } else {
       this.activeFilter = 'cheapest';
       this.applyFilters();
     }
+    searchInput.value = '';
   }
 
-  onRecentClick(): void {
+  onRecentClick(searchInput: HTMLInputElement): void {
     if (this.activeFilter === 'recent') {
       this.resetFilter();
     } else {
       this.activeFilter = 'recent';
       this.applyFilters();
     }
+    searchInput.value = '';
   }
+
 
   resetFilter(): void {
     this.activeFilter = null;
