@@ -153,11 +153,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
   onSearch(query: string): void {
     this.searchQuery = query.toLowerCase();
-    this.filteredEvents = this.events.filter((event) =>
-      event.name.toLowerCase().includes(this.searchQuery)
-    );
-    this.totalRecords = this.filteredEvents.length;
-    this.updatePaginatedCauses();
+    this.applyFilters();
   }
 
   onPageChange(event: any): void {
@@ -208,6 +204,12 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     if (this.rangeValues[0] !== 0 || this.rangeValues[1] !== Infinity) {
       result = result.filter(event =>
         event.ticketPrice >= this.rangeValues[0] && event.ticketPrice <= this.rangeValues[1]
+      );
+    }
+
+    if (this.searchQuery) {
+      result = result.filter(event =>
+        event.name.toLowerCase().includes(this.searchQuery)
       );
     }
 
