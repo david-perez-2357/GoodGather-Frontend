@@ -1,4 +1,4 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, ElementRef, OnDestroy, OnInit, Renderer2, ViewChild} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, OnInit, Renderer2,} from '@angular/core';
 import { StepperModule } from 'primeng/stepper';
 import { Button } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -19,10 +19,6 @@ import {convertToLocationList} from '@/method/location-methods';
 import Location from '@/interface/Location';
 import {MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
-import * as UC from '@uploadcare/file-uploader';
-import "@uploadcare/file-uploader/web/uc-file-uploader-regular.min.css"
-
-UC.defineComponents(UC);
 
 @Component({
   selector: 'app-organize-event',
@@ -79,33 +75,72 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     name: '',
     code: ''
   }
-  constructor(private renderer: Renderer2, private locationService: LocationService, private eventService: EventService, private messageService: MessageService) {}
 
-  @ViewChild('ctxProvider', {static: true}) ctxProvider!: ElementRef<typeof UC.UploadCtxProvider.prototype>;
+  constructor(private renderer: Renderer2, private locationService: LocationService, private eventService: EventService, private messageService: MessageService) {}
 
   ngOnInit(): void {
     putFormBackground(this.renderer);
+    this.loadCountries();
+    this.initializeImageUpdater();
+    this.setUploaderDefaultText();
+  }
+
+
+  /**
+   * Loads the list of countries from the API and converts them to the desired format.
+   */
+  loadCountries(): void {
     callAPI(this.locationService.getAllCountries())
       .then((countryResponse: ApiResponse) => {
         this.countries = convertToLocationList(countryResponse.data);
       })
       .catch((error: any) => {
-        console.error('Error getting countries:', error);
+        this.messageService.add({severity: 'error', summary: 'Error', detail: 'Error al cargar los países'});
       });
-    this.ctxProvider.nativeElement.addEventListener('data-output', this.handleUploadEvenet);
-    this.ctxProvider.nativeElement.addEventListener('done-flow', this.handleDoneFlow);
   }
 
-  handleUploadEvenet(e: any) {
-    if (!(e instanceof CustomEvent)) {
-      return;
+  /**
+   * Initializes a periodic function to update the event's image from the DOM.
+   */
+  initializeImageUpdater(): void {
+    setInterval(() => {
+      this.updateImageFromDOM();
+      this.updateUploaderText('#my-uploader span', 'Subir imagen');
+    }, 1500);
+  }
+
+  /**
+   * Updates the event's image property based on a specific DOM element's style attribute.
+   */
+  updateImageFromDOM(): void {
+    const imageElement = document.querySelector('.uc-thumb');
+    const styleAttribute = imageElement?.getAttribute('style');
+    const imageSrc = styleAttribute?.split(' ')[1]?.slice(5, -2)?.split('-/')[0];
+
+    if (imageSrc) {
+      this.event.image = imageSrc;
     }
-    console.log(e.detail);
   }
 
-  handleDoneFlow() {
-    console.log('handleDoneFlow');
+  /**
+   * Sets default text for the uploader element on initialization.
+   */
+  setUploaderDefaultText(): void {
+    this.updateUploaderText('.uc-visual-drop-area', 'Subir imagen');
   }
+
+  /**
+   * Updates the inner text of an element selected by a query selector.
+   * @param selector The query selector for the element.
+   * @param text The text to set for the element.
+   */
+  updateUploaderText(selector: string, text: string): void {
+    const element = document.querySelector(selector);
+    if (element) {
+      element.innerHTML = text;
+    }
+  }
+
 
   ngOnDestroy(): void {
     removeFormBackground(this.renderer);
@@ -130,13 +165,13 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     const countryCode = this.country.code;
     this.event.country = this.country.name;
     this.event.province = '';
-    console.log('Country code:', countryCode);
+
     callAPI(this.locationService.getStatesByCountry(countryCode))
       .then((stateResponse: ApiResponse) => {
         this.provinces = convertToLocationList(stateResponse.data);
       })
       .catch((error: any) => {
-        console.error('Error getting states:', error);
+        this.messageService.add({severity: 'error', summary: 'Error', detail: 'Error al cargar las provincias'});
       });
   }
 
@@ -168,5 +203,10 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
         }).catch((error: any) => {
           this.messageService.add(error.toastMessage);
         });
+  }
+
+  onImageError($event: ErrorEvent) {
+    const target = $event.target as HTMLImageElement;
+    target.src = 'gg-placeholder-image.png';
   }
 }

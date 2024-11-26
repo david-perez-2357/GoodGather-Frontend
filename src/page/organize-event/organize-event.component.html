@@ -156,11 +156,11 @@
           </p-button>
         </ng-template>
         <ng-template pTemplate="content" let-prevCallback="prevCallback" let-index="index">
-          <div class="flex flex-column h-auto">
-            <div class="flex-auto flex justify-content-center align-items-center font-medium">
-              <uc-config ctx-name="my-uploader" removeCopyright="true" source-list="local, url, gdrive" pubkey="d1b9085e489afdaa5ef9"></uc-config>
-              <uc-file-uploader-regular ctx-name="my-uploader" class="uc-light uc-green"></uc-file-uploader-regular>
-              <uc-upload-ctx-provider ctx-name="my-uploader" #ctxProvider class="uc-light uc-green"></uc-upload-ctx-provider>
+          <div class="grid grid-cols-1 gap-4 h-auto">
+            <img [src]="event.image" class="w-full max-w-[550px] max-h-[400px] object-cover ml-auto mr-auto h-auto rounded-2xl" alt="event-image" (error)="onImageError($event)" />
+            <div class="flex justify-center items-center font-medium">
+              <uc-config ctx-name="my-uploader" multiple="false" removeCopyright="true" source-list="local, url, gdrive" use-cloud-image-editor="false" img-only="true" pubkey="d1b9085e489afdaa5ef9"></uc-config>
+              <uc-file-uploader-regular ctx-name="my-uploader" class="uc-light uc-green" id="my-uploader"></uc-file-uploader-regular>
             </div>
           </div>
           <div class="flex pt-4 justify-between">
