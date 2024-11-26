@@ -12,7 +12,7 @@ export type DynamicValidationRule = (...args: any[]) => ValidationRule;
 // Colección de reglas de validación estáticas
 export const StaticValidationRules: { [key: string]: ValidationRule } = {
   required: {
-    validate: (value: string) => value.trim() !== '',
+    validate: (value: string) => value != undefined && value.trim() !== '',
     message: 'Este campo es obligatorio',
   },
   email: {
@@ -24,6 +24,11 @@ export const StaticValidationRules: { [key: string]: ValidationRule } = {
     validate: (value: string) =>
       /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(value),
     message: 'Solo se permiten letras y espacios',
+  },
+  onlyNumbersAndSpaces: {
+    validate: (value: string) =>
+      /^[0-9\s]+$/.test(value),
+    message: 'Solo se permiten números y espacios',
   },
   validDate: {
     validate: (value: string) => !isNaN(Date.parse(value)),
@@ -53,7 +58,7 @@ export const DynamicValidationRules: { [key: string]: DynamicValidationRule } = 
         '[]'
       );
     },
-    message: `La fecha debe estar entre ${moment(min).format('DD/MM/YYYY')} y ${moment(max).format('DD/MM/YYYY')}`,
+    message: min === max ? `La fecha debe ser ${moment(min, 'YYYY-MM-DD').format('DD/MM/YYYY')}` : `La fecha debe estar entre ${moment(min, 'YYYY-MM-DD').format('DD/MM/YYYY')} y ${moment(max, 'YYYY-MM-DD').format('DD/MM/YYYY')}`,
   }),
   timeRange: (min: string, max: string) => ({
     validate: (value: string) => {
@@ -65,15 +70,15 @@ export const DynamicValidationRules: { [key: string]: DynamicValidationRule } = 
         '[]'
       );
     },
-    message: `La hora debe estar entre ${moment(min, 'HH:mm').format('HH:mm')} y ${moment(max, 'HH:mm').format('HH:mm')}`,
+    message: min === max ? `La hora debe ser ${min}` : `La hora debe estar entre ${min} y ${max}`,
   }),
   allowedValues: (values: string[]) => ({
     validate: (value: string) => values.includes(value),
-    message: `El valor debe ser uno de los siguientes: ${values.join(', ')}`,
+    message: values.length === 1 ? `El valor permitido es ${values[0]}` : `Los valores permitidos son ${values.join(', ')}`,
   }),
   lengthRange: (min: number, max: number) => ({
     validate: (value: string) => value.length >= min && value.length <= max,
-    message: `El valor debe tener entre ${min} y ${max} caracteres`,
+    message: min === max ? `La longitud debe ser de ${min} caracteres` : `La longitud debe estar entre ${min} y ${max} caracteres`,
   }),
 };
 
