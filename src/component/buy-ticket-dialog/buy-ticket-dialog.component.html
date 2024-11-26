@@ -1,0 +1,370 @@
+<p-dialog
+  header="Header"
+  [(visible)]="visible"
+  [modal]="true"
+  [style]="{ width: '35rem', 'border-radius': '1rem', 'overflow': 'hidden' }"
+  [closable]="false">
+  <ng-template pTemplate="header">
+    <div class="flex items-center justify-center gap-2">
+      <p-avatar class="rounded overflow-hidden h-[32px]" image="https://api.dicebear.com/9.x/thumbs/svg?seed=Pepe123" size="normal"/>
+      <span class="font-bold white-space-nowrap">Pepe rodriguez torres</span> <!-- TODO: Change to user name -->
+    </div>
+  </ng-template>
+  <p-stepper [(activeStep)]="stepActive">
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+        <p-button (click)="onClick.emit()" icon="pi pi-ticket" [outlined]="index > stepActive" [severity]="index <= stepActive ? 'primary' : 'secondary'">
+        </p-button>
+      </ng-template>
+      <ng-template pTemplate="content" let-nextCallback="nextCallback">
+        <div class="flex flex-col gap-8">
+          <p-accordion class="rounded w-full bg-gray-50" *ngIf="ticketsBought.length > 0">
+            <p-accordionTab>
+              <ng-template pTemplate="header" class="flex items-center gap-3">
+                <span class="text-lg">Entradas compradas para este evento</span>
+                <p-badge [value]="numTicketsBought" class="ml-auto mr-2" />
+              </ng-template>
+              <div class="grid grid-cols-1 justify-items-center gap-4 sm:grid-cols-3 justify-center">
+                <div style="background-image: url('/gg-ticket-template.png')" class="w-[112px] flex justify-center items-center h-[50px] bg-cover bg-no-repeat" *ngFor="let date of ticketsBoughtDates">
+                  <span class="text-white font-bold mr-1">{{ date }}</span>
+                </div>
+              </div>
+              <div class="flex items-center mt-5 gap-4 px-4 p-2 bg-cyan-100 rounded text-cyan-700">
+                <i class="pi pi-info-circle"></i>
+                <span>La fecha que se muestra en la entrada es la fecha en la que se realizó la compra</span>
+              </div>
+            </p-accordionTab>
+          </p-accordion>
+
+          <div class="flex flex-col sm:grid grid-cols-2 justify-center items-center gap-10">
+            <div class="flex flex-col gap-3 justify-center items-center">
+              <div class="flex items-center gap-3">
+                <i class="pi pi-user text-lg"></i>
+                <h3 class="text-lg">Cantidad de entradas</h3>
+              </div>
+
+              <p-inputNumber
+                [(ngModel)]="quantity"
+                [showButtons]="true"
+                buttonLayout="horizontal"
+                [step]="1"
+                decrementButtonClass="p-button-outlined"
+                incrementButtonClass="p-button-outlined"
+                incrementButtonIcon="pi pi-plus"
+                decrementButtonIcon="pi pi-minus"
+                inputStyleClass="text-center"
+                [size]="2"
+                [max]="currentMaxQuantity"
+                [min]="currentMaxQuantity == 0 ? 0 : 1"
+                class="{{quantity > ticketsLeft ? 'ng-invalid' : ''}}"
+              />
+            </div>
+
+            <div class="flex flex-col gap-3 justify-center items-center">
+              <div class="flex items-center gap-3">
+                <i class="pi pi-wallet text-lg"></i>
+                <h3 class="text-lg">Precio total</h3>
+              </div>
+
+              <div class="flex items center gap-3">
+                <h1 class="text-2xl font-bold">{{ quantity * ticketPrice }} €</h1>
+              </div>
+            </div>
+
+            <div class="flex flex-col gap-3 justify-center items-center col-span-2" *ngIf="quantity == currentMaxQuantity || quantity > ticketsLeft">
+                <div class="flex items-center gap-4 px-4 p-2 bg-cyan-100 rounded text-cyan-700 w-full"  *ngIf="quantity == currentMaxQuantity">
+                  <i class="pi pi-info-circle"></i>
+                  <span>No se pueden comprar más de 10 entradas por persona, cree una nueva cuenta para comprar más entradas</span>
+                </div>
+
+                <div class="flex items-center gap-4 px-4 p-2 bg-red-100 rounded text-red-700 w-full"  *ngIf="quantity > ticketsLeft">
+                  <i class="pi pi-times-circle"></i>
+                  <span>No hay suficientes entradas disponibles para la cantidad seleccionada</span>
+                </div>
+              </div>
+            </div>
+        </div>
+
+        <div class="flex pt-8 justify-between w-full">
+          <p-button
+            label="Cancelar"
+            icon="pi pi-times"
+            [text]="true"
+            severity="danger"
+            (onClick)="closeDialog()" />
+          <p-button (onClick)="nextCallback.emit()" [text]="true" label="Siguiente" icon="pi pi-arrow-right" iconPos="right" />
+        </div>
+      </ng-template>
+    </p-stepperPanel>
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+        <p-button (click)="onClick.emit()" icon="pi pi-credit-card" [outlined]="index > stepActive" [severity]="index <= stepActive ? 'primary' : 'secondary'">
+        </p-button>
+      </ng-template>
+      <ng-template pTemplate="content" let-prevCallback="prevCallback" let-nextCallback="nextCallback">
+        <p-blockUI [target]="pnl" [blocked]="ticketPrice == 0">
+          <div class="flex items-center flex-col text-center gap-3 max-w-40 bg-white p-4 rounded-xl">
+            <i class="pi pi-star-fill text-3xl text-yellow-500"></i>
+            <h3 class="text-md">Evento gratuito</h3>
+          </div>
+        </p-blockUI>
+        <p-panel #pnl [showHeader]="false">
+          <div class="grid sm:grid-cols-2 grid-cols-1 gap-4 mb-7">
+              <div *ngFor="let paymentMethod of paymentMethods" class="cursor-pointer">
+                <label [for]="paymentMethod.value" class="cursor-pointer gap-3 border flex justify-center border-1 p-4 relative rounded {{ selectedPaymentMethod == paymentMethod.value ? 'bg-cyan-100 text-cyan-700 border-cyan-600' : 'border-gray-400 bg-gray-100 text-gray-800'}}">
+                  <i class="{{ paymentMethod.icon }} text-center text-2xl {{ selectedPaymentMethod == paymentMethod.value ? '' : 'text-gray-500'}}"></i>
+                  <p-radioButton
+                    [inputId]="paymentMethod.value"
+                    name="category"
+                    [value]="paymentMethod.value"
+                    class="absolute top-2 right-2"
+                    [(ngModel)]="selectedPaymentMethod" />
+
+                  {{ paymentMethod.label }}
+                </label>
+              </div>
+            </div>
+
+          <div class="grid p-2 gap-5" *ngIf="selectedPaymentMethod == 'creditCard'">
+            <div>
+              <label for="accountOwner" class="block text-sm font-medium text-gray-700">Titular de la cuenta</label>
+              <input
+                type="text"
+                id="accountOwner"
+                name="accountOwner"
+                [(ngModel)]="creditCardFormData['accountOwner']"
+                [class.ng-invalid]="isFieldInvalid('accountOwner')"
+                [class.ng-dirty]="isFieldInvalid('accountOwner')"
+                (blur)="validateField('accountOwner')"
+                pInputText
+                class="w-full"
+              />
+              <small *ngIf="isFieldInvalid('accountOwner')" class="text-red-500">{{ errors['accountOwner'] }}</small>
+            </div>
+
+            <div class="grid sm:grid-cols-2 grid-cols-1 gap-4">
+              <div>
+                <label for="cardType" class="block text-sm font-medium text-gray-700">Tipo de tarjeta</label>
+                <p-dropdown
+                  [options]="cardTypes"
+                  [(ngModel)]="selectedCardType"
+                  id="cardType"
+                  optionLabel="label"
+                  class="w-full"
+                  styleClass="w-full"
+                  placeholder="Selecciona un tipo de tarjeta" />
+              </div>
+
+              <div>
+                <label for="accountNumber" class="block text-sm font-medium text-gray-700">Número de cuenta</label>
+                <p-inputMask
+                  [mask]="selectedCardType.mask"
+                  [(ngModel)]="creditCardFormData['accountNumber']"
+                  (onBlur)="validateField('accountNumber')"
+                  [class.ng-invalid]="isFieldInvalid('accountNumber')"
+                  [class.ng-dirty]="isFieldInvalid('accountNumber')"
+                  id="accountNumber"
+                  styleClass="w-full"
+                  [placeholder]="selectedCardType.mask"/>
+                <small *ngIf="isFieldInvalid('accountNumber')" class="text-red-500">{{ errors['accountNumber'] }}</small>
+              </div>
+            </div>
+
+            <div class="grid sm:grid-cols-2 grid-cols-1 gap-4">
+              <div>
+                <label for="expirationDate" class="block text-sm font-medium text-gray-700">Fecha de expiración</label>
+                <p-inputMask
+                  mask="99/99"
+                  [(ngModel)]="creditCardFormData['expirationDate']"
+                  (onBlur)="validateField('expirationDate')"
+                  [class.ng-invalid]="isFieldInvalid('expirationDate')"
+                  [class.ng-dirty]="isFieldInvalid('expirationDate')"
+                  id="expirationDate"
+                  placeholder="MM/AA"
+                  styleClass="w-full"
+                ></p-inputMask>
+                <small *ngIf="isFieldInvalid('expirationDate')" class="text-red-500">{{ errors['expirationDate'] }}</small>
+              </div>
+
+              <div>
+                <label for="cvv" class="block text-sm font-medium text-gray-700">CVV</label>
+                <p-inputMask
+                  mask="999"
+                  [(ngModel)]="creditCardFormData['cvv']"
+                  (onBlur)="validateField('cvv')"
+                  [class.ng-invalid]="isFieldInvalid('cvv')"
+                  [class.ng-dirty]="isFieldInvalid('cvv')"
+                  id="cvv"
+                  placeholder="CVV"
+                  styleClass="w-full"
+                ></p-inputMask>
+                <small *ngIf="isFieldInvalid('cvv')" class="text-red-500">{{ errors['cvv'] }}</small>
+              </div>
+            </div>
+          </div>
+
+          <div class="grid p-2 gap-5" *ngIf="selectedPaymentMethod == 'paypal'">
+            <div>
+              <label for="paypalEmail" class="block text-sm font-medium text-gray-700">Email de paypal</label>
+              <input
+                type="text"
+                id="paypalEmail"
+                name="paypalEmail"
+                [(ngModel)]="paypalFormData['paypalEmail']"
+                [class.ng-invalid]="isFieldInvalid('paypalEmail')"
+                [class.ng-dirty]="isFieldInvalid('paypalEmail')"
+                (blur)="validateField('paypalEmail')"
+                pInputText
+                class="w-full"
+              />
+              <small *ngIf="isFieldInvalid('paypalEmail')" class="text-red-500">{{ errors['paypalEmail'] }}</small>
+            </div>
+
+            <div>
+              <label for="paypalPassword" class="block text-sm font-medium text-gray-700">Contraseña de paypal</label>
+              <p-password
+                id="paypalPassword"
+                name="paypalPassword"
+                [(ngModel)]="paypalFormData['paypalPassword']"
+                (onBlur)="validateField('paypalPassword')"
+                [class.ng-invalid]="isFieldInvalid('paypalPassword')"
+                [class.ng-dirty]="isFieldInvalid('paypalPassword')"
+                inputStyleClass="w-full"
+                styleClass="w-full"
+                [feedback]="false"
+                [toggleMask]="true"
+              />
+              <small *ngIf="isFieldInvalid('paypalPassword')" class="text-red-500">{{ errors['paypalPassword'] }}</small>
+            </div>
+          </div>
+        </p-panel>
+
+        <div class="flex pt-4 justify-between w-full">
+          <p-button (onClick)="prevCallback.emit()" [text]="true" label="Atras" severity="secondary" icon="pi pi-arrow-left" />
+          <p-button (onClick)="nextCallback.emit()" [text]="true" label="Siguiente" icon="pi pi-arrow-right" iconPos="right" />
+        </div>
+      </ng-template>
+    </p-stepperPanel>
+    <p-stepperPanel>
+      <ng-template pTemplate="header" let-onClick="onClick" let-index="index">
+        <p-button (click)="onClick.emit()" icon="pi pi-check-square" [outlined]="index > stepActive" [severity]="index <= stepActive ? 'primary' : 'secondary'">
+        </p-button>
+      </ng-template>
+      <ng-template pTemplate="content" let-prevCallback="prevCallback">
+        <div class="flex mb-3 flex-col gap-4 rounded-lg text-center justify-center  mr-auto ml-auto bg-gray-100 p-5">
+          <h2 class="text-2xl font-bold text-gray-800">Resumen de la compra</h2>
+          <div class="flex flex-col gap-2 text-gray-700 ">
+            <div class="flex items-center gap-x-3 flex-col sm:flex-row">
+              <span>Evento:</span>
+              <span class="font-bold">{{ eventName }}</span>
+            </div>
+
+            <div class="flex items-center gap-x-3 flex-col sm:flex-row">
+              <span>Fecha de compra:</span>
+              <span class="font-bold">{{ currentDate }}</span>
+            </div>
+
+            <div class="flex items-center gap-x-3 flex-col sm:flex-row">
+              <span>Cantidad de entradas:</span>
+              <span class="font-bold">{{ quantity }}</span>
+            </div>
+
+            <div class="flex items-center gap-x-3 flex-col sm:flex-row">
+              <span>Validez del metodo de pago:</span>
+              <span class=" flex gap-2 items-center">
+                <ng-container *ngIf="ticketPrice === 0; else checkValidity">
+                <i class="pi pi-check text-sm text-green-600"></i>
+                <span class="text-green-600">Evento gratuito</span>
+              </ng-container>
+
+                <!-- Caso: Chequeo de validez -->
+              <ng-template #checkValidity>
+                <ng-container *ngIf="selectedFormIsValid(); else invalidState">
+                  <i class="pi pi-check text-sm text-green-600"></i>
+                  <span class="text-green-600">Válido</span>
+                </ng-container>
+              </ng-template>
+
+                <!-- Caso: Estado Inválido -->
+              <ng-template #invalidState>
+                <i class="pi pi-times text-sm text-red-600"></i>
+                <span class="text-red-500">Revise los datos de pago</span>
+              </ng-template>
+              </span>
+            </div>
+
+            <div class="flex text-gray-800 mt-5 items-center gap-3 text-xl">
+              <span>Precio total:</span>
+              <span class="font-bold">{{ ticketPrice * quantity }} €</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex pt-4 justify-between w-full">
+
+          <p-button (onClick)="prevCallback.emit()" [text]="true" label="Atras" severity="secondary" icon="pi pi-arrow-left" />
+          <p-button
+            label="Comprar"
+            icon="pi pi-check"
+            severity="primary"
+            [disabled]="!selectedFormIsValid() && ticketPrice !== 0"
+            (onClick)="confirmPurchase($event)"
+          />
+        </div>
+      </ng-template>
+    </p-stepperPanel>
+  </p-stepper>
+  <p-confirmDialog />
+</p-dialog>
+
+<p-dialog
+  [(visible)]="purchaseProcessDialogVisible"
+  header="Procesando compra"
+  [modal]="true"
+  [style]="{ width: '35rem', 'border-radius': '1rem', 'overflow': 'hidden' }"
+  [closable]="false">
+  <ng-template pTemplate="header">
+    <div class="flex items-center justify-center gap-2">
+      <p-avatar class="rounded overflow-hidden h-[32px]" image="https://api.dicebear.com/9.x/thumbs/svg?seed=Pepe123" size="normal"/>
+      <span class="font-bold white-space-nowrap">Pepe rodriguez torres</span> <!-- TODO: Change to user name -->
+    </div>
+  </ng-template>
+
+  <div class="flex flex-col gap-3 mt-6 mb-3 items-center justify-center" *ngIf="purchaseProcessDialogStepActive==1">
+    <p-progressSpinner ariaLabel="loading" />
+    <h2 class="text-xl font-semibold text-gray-700">Procesando compra</h2>
+  </div>
+
+  <div class="flex w-full flex-col gap-8 mt-6" *ngIf="purchaseProcessDialogStepActive>1">
+    <div class="flex items-center gap-5 flex-col justify-center" *ngIf="purchaseProcessDialogStepActive==2">
+      <i class="pi pi-check-circle text-8xl text-green-500"></i>
+      <h2 class="text-xl font-semibold text-gray-700">{{ quantity }} {{ quantity > 1 ? 'entradas compradas' : 'entrada comprada' }} con éxito</h2>
+    </div>
+
+    <div class="flex items-center gap-5 flex-col justify-center" *ngIf="purchaseProcessDialogStepActive==3">
+      <i class="pi pi-times-circle text-8xl text-red-500"></i>
+      <h2 class="text-xl font-semibold text-gray-700">Error al procesar la compra</h2>
+    </div>
+
+    <div class="flex items-center gap-5 flex-col justify-center" *ngIf="purchaseProcessDialogStepActive==4">
+      <i class="pi pi-times-circle text-8xl text-red-500"></i>
+      <h2 class="text-xl font-semibold text-gray-700">No se pueden comprar más de {{ maxQuantity }} entradas por persona</h2>
+    </div>
+
+    <div class="flex gap-2 justify-between w-full">
+      <p-button
+        label="Cerrar"
+        icon="pi pi-times"
+        [text]="true"
+        severity="secondary"
+        (onClick)="closePurchaseProcessDialog()" />
+
+      <p-button
+        label="Volver al inicio"
+        icon="pi pi-home"
+        [text]="true"
+        severity="primary"
+        routerLink = "/"/>
+    </div>
+  </div>
+</p-dialog>
+<p-toast></p-toast>

@@ -1,7 +1,9 @@
 <p-button [style]="{ width: '100%' }"
-          [disabled]="disabled"
+          [disabled]="disabled || !priceLoaded || ticketsLeft === 0"
           label="{{ getLabel() }}"
           icon="pi pi-ticket"
           iconPos="left"
-          class="min-w-24 right-1/2 translate-x-1/2 md:translate-x-0 transform whitespace-nowrap">
+          class="min-w-24 whitespace-nowrap {{ buttonClass }}"
+          (click)="showDialog()">
 </p-button>
+<app-buy-ticket-dialog [visible]="dialogVisible" [ticketsLeft]="ticketsLeft" (closeTicketDialog)="dialogVisible = false" [eventId]="eventId" [ticketPrice]="price" [eventName]="eventName"></app-buy-ticket-dialog>

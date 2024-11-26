@@ -1,18 +1,18 @@
 import {Component, Renderer2, OnInit, OnDestroy} from '@angular/core';
 import {CardModule} from 'primeng/card';
-import {BuyTicketButtonComponent} from '../../component/buy-ticket-button/buy-ticket-button.component';
+import {BuyTicketButtonComponent} from '@/component/buy-ticket-button/buy-ticket-button.component';
 import {ProgressBarModule} from 'primeng/progressbar';
-import {putDefaultBackground, removeDefaultBackground} from '../../method/background-methods';
-import Event from '../../interface/Event';
-import {EventService} from '../../service/EventService';
-import {TicketService} from '../../service/TicketService';
+import {putDefaultBackground, removeDefaultBackground} from '@/method/background-methods';
+import Event from '@/interface/Event';
+import {EventService} from '@/service/EventService';
+import {TicketService} from '@/service/TicketService';
 import { HttpClientModule } from '@angular/common/http';
 import moment from 'moment';
 import {SkeletonModule} from 'primeng/skeleton';
 import {NgIf} from '@angular/common';
-import {callAPI} from '../../method/response-mehods';
-import ApiResponse from '../../interface/ApiResponse';
-import {AppService} from '../../service/AppService';
+import {callAPI} from '@/method/response-mehods';
+import ApiResponse from '@/interface/ApiResponse';
+import {AppService} from '@/service/AppService';
 import {ActivatedRoute} from '@angular/router';
 
 @Component({
@@ -68,8 +68,6 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     const startDate = moment(this.event.startDate, "YYYY-MM-DD HH:mm");
     const endDate = moment(this.event.endDate, "YYYY-MM-DD HH:mm");
 
-    console.log('startDate:', this.event.startDate);
-
     // Usa Moment.js para el formateo de fecha y hora
     const formattedStartDate = startDate.format("DD/MM/YYYY");
     const formattedEndDate = endDate.format("DD/MM/YYYY");
@@ -111,7 +109,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
       })
       .then((ticketResponse: ApiResponse) => {
         if (ticketResponse.status == 200) {
-          this.ticketsBoughtInLast24h = ticketResponse.data;
+          this.ticketsBoughtInLast24h = ticketResponse.data ?? 0;
         }
       })
       .catch((error: any) => {
