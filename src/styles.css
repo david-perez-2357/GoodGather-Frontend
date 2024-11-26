@@ -23,3 +23,22 @@ html, body {
   background: url('assets/gg-default-background-low-quality.png') no-repeat center center fixed;
   background-size: cover;
 }
+
+.p-accordion-tab.p-accordion-tab-active {
+  .p-toggleable-content {
+    height: auto !important;
+    overflow: inherit !important;
+  }
+}
+
+.p-accordion-tab:not(.p-accordion-tab-active) {
+  .p-toggleable-content {
+    height: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+.p-panel-content {
+  padding: 0 !important;
+  border: none !important;
+}
