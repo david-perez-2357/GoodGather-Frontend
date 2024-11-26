@@ -11,11 +11,12 @@
           <div class="flex flex-col gap-6">
             <div>
               <h3 class="text-md font-semibold mb-2">Nombre del evento</h3>
-              <input type="text" placeholder="Escribe aquí un nombre corto y descriptivo para tu evento" pInputText class="p-component w-full"  maxlength="50" [(ngModel)]="event.name"/>
+              <input type="text" placeholder="Escribe aquí un nombre corto y descriptivo para tu evento" pInputText class="p-component w-full"  maxlength="50" [(ngModel)]="formData['name']" [class.ng-invalid]="isFieldInvalid('name')" [class.ng-dirty]="isFieldInvalid('name')" (blur)="validateField('name')"/>
+              <small class="text-red-500" *ngIf="isFieldInvalid('name')">{{ errors['name'] }}</small>
             </div>
             <div>
               <h3 class="text-md font-semibold mb-2">Causa</h3>
-              <p-dropdown [style]="{'width': '100%'}" [options]="causes" [(ngModel)]="event.idCause" optionValue="id" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Selecciona una causa">
+              <p-dropdown [style]="{'width': '100%'}" [options]="causes" optionValue="id" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Selecciona una causa" [(ngModel)]="formData['cause']">
                 <ng-template pTemplate="selectedItem" let-selectedOption>
                   <div class="flex align-items-center gap-2">
                     <div>{{ selectedOption.name }}</div>
@@ -32,7 +33,7 @@
             <div class="flex gap-4 w-full lg:grid grid-cols-[2fr_2fr_3fr] flex flex-col">
               <div class="flex flex-col">
                 <h3 class="text-md font-semibold mb-2">País</h3>
-                <p-dropdown [style]="{'width': '100%'}" [options]="countries" [(ngModel)]="country"  [showClear]="false" optionLabel="name" [filter]="true" filterBy="name"  placeholder="Selecciona un país" (onChange)="countryChange()">
+                <p-dropdown [style]="{'width': '100%'}" [options]="countries" [showClear]="false" optionLabel="name" [filter]="true" filterBy="name"  placeholder="Selecciona un país" (onChange)="countryChange()" [(ngModel)]="formData['country']">
                   <ng-template pTemplate="selectedItem" let-selectedOption>
                     <div class="flex align-items-center gap-2">
                       <div>{{ selectedOption.name }}</div>
@@ -47,7 +48,7 @@
               </div>
               <div class="flex flex-col">
                 <h3 class="text-md font-semibold mb-2">Provincia</h3>
-                <p-dropdown [style]="{'width': '100%'}" [options]="provinces" [(ngModel)]="event.province" [showClear]="false" optionValue="name" optionLabel="name" [filter]="true" filterBy="name" [showClear]="false" placeholder="Selecciona una provincia" [disabled]="provinces.length==0">
+                <p-dropdown [style]="{'width': '100%'}" [options]="provinces" [showClear]="false" optionValue="name" optionLabel="name" [filter]="true" filterBy="name" placeholder="Selecciona una provincia" [disabled]="provinces.length==0" [(ngModel)]="formData['province']">
                   <ng-template pTemplate="selectedItem" let-selectedOption>
                     <div class="flex align-items-center gap-2">
                       <div>{{ selectedOption.name }}</div>
@@ -62,12 +63,14 @@
               </div>
               <div class="flex flex-col">
                 <h3 class="text-md font-semibold mb-2">Dirección</h3>
-                <input type="text" placeholder="¿Dónde se va a producir el evento?" pInputText class="p-component w-full" maxlength="100" [(ngModel)]="event.address"/>
+                <input type="text" placeholder="¿Dónde se va a producir el evento?" pInputText class="p-component w-full" maxlength="100" [(ngModel)]="formData['address']" [class.ng-invalid]="isFieldInvalid('address')" [class.ng-dirty]="isFieldInvalid('address')" (blur)="validateField('address')"/>
+                <small class="text-red-500" *ngIf="isFieldInvalid('address')">{{ errors['address'] }}</small>
               </div>
             </div>
             <div>
               <h3 class="text-md font-semibold mb-2">Descripción Detallada</h3>
-              <textarea placeholder="¿De qué trata el evento?" pInputTextarea [autoResize]="true" class="w-full resize-none" rows="5" [(ngModel)]="event.description"></textarea>
+              <textarea placeholder="¿De qué trata el evento?" pInputTextarea [autoResize]="true" class="w-full resize-none" rows="5" [(ngModel)]="formData['description']" [class.ng-invalid]="isFieldInvalid('description')" [class.ng-dirty]="isFieldInvalid('description')" (blur)="validateField('description')"></textarea>
+              <small class="text-red-500" *ngIf="isFieldInvalid('description')">{{ errors['description'] }}</small>
             </div>
           </div>
           <div class="flex pt-4 justify-end">
@@ -95,14 +98,14 @@
                     <h4 class="text-sm font-semibold mb-2">Precio del ticket</h4>
                     <i class="pi pi-question-circle text-sm cursor-pointer" pTooltip="Se refiere al precio individual para asistir al evento"></i>
                   </div>
-                  <p-inputNumber [min]="0.00" [max]="1000.00" [step]="0.01" currency="EUR" class="w-full" styleClass="w-full" inputStyleClass="w-full" [(ngModel)]="event.ticketPrice" [mode]="'currency'"></p-inputNumber>
+                  <p-inputNumber [min]="0.00" [max]="1000.00" [step]="0.01" currency="EUR" class="w-full" styleClass="w-full" inputStyleClass="w-full" [(ngModel)]="formData['ticketPrice']" [mode]="'currency'"></p-inputNumber>
                 </div>
                 <div class="flex flex-col">
                   <div class="flex flex-row items-center gap-1.5">
                     <h4 class="text-sm font-semibold mb-2">Plazas Máximas</h4>
                     <i class="pi pi-question-circle text-sm cursor-pointer" pTooltip="Se refiere al número máximo de tickets que se pueden vender en el evento"></i>
                   </div>
-                  <p-inputNumber [min]="0" [max]="1000000" [step]="1" suffix=" personas" class="w-full" styleClass="w-full" inputStyleClass="w-full" [(ngModel)]="event.capacity"/>
+                  <p-inputNumber [min]="1" [max]="1000000" [step]="1" suffix=" personas" class="w-full" styleClass="w-full" inputStyleClass="w-full" [(ngModel)]="formData['capacity']"/>
                 </div>
               </div>
             </div>
@@ -117,11 +120,11 @@
                   <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
                     <div>
                       <h5 class="text-xs font-semibold mb-2">Fecha</h5>
-                      <input type="date" pInputText class="p-component w-full" [min]="minStartDateDate" [(ngModel)]="startDateDate" (change)="dateAndTimeValidator($event)"/>
+                      <input type="date" pInputText class="p-component w-full" [min]="minStartDateDate" [(ngModel)]="formData['startDate']" (change)="dateAndTimeValidator($event)"/>
                     </div>
                     <div>
                       <h5 class="text-xs font-semibold mb-2">Hora</h5>
-                      <input type="time" pInputText class="p-component w-full" [(ngModel)]="startDateHour" (change)="dateAndTimeValidator($event)"/>
+                      <input type="time" pInputText class="p-component w-full" [(ngModel)]="formData['startTime']" (change)="dateAndTimeValidator($event)"/>
                     </div>
                   </div>
                 </div>
@@ -130,11 +133,11 @@
                   <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
                     <div>
                       <h5 class="text-xs font-semibold mb-2">Fecha</h5>
-                      <input type="date" pInputText class="p-component w-full" [min]="startDateDate" [(ngModel)]="endDateDate" (change)="dateAndTimeValidator($event)"/>
+                      <input type="date" pInputText class="p-component w-full" [min]="formData['startDate']" [(ngModel)]="formData['endDate']" (change)="dateAndTimeValidator($event)"/>
                     </div>
                     <div>
                       <h5 class="text-xs font-semibold mb-2">Hora</h5>
-                      <input type="time" pInputText class="p-component w-full" [(ngModel)]="endDateHour" (change)="dateAndTimeValidator($event)"/>
+                      <input type="time" pInputText class="p-component w-full" [(ngModel)]="formData['endTime']" (change)="dateAndTimeValidator($event)"/>
                     </div>
                   </div>
                 </div>
@@ -157,10 +160,11 @@
         </ng-template>
         <ng-template pTemplate="content" let-prevCallback="prevCallback" let-index="index">
           <div class="grid grid-cols-1 gap-4 h-auto">
-            <img [src]="event.image" class="w-full max-w-[550px] max-h-[400px] object-cover ml-auto mr-auto h-auto rounded-2xl" alt="event-image" (error)="onImageError($event)" />
+            <img [src]="formData['image']" class="w-full max-w-[550px] max-h-[400px] object-cover ml-auto mr-auto h-auto rounded-2xl" alt="event-image" (error)="onImageError($event)" />
             <div class="flex justify-center items-center font-medium">
               <uc-config ctx-name="my-uploader" multiple="false" removeCopyright="true" source-list="local, url, gdrive" use-cloud-image-editor="false" img-only="true" pubkey="d1b9085e489afdaa5ef9"></uc-config>
               <uc-file-uploader-regular ctx-name="my-uploader" class="uc-light uc-green" id="my-uploader"></uc-file-uploader-regular>
+              <uc-upload-ctx-provider ctx-name="my-uploader" #ctxProvider></uc-upload-ctx-provider>
             </div>
           </div>
           <div class="flex pt-4 justify-between">
