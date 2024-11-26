@@ -132,9 +132,14 @@
                 type="text"
                 id="accountOwner"
                 name="accountOwner"
+                [(ngModel)]="creditCardFormData['accountOwner']"
+                [class.ng-invalid]="isFieldInvalid('accountOwner')"
+                [class.ng-dirty]="isFieldInvalid('accountOwner')"
+                (blur)="validateField('accountOwner')"
                 pInputText
                 class="w-full"
               />
+              <small *ngIf="isFieldInvalid('accountOwner')" class="text-red-500">{{ errors['accountOwner'] }}</small>
             </div>
 
             <div class="grid sm:grid-cols-2 grid-cols-1 gap-4">
@@ -154,10 +159,14 @@
                 <label for="accountNumber" class="block text-sm font-medium text-gray-700">Número de cuenta</label>
                 <p-inputMask
                   [mask]="selectedCardType.mask"
-                  [(ngModel)]="accountNumber"
+                  [(ngModel)]="creditCardFormData['accountNumber']"
+                  (onBlur)="validateField('accountNumber')"
+                  [class.ng-invalid]="isFieldInvalid('accountNumber')"
+                  [class.ng-dirty]="isFieldInvalid('accountNumber')"
                   id="accountNumber"
                   styleClass="w-full"
                   [placeholder]="selectedCardType.mask"/>
+                <small *ngIf="isFieldInvalid('accountNumber')" class="text-red-500">{{ errors['accountNumber'] }}</small>
               </div>
             </div>
 
@@ -166,22 +175,30 @@
                 <label for="expirationDate" class="block text-sm font-medium text-gray-700">Fecha de expiración</label>
                 <p-inputMask
                   mask="99/99"
-                  [(ngModel)]="expirationDate"
+                  [(ngModel)]="creditCardFormData['expirationDate']"
+                  (onBlur)="validateField('expirationDate')"
+                  [class.ng-invalid]="isFieldInvalid('expirationDate')"
+                  [class.ng-dirty]="isFieldInvalid('expirationDate')"
                   id="expirationDate"
                   placeholder="MM/AA"
                   styleClass="w-full"
                 ></p-inputMask>
+                <small *ngIf="isFieldInvalid('expirationDate')" class="text-red-500">{{ errors['expirationDate'] }}</small>
               </div>
 
               <div>
                 <label for="cvv" class="block text-sm font-medium text-gray-700">CVV</label>
                 <p-inputMask
                   mask="999"
-                  [(ngModel)]="cvv"
+                  [(ngModel)]="creditCardFormData['cvv']"
+                  (onBlur)="validateField('cvv')"
+                  [class.ng-invalid]="isFieldInvalid('cvv')"
+                  [class.ng-dirty]="isFieldInvalid('cvv')"
                   id="cvv"
                   placeholder="CVV"
                   styleClass="w-full"
                 ></p-inputMask>
+                <small *ngIf="isFieldInvalid('cvv')" class="text-red-500">{{ errors['cvv'] }}</small>
               </div>
             </div>
           </div>
@@ -193,10 +210,14 @@
                 type="text"
                 id="paypalEmail"
                 name="paypalEmail"
-                [(ngModel)]="paypalEmail"
+                [(ngModel)]="paypalFormData['paypalEmail']"
+                [class.ng-invalid]="isFieldInvalid('paypalEmail')"
+                [class.ng-dirty]="isFieldInvalid('paypalEmail')"
+                (blur)="validateField('paypalEmail')"
                 pInputText
                 class="w-full"
               />
+              <small *ngIf="isFieldInvalid('paypalEmail')" class="text-red-500">{{ errors['paypalEmail'] }}</small>
             </div>
 
             <div>
@@ -204,12 +225,16 @@
               <p-password
                 id="paypalPassword"
                 name="paypalPassword"
-                [(ngModel)]="paypalPassword"
+                [(ngModel)]="paypalFormData['paypalPassword']"
+                (onBlur)="validateField('paypalPassword')"
+                [class.ng-invalid]="isFieldInvalid('paypalPassword')"
+                [class.ng-dirty]="isFieldInvalid('paypalPassword')"
                 inputStyleClass="w-full"
                 styleClass="w-full"
                 [feedback]="false"
                 [toggleMask]="true"
               />
+              <small *ngIf="isFieldInvalid('paypalPassword')" class="text-red-500">{{ errors['paypalPassword'] }}</small>
             </div>
           </div>
         </p-panel>
@@ -246,9 +271,25 @@
 
             <div class="flex items-center gap-x-3 flex-col sm:flex-row">
               <span>Validez del metodo de pago:</span>
-              <span class="text-green-600 flex gap-2 items-center">
-                <i class="pi pi-check text-sm"></i>
-                <span>Evento gratuito</span>
+              <span class=" flex gap-2 items-center">
+                <ng-container *ngIf="ticketPrice === 0; else checkValidity">
+                <i class="pi pi-check text-sm text-green-600"></i>
+                <span class="text-green-600">Evento gratuito</span>
+              </ng-container>
+
+                <!-- Caso: Chequeo de validez -->
+              <ng-template #checkValidity>
+                <ng-container *ngIf="selectedFormIsValid(); else invalidState">
+                  <i class="pi pi-check text-sm text-green-600"></i>
+                  <span class="text-green-600">Válido</span>
+                </ng-container>
+              </ng-template>
+
+                <!-- Caso: Estado Inválido -->
+              <ng-template #invalidState>
+                <i class="pi pi-times text-sm text-red-600"></i>
+                <span class="text-red-500">Revise los datos de pago</span>
+              </ng-template>
               </span>
             </div>
 
@@ -265,6 +306,7 @@
             label="Comprar"
             icon="pi pi-check"
             severity="primary"
+            [disabled]="!selectedFormIsValid() && ticketPrice !== 0"
             (onClick)="confirmPurchase($event)"
           />
         </div>
