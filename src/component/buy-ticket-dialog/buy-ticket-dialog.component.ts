@@ -320,7 +320,6 @@ export class BuyTicketDialogComponent implements OnInit {
     const value = this.creditCardFormData[fieldName] || this.paypalFormData[fieldName];
     const rules = this.fieldRules[fieldName];
     this.errors[fieldName] = rules ? validateField(value, rules) || '' : '';
-    console.log(value, this.errors[fieldName]);
   }
 
   isFieldInvalid(fieldName: string): boolean {
