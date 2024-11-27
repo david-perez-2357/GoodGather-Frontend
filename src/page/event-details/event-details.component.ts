@@ -107,6 +107,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     callAPI(this.eventService.getEvent(this.eventId))
       .then((eventResponse: ApiResponse) => {
         this.setEvent(eventResponse);
+        this.event.boughtTickets = eventResponse.data?.boughtTickets ?? 0;
 
         return callAPI(this.ticketService.getTicketsBoughtInLast24h(this.eventId));
       })
