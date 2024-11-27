@@ -14,6 +14,9 @@ import {callAPI} from '@/method/response-mehods';
 import ApiResponse from '@/interface/ApiResponse';
 import {AppService} from '@/service/AppService';
 import {ActivatedRoute} from '@angular/router';
+import "moment/locale/es";
+
+moment.locale("es");
 
 @Component({
   selector: 'app-event-details',
