@@ -31,7 +31,7 @@ export class BuyTicketButtonComponent {
       return 'Cargando precio...';
     }
 
-    if (this.ticketsLeft === 0) {
+    if (this.ticketsLeft <= 0) {
       return 'AGOTADO';
     }
 

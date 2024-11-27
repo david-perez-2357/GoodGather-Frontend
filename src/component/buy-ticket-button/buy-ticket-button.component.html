@@ -1,5 +1,5 @@
 <p-button [style]="{ width: '100%' }"
-          [disabled]="disabled || !priceLoaded || ticketsLeft === 0"
+          [disabled]="disabled || !priceLoaded || ticketsLeft <= 0"
           label="{{ getLabel() }}"
           icon="pi pi-ticket"
           iconPos="left"
