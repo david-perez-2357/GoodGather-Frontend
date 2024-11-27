@@ -128,4 +128,12 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     const target = $event.target as HTMLImageElement;
     target.src = 'gg-placeholder-image.png';
   }
+
+  isEventFinished() {
+    return moment().isAfter(this.event.endDate);
+  }
+
+  isEventHappening() {
+    return moment().isBetween(this.event.startDate, this.event.endDate);
+  }
 }
