@@ -197,6 +197,11 @@ export class BuyTicketDialogComponent implements OnInit {
       return;
     }
 
+    if (this.quantity > this.ticketsLeft) {
+      this.messageService.add({ severity: 'error', summary: 'Error', detail: `Solo quedan ${this.ticketsLeft} entradas disponibles para este evento` });
+      return;
+    }
+
     this.confirmationService.confirm({
       target: event.target as EventTarget,
       message: `Estás a punto de comprar ${this.quantity} ${this.quantity === 1 ? 'entrada' : 'entradas'} para el evento ${this.eventName} por un total de ${this.quantity * this.ticketPrice} €. ¿Deseas continuar?`,
@@ -242,11 +247,6 @@ export class BuyTicketDialogComponent implements OnInit {
     this.quantity = 1;
     this.selectedPaymentMethod = 'creditCard';
     this.selectedCardType = this.cardTypes[0];
-    // this.accountNumber = '';
-    // this.expirationDate = '';
-    // this.cvv = 0;
-    // this.paypalEmail = '';
-    // this.paypalPassword = '';
     this.creditCardFormData = {
       accountNumber: '',
       expirationDate: '',

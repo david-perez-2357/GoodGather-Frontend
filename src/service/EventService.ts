@@ -12,7 +12,7 @@ export class EventService {
     return this.http.get<Event>(`/api/event/${id}`, { withCredentials: true });
   }
 
-  getAllEvents(): Observable<Event[]> {
-    return this.http.get<Event[]>('/api/event', { withCredentials: true });
+  createEvent(event: Event): Observable<Event> {
+    return this.http.post<Event>('/api/event', event, { withCredentials: true });
   }
 }
