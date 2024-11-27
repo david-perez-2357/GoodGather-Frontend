@@ -2,7 +2,7 @@
   <div class="w-fit p-4 pb-1 bg-white rounded-lg justify-center align-middle border border-1 border-gray-300">
     <h4 class="w-full text-center text-xl font-semibold">Elige Tu Aventura</h4>
     <div class="gap-16 flex sm:flex-row p-6 text-xl flex-wrap align-middle items-center justify-center">
-      <div class="flex flex-col text-center gap-3 p-4 rounded-xl cursor-pointer max-w-36"
+      <div class="flex flex-col text-center gap-3 p-4 rounded-xl cursor-pointer max-w-36 min-w-36"
            [ngClass]="{'bg-green-500': activeFilter === 'cheapest', 'hover:bg-green-50': activeFilter !== 'cheapest'}"
            (click)="onCheapestClick(searchInput)">
         <i class="pi pi-wallet text-6xl"
@@ -10,7 +10,7 @@
         <h4 class="font-semibold"
             [ngClass]="{'text-white': activeFilter === 'cheapest', 'text-green-600': activeFilter !== 'cheapest'}">Más barato</h4>
       </div>
-      <div class="flex flex-col text-center gap-3 p-4 rounded-xl cursor-pointer max-w-36"
+      <div class="flex flex-col text-center gap-3 p-4 rounded-xl cursor-pointer max-w-36 min-w-36"
            [ngClass]="{'bg-green-500': activeFilter === 'popular', 'hover:bg-green-50': activeFilter !== 'popular'}"
            (click)="onPopularClick(searchInput)">
         <i class="pi pi-user text-6xl"
@@ -18,7 +18,7 @@
         <h4 class="font-semibold"
             [ngClass]="{'text-white': activeFilter === 'popular', 'text-green-600': activeFilter !== 'popular'}">Populares</h4>
       </div>
-      <div class="flex flex-col text-center gap-3 p-4 rounded-xl cursor-pointer max-w-36"
+      <div class="flex flex-col text-center gap-3 p-4 rounded-xl cursor-pointer max-w-36 min-w-36"
            [ngClass]="{'bg-green-500': activeFilter === 'recent', 'hover:bg-green-50': activeFilter !== 'recent'}"
            (click)="onRecentClick(searchInput)">
         <i class="pi pi-clock text-6xl"
@@ -30,7 +30,7 @@
 
   </div>
   <div class="w-full p-4 bg-white rounded-2xl flex sm:flex-col  align-middle justify-center flex-col sm:gap-5 gap-5 items-center  border border-1 border-gray-300">
-    <div class="w-full p-4 bg-white rounded-2xl flex sm:flex-row  align-middle justify-center flex-col  items-center">
+    <div class="w-full p-4 bg-white rounded-2xl flex sm:flex-row  align-middle justify-center flex-col  items-center gap-6 sm:gap-0">
       <div class="w-full flex flex-row align-middle justify-end items-center">
         <p-iconField iconPosition="left" class="w-11/12">
           <p-inputIcon styleClass="pi pi-search"></p-inputIcon>
@@ -51,7 +51,8 @@
           [loading]="loading"
           class="p-button-rounded"
           (onClick)="toggleOverlay($event)"
-          [badge]="activeFilters > 0 ? activeFilters.toString() : undefined">
+          [badge]="activeFilters > 0 ? activeFilters.toString() : undefined"
+          badgeClass="text-gray-600">
         </p-button>
         <p-overlayPanel #overlay styleClass="rounded-xl shadow-xl">
           <div class="flex flex-col gap-10 p-3 align-middle items-center pb-8">
@@ -67,7 +68,6 @@
                 </p-selectButton>
               </div>
             </div>
-
             <div class="flex flex-col gap-3 align-middle items-center">
               <label class="font-semibold text-xl">Precio</label>
               <div class="flex sm:flex-row flex-col">
@@ -126,7 +126,7 @@
 
         <!-- Eventos -->
         <div class="flex flex-col w-full gap-3 p-5 items-center">
-          <div class="flex flex-col sm:gap-3 sm:w-full gap-8" *ngIf="filteredGroupedEvents[cause.id]?.length">
+          <div class="flex flex-col sm:w-full gap-10 sm:gap-4 mb-28 sm:mb-0" *ngIf="filteredGroupedEvents[cause.id]?.length">
             <app-event *ngFor="let event of filteredGroupedEvents[cause.id]" [event]="event"></app-event>
           </div>
           <div class="text-center text-gray-500" *ngIf="!filteredGroupedEvents[cause.id]?.length">
