@@ -14,7 +14,7 @@ import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket
 })
 export class BuyTicketButtonComponent {
   @Input() price: number = 0;
-  @Input() disabled: boolean = false;
+  @Input() eventFinished: boolean = false;
   @Input() eventId: number = 0;
   @Input() eventName: string = '';
   @Input() userId: number = 0;
@@ -29,6 +29,10 @@ export class BuyTicketButtonComponent {
   getLabel(): string {
     if (!this.priceLoaded) {
       return 'Cargando precio...';
+    }
+
+    if (this.eventFinished) {
+      return 'FINALIZADO';
     }
 
     if (this.ticketsLeft <= 0) {
