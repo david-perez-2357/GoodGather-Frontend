@@ -14,6 +14,9 @@ import {callAPI} from '@/method/response-mehods';
 import ApiResponse from '@/interface/ApiResponse';
 import {AppService} from '@/service/AppService';
 import {ActivatedRoute} from '@angular/router';
+import "moment/locale/es";
+
+moment.locale("es");
 
 @Component({
   selector: 'app-event-details',
@@ -104,6 +107,7 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     callAPI(this.eventService.getEvent(this.eventId))
       .then((eventResponse: ApiResponse) => {
         this.setEvent(eventResponse);
+        this.event.boughtTickets = eventResponse.data?.boughtTickets ?? 0;
 
         return callAPI(this.ticketService.getTicketsBoughtInLast24h(this.eventId));
       })
@@ -124,5 +128,13 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   onImageError($event: ErrorEvent) {
     const target = $event.target as HTMLImageElement;
     target.src = 'gg-placeholder-image.png';
+  }
+
+  isEventFinished() {
+    return moment().isAfter(this.event.endDate);
+  }
+
+  isEventHappening() {
+    return moment().isBetween(this.event.startDate, this.event.endDate);
   }
 }

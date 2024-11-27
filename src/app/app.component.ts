@@ -1,10 +1,10 @@
 import {Component, OnInit} from '@angular/core';
 import { RouterOutlet } from '@angular/router';
+import {HeaderComponent} from '@/component/header/header.component';
+import {ServerErrorComponent} from '@/component/server-error/server-error.component';
+import ApiResponse from '@/interface/ApiResponse';
 import {Button, ButtonDirective, ButtonModule} from 'primeng/button';
 import {Ripple} from 'primeng/ripple';
-import {HeaderComponent} from '../component/header/header.component';
-import {ServerErrorComponent} from '../component/server-error/server-error.component';
-import ApiResponse from '../interface/ApiResponse';
 import {NgIf} from '@angular/common';
 import {AppService} from '../service/AppService';
 

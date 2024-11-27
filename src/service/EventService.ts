@@ -11,4 +11,8 @@ export class EventService {
   getEvent(id: number): Observable<Event> {
     return this.http.get<Event>(`/api/event/${id}`, { withCredentials: true });
   }
+
+  createEvent(event: Event): Observable<Event> {
+    return this.http.post<Event>('/api/event', event, { withCredentials: true });
+  }
 }
