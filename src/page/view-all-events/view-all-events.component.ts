@@ -194,10 +194,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.updateActiveFilters();
   }
 
-  incrementFilters(): void {
-    this.activeFilters++;
-  }
-
   applyFilters(): void {
     let result = [...this.events];
 
@@ -224,13 +220,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.filteredEvents = result;
     this.totalRecords = this.filteredEvents.length;
     this.updatePaginatedCauses();
-  }
-
-  load(): void {
-    this.loading = true;
-    setTimeout(() => {
-      this.loading = false;
-    }, 1000);
   }
 
   toggleOverlay(event: MouseEvent): void {
