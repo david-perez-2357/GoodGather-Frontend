@@ -1,9 +1,9 @@
-<div class="md:w-full w-64 md:pt-2 pt-8 md:pb-2 pb-6 md:grid grid-cols-[auto_1fr] gap-3 border border-1 border-green-600 p-2 rounded-xl relative cursor-pointer hover:bg-green-50 hover:border-green-400 bg-white" routerLink="/event/{{ event.id }}">
-  <img src="{{ event.image }}" alt="Event Image" class="md:rounded-xl rounded w-full md:w-[200px] md:h-[140px] h-[130px] object-cover" (error)="onImageError($event)" />
+<div class="max-w-80 md:max-w-none md:pt-2 pt-8 w-full md:pb-2 pb-6 md:grid grid-cols-[auto_1fr] gap-3 border border-1 border-green-600 p-2 rounded-xl relative bg-white">
+  <img src="{{ event.image }}" alt="Event Image" class="sm:min-w-[200px] rounded-lg md:rounded w-full md:w-[200px] md:h-[140px] h-[130px] object-cover" (error)="onImageError($event)" />
 
-  <div class="flex flex-col justify-between px-4 py-3 gap-4 h-full">
+  <div class="flex flex-col w-full justify-between px-4 py-3 overflow-hidden gap-4 h-full">
     <div class="flex flex-col gap-1">
-      <h4 class="text-2xl font-bold text-gray-900 truncate">{{ event.name }}</h4>
+      <a routerLink="/event/{{ event.id }}" class="text-2xl underline-offset-1 font-bold hover:text-green-600 underline text-gray-900 truncate">{{ event.name }}</a>
       <div class="text-gray-700 text-sm truncate">
         <i class="pi pi-map-marker me-2"></i>
         <span>{{ event.address }}, {{ event.province }}, {{ event.country }}</span>
@@ -19,6 +19,6 @@
     </div>
   </div>
 
-  <span class="text-sm text-gray-800 absolute md:top-3 top-2 md:right-3 right-1/2 translate-x-1/2 md:translate-x-0 transform">Dentro de {{ showStartDateDiff() }}</span>
-  <app-buy-ticket-button [eventName]="event.name" [price]=event.ticketPrice [ticketsLeft]="event.capacity - event.boughtTickets" [eventId]=event.id class="absolute md:bottom-3 -bottom-4 md:right-3 right-1/2 translate-x-1/2 md:translate-x-0 transform"></app-buy-ticket-button>
+  <span class="text-sm text-gray-800 truncate absolute top-2 md:right-2 right-1/2 translate-x-1/2 md:translate-x-0 transform">Dentro de {{ showStartDateDiff() }}</span>
+  <app-buy-ticket-button (click)="onBuyButtonClicked.emit(event)" [price]=event.ticketPrice [ticketsLeft]="event.capacity - event.boughtTickets" [eventId]=event.id class="absolute md:bottom-3 -bottom-4 md:right-3 right-1/2 translate-x-1/2 md:translate-x-0 transform"></app-buy-ticket-button>
 </div>

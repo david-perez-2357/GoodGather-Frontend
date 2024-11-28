@@ -1,4 +1,4 @@
-import {Component, Renderer2, OnInit, OnDestroy} from '@angular/core';
+import {Component, Renderer2, OnInit, OnDestroy, ViewChild} from '@angular/core';
 import {CardModule} from 'primeng/card';
 import {BuyTicketButtonComponent} from '@/component/buy-ticket-button/buy-ticket-button.component';
 import {ProgressBarModule} from 'primeng/progressbar';
@@ -18,6 +18,7 @@ import "moment/locale/es";
 import {CauseComponent} from '@/component/cause/cause.component';
 import {CauseService} from '@/service/CauseService';
 import Cause from '@/interface/Cause';
+import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket-dialog.component';
 
 moment.locale("es");
 
@@ -32,6 +33,7 @@ moment.locale("es");
     SkeletonModule,
     NgIf,
     CauseComponent,
+    BuyTicketDialogComponent,
   ],
   templateUrl: './event-details.component.html',
   styles: ``
@@ -39,6 +41,7 @@ moment.locale("es");
 
 export class EventDetailsComponent implements OnInit, OnDestroy {
   contentLoaded: boolean = false;
+  buyTicketDialogVisible: boolean = false;
 
   eventId: number = 1;
   event: Event = {} as Event;
@@ -54,6 +57,13 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
               private appService: AppService,
               private causeService: CauseService,
               private route: ActivatedRoute) { }
+
+  @ViewChild(BuyTicketDialogComponent) child!: BuyTicketDialogComponent;
+
+  showBuyTicketDialog() {
+    this.child.showDialog();
+    this.buyTicketDialogVisible = true;
+  }
 
   calculateTicketPercentage() {
     return (this.event.boughtTickets / this.event.capacity) * 100;

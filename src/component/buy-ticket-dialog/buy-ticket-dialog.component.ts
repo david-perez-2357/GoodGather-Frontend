@@ -77,6 +77,7 @@ export class BuyTicketDialogComponent implements OnInit {
   @Input() eventName: string = '';
   @Input() ticketPrice: number = 0;
   @Input() ticketsLeft: number = 10;
+  @Input() onHomePage: boolean = false;
   @Output() closeTicketDialog = new EventEmitter<void>();
 
   // Estado del proceso de compra
@@ -257,6 +258,7 @@ export class BuyTicketDialogComponent implements OnInit {
       password: ''
     };
     this.updateMaxQuantity();
+    this.errors = {};
     this.stepActive = 0;
   }
 
