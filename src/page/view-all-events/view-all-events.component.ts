@@ -242,6 +242,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.resetFilter();
     } else {
       this.activeFilter = 'popular';
+      this.scrollToTarget();
       this.applyFilters();
     }
     searchInput.value = '';
@@ -252,6 +253,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.resetFilter();
     } else {
       this.activeFilter = 'cheapest';
+      this.scrollToTarget();
       this.applyFilters();
     }
     searchInput.value = '';
@@ -262,9 +264,17 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.resetFilter();
     } else {
       this.activeFilter = 'recent';
+      this.scrollToTarget();
       this.applyFilters();
     }
     searchInput.value = '';
+  }
+
+  scrollToTarget() {
+    const target = document.getElementById('scrollDiv');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
   }
 
   resetFilter(): void {
