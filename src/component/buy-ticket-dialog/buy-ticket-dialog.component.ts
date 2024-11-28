@@ -204,7 +204,7 @@ export class BuyTicketDialogComponent implements OnInit {
 
     this.confirmationService.confirm({
       target: event.target as EventTarget,
-      message: `Estás a punto de comprar ${this.quantity} ${this.quantity === 1 ? 'entrada' : 'entradas'} para el evento ${this.eventName} por un total de ${this.quantity * this.ticketPrice} €. ¿Deseas continuar?`,
+      message: `Estás a punto de comprar ${this.quantity} ${this.quantity === 1 ? 'entrada' : 'entradas'} para el evento ${this.eventName} por un total de ${ (this.quantity * this.ticketPrice).toFixed(2) } €. ¿Deseas continuar?`,
       header: 'Confirmación de compra',
       icon: 'pi pi-info-circle',
       acceptLabel: 'Confirmar',
@@ -220,7 +220,7 @@ export class BuyTicketDialogComponent implements OnInit {
   async purchaseTicket() {
     const ticket: Ticket = {
       id: 0,
-      price: this.ticketPrice * this.quantity,
+      price: Number((this.ticketPrice * this.quantity).toFixed(2)),
       amount: this.quantity,
       purchaseDate: moment().format('YYYY-MM-DD HH:mm'),
       idEvent: this.eventId,
