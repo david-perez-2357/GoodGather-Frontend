@@ -14,15 +14,15 @@ import { PaginatorModule } from 'primeng/paginator';
 import { Ripple } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { EventService } from '../../service/EventService';
-import { callAPI } from '../../method/response-mehods';
-import Event from '../../interface/Event';
-import { EventComponent } from '../../component/event/event.component';
+import { EventService } from '@/service/EventService';
+import { callAPI } from '@/method/response-mehods';
+import Event from '@/interface/Event';
+import { EventComponent } from '@/component/event/event.component';
 import { HttpClientModule } from '@angular/common/http';
-import { CauseComponent } from '../../component/cause/cause.component';
-import { CauseService } from '../../service/CauseService';
-import Cause from '../../interface/Cause';
-import { AppService } from '../../service/AppService';
+import { CauseComponent } from '@/component/cause/cause.component';
+import { CauseService } from '@/service/CauseService';
+import Cause from '@/interface/Cause';
+import { AppService } from '@/service/AppService';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 
 @Component({
