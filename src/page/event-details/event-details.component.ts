@@ -34,7 +34,7 @@ moment.locale("es");
     CauseComponent,
   ],
   templateUrl: './event-details.component.html',
-  styles: ``,
+  styles: ``
 })
 
 export class EventDetailsComponent implements OnInit, OnDestroy {
@@ -113,7 +113,9 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
         this.cause = causeResponse.data;
         this.causeFunds = causeFundsResponse.data;
         this.contentLoaded = true;
-      }).catch(this.catchErrorMessage);
+      }).catch((error) => {
+        this.catchErrorMessage(error);
+      });
   }
 
   ngOnDestroy() {
