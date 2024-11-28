@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {IconFieldModule} from 'primeng/iconfield';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {Button} from 'primeng/button';
@@ -7,6 +7,7 @@ import Event from '@/interface/Event';
 import {convertSecondsToString} from '@/method/date-methods';
 import {BuyTicketButtonComponent} from "@/component/buy-ticket-button/buy-ticket-button.component";
 import {RouterLink} from "@angular/router";
+import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket-dialog.component';
 
 @Component({
   selector: 'app-event',
@@ -16,13 +17,15 @@ import {RouterLink} from "@angular/router";
     ProgressBarModule,
     Button,
     BuyTicketButtonComponent,
-    RouterLink
+    RouterLink,
+    BuyTicketDialogComponent
   ],
   templateUrl: './event.component.html',
   styles: ``
 })
 
 export class EventComponent {
+  @Output() onBuyButtonClicked = new EventEmitter<Event>();
   @Input() event: Event = {
     id: 0,
     name: 'Event Name',
