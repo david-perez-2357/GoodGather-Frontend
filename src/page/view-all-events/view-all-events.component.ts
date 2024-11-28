@@ -1,5 +1,5 @@
 import { Component, Renderer2, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import {NgClass, NgForOf, NgIf, NgOptimizedImage} from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { ChipsModule } from 'primeng/chips';
@@ -50,6 +50,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     NgIf,
     NgClass,
     ProgressSpinnerModule,
+    NgOptimizedImage,
   ],
   templateUrl: './view-all-events.component.html',
   styleUrls: ['./view-all-events.component.css'],
@@ -231,6 +232,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.resetFilter();
     } else {
       this.activeFilter = 'popular';
+      this.searchQuery = '';
       this.scrollToTarget();
       this.applyFilters();
     }
@@ -242,6 +244,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.resetFilter();
     } else {
       this.activeFilter = 'cheapest';
+      this.searchQuery = '';
       this.scrollToTarget();
       this.applyFilters();
     }
@@ -253,6 +256,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.resetFilter();
     } else {
       this.activeFilter = 'recent';
+      this.searchQuery = '';
       this.scrollToTarget();
       this.applyFilters();
     }
@@ -268,6 +272,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
   resetFilter(): void {
     this.activeFilter = null;
+    this.searchQuery = '';
     this.filteredEvents = [...this.events];
     this.totalRecords = this.filteredEvents.length;
     this.sliderFilterActive = false;
@@ -276,4 +281,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.value = '';
     this.updatePaginatedCauses();
   }
+
+  protected readonly Object = Object;
 }
