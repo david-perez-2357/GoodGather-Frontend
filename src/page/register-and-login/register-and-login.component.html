@@ -19,19 +19,21 @@
       <div class="w-full space-y-4">
         <div class="flex flex-col">
           <label for="login-username" class="block text-m font-medium text-gray-700">Nombre de Usuario</label>
-          <input class="mb-4" id="login-username" type="text" pInputText
+          <input class="mb-4" id="login-username" type="text" pInputText [(ngModel)]="  username"
           />
         </div>
         <div class="flex flex-col">
           <label for="login-password" class=" block text-m font-medium text-gray-700">Contraseña</label>
           <p-password id="login-password" type="password" [feedback]="false"
                       styleClass="p-password p-component p-inputwrapper p-input-icon-right mb-4"
+                      [(ngModel)]="password"
                       [style]="{'width':'100%'}"
                       [inputStyle]="{'width':'100%'}" [toggleMask]="true"></p-password>
         </div>
         <p-button
           [style]="{'width':'80%', 'margin-top':' 3rem', 'margin-left':'2rem'}"
           type="submit"
+          (onClick)="onLogin()"
           label="Iniciar Sesión"
           icon="pi pi-user"
           styleClass="icon-button"
@@ -44,25 +46,20 @@
       <div  class="w-full space-y-4">
 
         <div  class="flex flex-col">
-          <label for="register-username" class="block text-m font-medium text-gray-700">Nombre de Usuario</label>
-          <input type="text" id="register-username" pInputText
+          <label for="registerUsername" class="block text-m font-medium text-gray-700">Nombre de Usuario</label>
+          <input type="text" id="registerUsername" pInputText
                  class="p-2 border border-gray-300 rounded"
-                 [(ngModel)]="username"
-                 (ngModelChange)="validateUsername()"
+                 [(ngModel)]="user.username"
 
-                 />
-          <p-message
-            *ngIf="usernameError"
-            class=" text-red-600"
-            [text]="usernameError"
-          >
-          </p-message>
+
+          />
         </div>
 
 
         <div class="flex flex-col">
-          <label class=" block text-m font-medium text-gray-700">Contraseña</label>
-          <p-password [(ngModel)]="password" [toggleMask]="true" (ngModelChange)="validatePassword()"
+          <label for="registerPassword" class=" block text-m font-medium text-gray-700">Contraseña</label>
+          <p-password [(ngModel)]="user.password" [toggleMask]="true"
+                      id="registerPassword"
                       class="text-red-600"
                       styleClass="w-full"
                       [inputStyle]="{'width':'100%'}"
@@ -70,27 +67,15 @@
                       mediumLabel="Fortaleza media"
                       strongLabel="Fortaleza alta"
           />
-          <p-message
-            *ngIf="submitted && !validatePassword()"
-            class="text-red-600"
-            [text]="countryError">
-          </p-message>
         </div>
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="flex flex-col">
-            <label for="mail" class="block text-m font-medium text-gray-700">Nombre</label>
-            <input type="text" id="register-firstname" pInputText
+            <label for="registerFirstname" class="block text-m font-medium text-gray-700">Nombre</label>
+            <input type="text" id="registerFirstname" pInputText
                    class="p-2 border border-gray-300 rounded"
-                   [(ngModel)]="firstname"
-                   (ngModelChange)="validateFirstname()"
+                   [(ngModel)]="user.firstname"
             />
-            <p-message
-              *ngIf="firstnameError"
-              class="text-red-600"
-              [text]="firstnameError"
-            >
-            </p-message>
           </div>
 
           <div class="flex flex-col">
@@ -101,68 +86,52 @@
               type="text"
               id="surname"
               class="border rounded-md border-gray-300 p-2"
-              [(ngModel)]="surname"
-              (ngModelChange)="validateSurname()"
+              [(ngModel)]="user.surname"
+
 
             >
-            <p-message
-              *ngIf="surnameError"
-              class="text-red-600"
-              [text]="surnameError"
-            >
-            </p-message>
-
           </div>
         </div>
 
+
+
+
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-        <div class="flex flex-col">
-                    <label for="mail" class="block text-m font-medium text-gray-700">Email</label>
-                    <input
-                      type="email"
-                      id="mail"
-                      pInputText
-                      class="p-2 border border-gray-300 rounded"
-                      [(ngModel)]="email"
-                      (ngModelChange)="validateEmail()"
+          <div class="flex flex-col">
+            <label for="registerEmail" class="block text-m font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              id="registerEmail"
+              pInputText
+              class="p-2 border border-gray-300 rounded"
+              [(ngModel)]="user.email"
+            />
+          </div>
 
-                    />
-          <p-message
-            *ngIf="emailError"
-            class="text-red-600"
-            [text]="emailError">
-          </p-message>
 
+
+          <div class="flex flex-col">
+            <label for="birthdate" class="block  text-m font-medium text-gray-700">
+              Fecha de nacimiento
+            </label>
+            <input
+              type="date"
+              id="birthdate"
+              class="border rounded-md border-gray-300 p-2"
+              [(ngModel)]="user.birthdate"
+            >
+          </div>
         </div>
 
-        <div class="flex flex-col">
-          <label for="birthdate" class="block  text-m font-medium text-gray-700">
-            Fecha de nacimiento
-          </label>
-          <input
-            type="date"
-            id="birthdate"
-            class="border rounded-md border-gray-300 p-2"
-            [(ngModel)]="birthdate"
-            (ngModelChange)="validateBirthdate()"
-          >
-          <p-message
-            *ngIf="birthdateError"
-            class="text-red-600"
-            [text]="birthdateError">
-          </p-message>
 
-        </div>
-        </div>
 
 
         <div  class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="">
             <label class="block text-m font-medium text-gray-700">País</label>
             <p-dropdown [style]="{'width': '100%'}" [options]="countries"
-                        optionValue="code" optionLabel="name"
-                        [(ngModel)]="user.country"
-                         placeholder="Selecciona un país" (onChange)="countryChange()"
+                        [(ngModel)]="country"
+                        placeholder="Selecciona un país" (onChange)="countryChange()"
                         [filter]="true" filterBy="name">
               <ng-template pTemplate="selectedItem" let-selectedOption>
                 <div class="flex align-items-center gap-2">
@@ -175,11 +144,8 @@
                 </div>
               </ng-template>
             </p-dropdown>
-            <p-message
-              *ngIf="submitted && !validateCountry()"
-              class="text-red-600"
-              [text]="countryError">
-            </p-message>
+
+
 
           </div>
           <div class="  ">
@@ -188,7 +154,8 @@
                         optionLabel="name"
                         optionValue="name"
                         [ngModel]="user.province"
-                        [filter]="true" filterBy="name">
+                        [filter]="true" filterBy="name"
+                        (onChange)="prueba($event)"
                         placeholder="Selecciona una provincia" [disabled]="provinces.length==0">
               <ng-template pTemplate="selectedItem" let-selectedOption>
                 <div class="flex align-items-center gap-2">
@@ -201,14 +168,8 @@
                 </div>
               </ng-template>
             </p-dropdown>
-            <p-message
-              *ngIf="submitted && !validateProvince()"
-              class="text-red-600"
-              [text]="provinceError">
-            </p-message>
+
           </div>
-
-
         </div>
 
         <p-button  [style]="{'width':'80%', 'margin-top':' 3rem', 'margin-left':'2rem'}"
@@ -217,6 +178,9 @@
                    label="Registrarse"
                    icon="pi pi-user"
                    styleClass="icon-button"></p-button>
+
+
+
       </div>
     </div>
   </div>
