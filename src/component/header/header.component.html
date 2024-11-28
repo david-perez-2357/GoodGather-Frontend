@@ -1,6 +1,9 @@
-<div class="card relative z-20">
-  <img src="/gg-vine.png" class="absolute h-[60px] z-30 top-[45px] left-[-30px] pointer-events-none" alt="Vine">
-  <img src="/gg-vine.png" class="absolute h-[60px] z-30 top-[45px] right-[-30px] scale-x-[-1] pointer-events-none" alt="Vine">
+<div class="card fixed w-full top-0 z-20">
+  <div class="relative">
+    <img src="/gg-vine.png" class="absolute h-[60px] z-30 top-[45px] left-[-30px] pointer-events-none" alt="Vine">
+    <img src="/gg-vine.png" class="absolute h-[60px] z-30 top-[45px] right-[-30px] scale-x-[-1] pointer-events-none" alt="Vine">
+  </div>
+
   <p-menubar [model]="items">
     <ng-template pTemplate="start">
       <a class="flex items-center gap-3 me-3 ms-2" [routerLink]="['/']">
@@ -15,3 +18,4 @@
     </ng-template>
   </p-menubar>
 </div>
+<span class="block h-16"></span>
