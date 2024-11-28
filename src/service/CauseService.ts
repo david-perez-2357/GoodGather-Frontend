@@ -15,4 +15,8 @@ export class CauseService {
   getAllCauses(): Observable<Cause[]> {
     return this.http.get<Cause[]>('/api/cause', { withCredentials: true });
   }
+
+  getCauseFunds(id: number): Observable<number> {
+    return this.http.get<number>(`/api/cause/${id}/funds`, { withCredentials: true });
+  }
 }

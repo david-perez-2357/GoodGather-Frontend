@@ -15,6 +15,9 @@ import ApiResponse from '@/interface/ApiResponse';
 import {AppService} from '@/service/AppService';
 import {ActivatedRoute} from '@angular/router';
 import "moment/locale/es";
+import {CauseComponent} from '@/component/cause/cause.component';
+import {CauseService} from '@/service/CauseService';
+import Cause from '@/interface/Cause';
 
 moment.locale("es");
 
@@ -28,38 +31,28 @@ moment.locale("es");
     HttpClientModule,
     SkeletonModule,
     NgIf,
+    CauseComponent,
   ],
   templateUrl: './event-details.component.html',
-  styles: ``,
+  styles: ``
 })
 
 export class EventDetailsComponent implements OnInit, OnDestroy {
-  eventLoaded: boolean = false;
-  eventId: number = 1;
+  contentLoaded: boolean = false;
 
-  event: Event = {
-    id: 0,
-    name: 'Event Name',
-    description: 'Event Description',
-    image: 'https://hips.hearstapps.com/hmg-prod/images/calendario-carreras-populares-running-sevilla-2023-1669049504.jpg',
-    startDate: '2023-01-23 00:00:00',
-    endDate: '2024-01-30 13:00:00',
-    capacity: 100,
-    boughtTickets: 25,
-    address: 'The Address',
-    province: 'The Province',
-    country: 'The Country',
-    ticketPrice: 0,
-    deleted: 0,
-    idOwner: 0,
-    idCause: 0
-  }
+  eventId: number = 1;
+  event: Event = {} as Event;
+
+  cause: Cause = {} as Cause;
+  causeFunds: number = 0;
+
   ticketsBoughtInLast24h: number = 0;
 
   constructor(private renderer: Renderer2,
               private eventService: EventService,
               private ticketService: TicketService,
               private appService: AppService,
+              private causeService: CauseService,
               private route: ActivatedRoute) { }
 
   calculateTicketPercentage() {
@@ -93,7 +86,8 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
   setEvent(response: ApiResponse): void {
     if (response.status === 200) {
       this.event = response.data;
-      this.eventLoaded = true;
+    }else {
+      this.catchErrorMessage(response);
     }
   }
 
@@ -109,14 +103,17 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
         this.setEvent(eventResponse);
         this.event.boughtTickets = eventResponse.data?.boughtTickets ?? 0;
 
-        return callAPI(this.ticketService.getTicketsBoughtInLast24h(this.eventId));
-      })
-      .then((ticketResponse: ApiResponse) => {
-        if (ticketResponse.status == 200) {
-          this.ticketsBoughtInLast24h = ticketResponse.data ?? 0;
-        }
-      })
-      .catch((error: any) => {
+        return Promise.all([
+          callAPI(this.ticketService.getTicketsBoughtInLast24h(this.eventId)),
+          callAPI(this.causeService.getCause(this.event.idCause)),
+          callAPI(this.causeService.getCauseFunds(this.event.idCause))
+        ])
+      }).then(([ticketsBoughtInLast24hResponse, causeResponse, causeFundsResponse]: ApiResponse[]) => {
+        this.ticketsBoughtInLast24h = ticketsBoughtInLast24hResponse.data;
+        this.cause = causeResponse.data;
+        this.causeFunds = causeFundsResponse.data;
+        this.contentLoaded = true;
+      }).catch((error) => {
         this.catchErrorMessage(error);
       });
   }
