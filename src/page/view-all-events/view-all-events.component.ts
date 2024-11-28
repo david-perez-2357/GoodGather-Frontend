@@ -67,9 +67,9 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     { label: 'En tu país', value: 'country' },
     { label: 'En tu provincia', value: 'province' },
   ];
-  value: string = 'province'; // Inicialización con el valor por defecto
+  value: string = 'province';
   rangeValues: [number, number] = [0, 1000];
-  activeFilters: number = 1; // Se establece a 1 por defecto, ya que 'province' está seleccionado
+  activeFilters: number = 1;
   first: number = 0;
   rows: number = 10;
   totalRecords: number = 0;
@@ -112,7 +112,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
         this.totalRecords = this.filteredEvents.length;
         this.updatePaginatedCauses();
-        this.updateActiveFilters(); // Verifica los filtros activos al cargar la página
+        this.updateActiveFilters();
         this.loadingData = false;
       })
       .catch((error) => {
@@ -164,34 +164,34 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   }
 
   updateActiveFilters(): void {
-    this.activeFilters = 0; // Reinicia el contador
+    this.activeFilters = 0;
     const [minPrice, maxPrice] = this.rangeValues;
     if (minPrice > 0 || maxPrice < 1000) {
-      this.activeFilters++; // Si el slider tiene algún filtro activado
+      this.activeFilters++;
     }
     if (this.value) {
-      this.activeFilters++; // Si el select tiene una opción seleccionada
+      this.activeFilters++;
     }
   }
 
   onRangeChange(): void {
     if (!this.sliderFilterActive) {
       this.sliderFilterActive = true;
-      this.activeFilters++; // Aumenta el contador cuando el slider cambia
+      this.activeFilters++;
     }
     this.applyFilters();
-    this.updateActiveFilters(); // Actualiza los filtros
+    this.updateActiveFilters();
   }
 
   onSelectChange(): void {
     if (this.value && !this.selectFilterActive) {
       this.selectFilterActive = true;
-      this.activeFilters++; // Aumenta el contador cuando se selecciona una opción válida
+      this.activeFilters++;
     } else if (!this.value && this.selectFilterActive) {
       this.selectFilterActive = false;
-      this.activeFilters--; // Decrementa el contador si no hay opción seleccionada
+      this.activeFilters--;
     }
-    this.updateActiveFilters(); // Actualiza los filtros
+    this.updateActiveFilters();
   }
 
   incrementFilters(): void {
@@ -273,7 +273,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.totalRecords = this.filteredEvents.length;
     this.sliderFilterActive = false;
     this.selectFilterActive = false;
-    this.activeFilters = 0; // Reset to 0
+    this.activeFilters = 0;
     this.value = '';
     this.updatePaginatedCauses();
   }
