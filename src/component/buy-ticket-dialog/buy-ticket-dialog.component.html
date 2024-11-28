@@ -363,7 +363,17 @@
         icon="pi pi-home"
         [text]="true"
         severity="primary"
-        routerLink = "/"/>
+        routerLink = "/"
+        *ngIf="!onHomePage"
+      />
+
+      <p-button
+        label="Volver al evento"
+        icon="pi pi-arrow-left"
+        [text]="true"
+        severity="primary"
+        routerLink = "/event/{{ eventId }}"
+        *ngIf="onHomePage"></p-button>
     </div>
   </div>
 </p-dialog>
