@@ -24,6 +24,7 @@ import { CauseService } from '../../service/CauseService';
 import Cause from '../../interface/Cause';
 import { AppService } from '../../service/AppService';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket-dialog.component';
 
 @Component({
   selector: 'app-page-index',
@@ -50,6 +51,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     NgIf,
     NgClass,
     ProgressSpinnerModule,
+    BuyTicketDialogComponent,
   ],
   templateUrl: './view-all-events.component.html',
   styleUrls: ['./view-all-events.component.css'],
@@ -62,6 +64,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   causes: Cause[] = [];
   paginatedEvents: Event[] = [];
   paginatedCauses: Cause[] = [];
+
   loading = false;
   stateOptions: any[] = [
     { label: 'En tu país', value: 'country' },
@@ -79,6 +82,14 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   activeFilter: string | null = null;
   loadingData: boolean = true;
 
+  buyTicketDialogVisible: boolean = false;
+  buyTicketDialog = {
+    eventId: 0,
+    eventName: '',
+    ticketPrice: 0.0,
+    ticketsLeft: 0,
+  }
+
   sliderFilterActive: boolean = false;
   selectFilterActive: boolean = true;
 
@@ -89,6 +100,22 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     private messageService: MessageService,
     private appService: AppService,
   ) {}
+
+  @ViewChild(BuyTicketDialogComponent) child!: BuyTicketDialogComponent;
+
+  showBuyTicketDialog(event: Event) {
+    this.buyTicketDialog.eventId = event.id;
+    this.buyTicketDialog.eventName = event.name;
+    this.buyTicketDialog.ticketPrice = event.ticketPrice;
+    this.buyTicketDialog.ticketsLeft = event.capacity - event.boughtTickets;
+
+    if (this.buyTicketDialog.eventId !== this.child.eventId) {
+      this.child.resetTicketDialog();
+    }
+
+    this.child.showDialog();
+    this.buyTicketDialogVisible = true;
+  }
 
   ngOnInit(): void {
     this.renderer.addClass(document.body, 'default-bg');
