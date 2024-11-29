@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import {Component, EventEmitter, Output} from '@angular/core';
 import {IconFieldModule} from 'primeng/iconfield';
 import {ProgressBarModule} from 'primeng/progressbar';
 import {Input} from '@angular/core';
@@ -14,13 +14,14 @@ import {RouterLink} from "@angular/router";
     IconFieldModule,
     ProgressBarModule,
     BuyTicketButtonComponent,
-    RouterLink
+    RouterLink,
   ],
   templateUrl: './event.component.html',
   styles: ``
 })
 
 export class EventComponent {
+  @Output() onBuyButtonClicked = new EventEmitter<Event>();
   @Input() event: Event = {
     id: 0,
     name: 'Event Name',
@@ -44,8 +45,11 @@ export class EventComponent {
   }
 
   showStartDateDiff() {
-    const diff = new Date().getTime() - new Date(this.event.startDate).getTime();
-    return convertSecondsToString(diff / 1000);
+    const diff = new Date(this.event.startDate).getTime() - new Date().getTime();
+    if (diff < 0) {
+      return 'En curso';
+    }
+    return 'Dentro de ' + convertSecondsToString(diff / 1000);
   }
 
   onImageError($event: ErrorEvent) {
