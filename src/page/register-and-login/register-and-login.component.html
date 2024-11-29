@@ -19,16 +19,25 @@
       <div class="w-full space-y-4">
         <div class="flex flex-col">
           <label for="loginUsername" class="block text-m font-medium text-gray-700">Nombre de Usuario</label>
-          <input class="mb-4" id="loginUsername" type="text" pInputText [(ngModel)]="loginFormData['loginUsername']"
+          <input id="loginUsername" type="text" pInputText [(ngModel)]="loginFormData['loginUsername']"
+                 [class.ng-invalid]="isFieldInvalid('loginUsername')"
+                 [class.ng-dirty]="isFieldInvalid('loginUsername')"
+                 (blur)="validateField('loginUsername')"
           />
+          <small *ngIf="isFieldInvalid('loginUsername')" class="text-red-500">{{ errors['loginUsername'] }}</small>
         </div>
         <div class="flex flex-col">
           <label for="loginPassword" class=" block text-m font-medium text-gray-700">Contraseña</label>
           <p-password id="loginPassword" type="password" [feedback]="false"
-                      styleClass="p-password p-component p-inputwrapper p-input-icon-right mb-4"
+                      styleClass="p-password p-component p-inputwrapper p-input-icon-right"
                       [(ngModel)]="loginFormData['loginPassword']"
                       [style]="{'width':'100%'}"
-                      [inputStyle]="{'width':'100%'}" [toggleMask]="true"></p-password>
+                      [inputStyle]="{'width':'100%'}" [toggleMask]="true"
+                      [class.ng-invalid]="isFieldInvalid('loginPassword')"
+                      [class.ng-dirty]="isFieldInvalid('loginPassword')"
+                      (onBlur)="validateField('loginPassword')"
+          ></p-password>
+          <small *ngIf="isFieldInvalid('loginPassword')" class="text-red-500">{{ errors['loginPassword'] }}</small>
         </div>
         <p-button
           [style]="{'width':'80%', 'margin-top':' 3rem', 'margin-left':'2rem'}"
@@ -48,32 +57,45 @@
         <div  class="flex flex-col">
           <label for="username" class="block text-m font-medium text-gray-700">Nombre de Usuario</label>
           <input type="text" id="username" pInputText
-                 class="p-2 border border-gray-300 rounded"
                  [(ngModel)]="registerFormData['username']"
+                 [class.ng-invalid]="isFieldInvalid('username')"
+                 [class.ng-dirty]="isFieldInvalid('username')"
+                 (blur)="validateField('username')"
           />
+          <small *ngIf="isFieldInvalid('username')" class="text-red-500">{{ errors['username'] }}</small>
                 </div>
+
+
 
 
         <div class="flex flex-col">
           <label for="password" class=" block text-m font-medium text-gray-700">Contraseña</label>
-          <p-password [(ngModel)]="registerFormData['password']" [toggleMask]="true"
+          <p-password [(ngModel)]="registerFormData['password']" [toggleMask]="true" [feedback]="false"
                       id="password"
-                      class="text-red-600"
+                      type="password"
                       styleClass="w-full"
                       [inputStyle]="{'width':'100%'}"
                       weakLabel="Fortaleza baja"
                       mediumLabel="Fortaleza media"
                       strongLabel="Fortaleza alta"
+                      [class.ng-invalid]="isFieldInvalid('password')"
+                      [class.ng-dirty]="isFieldInvalid('password')"
+                      (onBlur)="validateField('password')"
           />
+          <small *ngIf="isFieldInvalid('password')" class="text-red-500">{{ errors['password'] }}</small>
         </div>
+
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="flex flex-col">
             <label for="firstname" class="block text-m font-medium text-gray-700">Nombre</label>
             <input type="text" id="firstname" pInputText
-                   class="p-2 border border-gray-300 rounded"
                    [(ngModel)]="registerFormData['firstname']"
+                   [class.ng-invalid]="isFieldInvalid('firstname')"
+                   [class.ng-dirty]="isFieldInvalid('firstname')"
+                   (blur)="validateField('firstname')"
             />
+            <small *ngIf="isFieldInvalid('firstname')" class="text-red-500">{{ errors['firstname'] }}</small>
           </div>
 
           <div class="flex flex-col">
@@ -83,9 +105,12 @@
             <input
               type="text"
               id="surname"
-              class="border rounded-md border-gray-300 p-2"
               [(ngModel)]="registerFormData['surname']"
+              [class.ng-invalid]="isFieldInvalid('surname')"
+              [class.ng-dirty]="isFieldInvalid('surname')"
+              (blur)="validateField('surname')"
             >
+            <small *ngIf="isFieldInvalid('surname')" class="text-red-500">{{ errors['surname'] }}</small>
           </div>
         </div>
 
@@ -99,9 +124,12 @@
               type="email"
               id="email"
               pInputText
-              class="p-2 border border-gray-300 rounded"
               [(ngModel)]="registerFormData['email']"
+              [class.ng-invalid]="isFieldInvalid('email')"
+              [class.ng-dirty]="isFieldInvalid('email')"
+              (blur)="validateField('email')"
             />
+            <small *ngIf="isFieldInvalid('email')" class="text-red-500">{{ errors['email'] }}</small>
           </div>
 
 
@@ -113,9 +141,12 @@
             <input
               type="date"
               id="birthdate"
-              class="border rounded-md border-gray-300 p-2"
               [(ngModel)]="registerFormData['birthdate']"
+              [class.ng-invalid]="isFieldInvalid('birthdate')"
+              [class.ng-dirty]="isFieldInvalid('birthdate')"
+              (blur)="validateField('birthdate')"
             >
+            <small *ngIf="isFieldInvalid('birthdate')" class="text-red-500">{{ errors['birthdate'] }}</small>
           </div>
         </div>
 
@@ -129,7 +160,12 @@
                         [(ngModel)]="registerFormData['country']"
                         placeholder="Selecciona un país" (onChange)="countryChange()"
                         [filter]="true" filterBy="name"
-                        id="country">
+                        id="country"
+                        [class.ng-invalid]="isFieldInvalid('country')"
+                        [class.ng-dirty]="isFieldInvalid('country')"
+                        (blur)="validateField('country')"
+            >
+              <small *ngIf="isFieldInvalid('country')" class="text-red-500">{{ errors['country'] }}</small>
               <ng-template pTemplate="selectedItem" let-selectedOption>
                 <div class="flex align-items-center gap-2">
                   <div>{{ selectedOption.name }}</div>
@@ -155,7 +191,12 @@
                         id="province"
                         [(ngModel)]="registerFormData['province']"
                         [filter]="true" filterBy="name"
-                        placeholder="Selecciona una provincia" [disabled]="provinces.length==0">
+                        placeholder="Selecciona una provincia" [disabled]="provinces.length==0"
+                        [class.ng-invalid]="isFieldInvalid('province')"
+                        [class.ng-dirty]="isFieldInvalid('province')"
+                        (blur)="validateField('province')"
+            >
+              <small *ngIf="isFieldInvalid('province')" class="text-red-500">{{ errors['province'] }}</small>
               <ng-template pTemplate="selectedItem" let-selectedOption>
                 <div class="flex align-items-center gap-2">
                   <div>{{ selectedOption.name }}</div>
