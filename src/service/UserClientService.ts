@@ -25,18 +25,13 @@ export class UserClientService {
       { withCredentials: true});
   }
 
-  //
-  // doLogOut():void{
-  //   this.http.post('/api/api/v1/auth/logout',
-  //     { withCredentials: true}).subscribe();
-  //
-  // }
 
-  doLogOut():Observable<void>{
-   return this.http.post<void>('/api/api/v1/auth/logout', {},
-      { withCredentials: true});
+  doLogOut(){
+    this.http.post('/api/api/v1/auth/logout', { withCredentials: true });
 
   }
+
+
 
 
 
