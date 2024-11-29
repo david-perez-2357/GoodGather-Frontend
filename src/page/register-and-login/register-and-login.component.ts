@@ -7,7 +7,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import {DropdownChangeEvent, DropdownModule} from 'primeng/dropdown';
+import {DropdownModule} from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import {CalendarModule} from 'primeng/calendar';
 import {FloatLabelModule} from 'primeng/floatlabel';
@@ -23,7 +23,9 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {UserClientService} from '@/service/UserClientService';
 import {MessageService} from 'primeng/api';
 import UserClient from '@/interface/UserClient';
-// import {validateField, ValidationRule, StaticValidationRules, DynamicValidationRules} from '@/method/validate-methods';
+import {validateField, DynamicValidationRules, StaticValidationRules, ValidationRule} from '@/method/validate-methods';
+import User from '@/interface/User';
+import {ToastModule} from 'primeng/toast';
 
 
 @Component({
@@ -32,7 +34,7 @@ import UserClient from '@/interface/UserClient';
   imports: [
     ReactiveFormsModule, TabViewModule, InputTextModule, PasswordModule, ButtonModule,
     DropdownModule, DialogModule, CalendarModule, FloatLabelModule, FormsModule,
-    InputOtpModule, SelectButtonModule, NgIf, CommonModule, MessageModule
+    InputOtpModule, SelectButtonModule, NgIf, CommonModule, MessageModule, ToastModule
   ],
   templateUrl: './register-and-login.component.html',
   styles: ``,
@@ -41,15 +43,34 @@ import UserClient from '@/interface/UserClient';
 })
 
 export class RegisterAndLoginComponent implements OnInit, OnDestroy {
+  constructor(private renderer: Renderer2,
+              private locationService:LocationService, private route: ActivatedRoute, private router: Router,
+              @Inject(UserClientService)private userClientService:UserClientService, private messageService: MessageService) {
+  }
+
+  stateOptions: any[] = [
+    { label: ' Iniciar sesión', value: 'login' },
+    { label: 'Registrarse', value: 'register' }];
+
+  activeForm: string = '';
 
   countries: Location[] = [];
   provinces:Location[] = [];
   username: string = '';
   password: string = '';
+  country:Location = {
+    name:'',
+    code:''
+  }
 
-  user: UserClient = {
-    id:0,
-    idClient:0,
+  errors: { [key: string]: string } = {};
+
+  loginFormData: { [key: string]: any } ={
+    loginUsername: '',
+    loginPassword:'',
+  }
+
+  registerFormData:{[key:string]:any} ={
     username:'',
     password:'',
     firstname:'',
@@ -59,58 +80,63 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     country:'',
     province:''
 
+}
+
+
+
+  fieldRules: { [key: string]: ValidationRule[] } = {
+    loginUsername:[StaticValidationRules['required']
+
+    ],
+    loginPassword:[
+      StaticValidationRules['required'],
+      StaticValidationRules['alphanumeric'],
+      DynamicValidationRules['lengthRange'](8, 12),
+    ],
+    email:[
+      StaticValidationRules['required'],
+      StaticValidationRules['email']
+
+    ],
+    username:[
+      StaticValidationRules['required'],
+
+    ],
+    password:[
+      StaticValidationRules['required'],
+
+    ],
+    birthdate:[
+      StaticValidationRules['required'],
+      StaticValidationRules['validDate']
+
+    ],
+    firstname:[
+      StaticValidationRules['required'],
+
+    ],
+    surname:[
+      StaticValidationRules['required'],
+
+    ],
+    country:[
+      StaticValidationRules['required'],
+
+    ],
+    province:[
+      StaticValidationRules['required'],
+
+    ]
+
+
   }
 
 
-  // errors: { [key: string]: string } = {};
-
-  // emailFormData: { [key: string]: string } = {
-  //   registerEmail: '',
-  //
-  // };
-  //
-  // passwordFormData: { [key: string]: string } = {
-  //   registerPassword: '',
-  //
-  // };
-
-  // fieldRules: { [key: string]: ValidationRule[] } = {
-  //   registerUsername:[StaticValidationRules['required']
-  //
-  //   ],
-  //   registerPassword:[
-  //     StaticValidationRules['required'],
-  //     StaticValidationRules['alphanumeric'],
-  //     DynamicValidationRules['lengthRange'](8, 12),
-  //   ],
-  //   registerEmail:[
-  //     StaticValidationRules['required'],
-  //     StaticValidationRules['email'],
-  //   ]
-  //
-  // }
-
-
-  // isFieldInvalid(fieldName: string): boolean {
-  //   return !!this.errors[fieldName];
-  // }
-  //
-  // validateField(fieldName: string): void {
-  //   const value = this.emailFormData[fieldName] || this.passwordFormData[fieldName];
-  //   const rules = this.fieldRules[fieldName];
-  //   this.errors[fieldName] = rules ? validateField(value, rules) || '' : '';
-  // }
-
-  stateOptions: any[] = [
-    { label: ' Iniciar sesión', value: 'login' },
-    { label: 'Registrarse', value: 'register' }];
-
-  activeForm: string = '';
-
   countryChange() {
     const countryCode:string = this.country.code;
-    this.user.province='';
-    this.user.country= this.country.name;
+    const user = this.convertFormDataToUser();
+    user.province='';
+    user.country= this.country.name;
     console.log('Country name:', countryCode);
     callAPI(this.locationService.getStatesByCountry(countryCode))
       .then((stateResponse:ApiResponse) =>{
@@ -121,19 +147,6 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
       });
   }
-
-  country:Location = {
-    name:'',
-    code:''
-  }
-
-  // @Inject(UserClientService)private userClientService:UserClientService
-
-  constructor(private renderer: Renderer2,
-              private locationService:LocationService, private route: ActivatedRoute,
-              @Inject(UserClientService)private userClientService:UserClientService, private messageService: MessageService) {
-  }
-
 
   ngOnInit() {
     putFormBackground(this.renderer);
@@ -151,32 +164,89 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   }
 
-  prueba($event: DropdownChangeEvent) {
-    this.user.province = $event.value;
+  // prueba($event: DropdownChangeEvent) {
+  //   this.user.province = $event.value;
+  // }
+
+
+  convertFormDataToLoginUser():User{
+    return {
+      username: this.loginFormData['loginUsername'],
+      password: this.loginFormData['loginPassword']
+    }
+  }
+
+  convertFormDataToUser(): UserClient {
+    return {
+      id: 0,
+      username: this.registerFormData['username'],
+      password: this.registerFormData['password'],
+      idClient: 0,
+      firstname: this.registerFormData['firstname'],
+      surname: this.registerFormData['surname'],
+      email: this.registerFormData['email'],
+      birthdate: this.registerFormData['birthdate'],
+      province: this.registerFormData['province'],
+      country: this.registerFormData['country'],
+    }
   }
 
 
   onSubmit(): void {
-    console.log(this.user);
+    const user = this.convertFormDataToUser();
+    if (!this.isRegisterFormValid()) {
+      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Por favor, rellena todos los campos'});
+      return;
+    }
 
-    callAPI(this.userClientService.createUser(this.user))
+    callAPI(this.userClientService.createUser(user))
       .then((response: ApiResponse) => {
         if (response.status === 200) {
           console.log('usuario registrado')
-          // this.messageService.add({severity: 'success', summary: 'Evento creado', detail: 'El evento se ha creado correctamente'});
         }
-        // else if (response.toastMessage) {
-        //   this.messageService.add(response.toastMessage);
-        // }
+        else if (response.toastMessage) {
+          this.messageService.add(response.toastMessage);
+        }
       }).catch((error: any) => {
         console.log('error en el registro')
-      // this.messageService.add(error.toastMessage);
+      this.messageService.add(error.toastMessage);
     });
   }
 
+  isRegisterFormValid(): boolean {
+    return Object.keys(this.registerFormData).every((key) => this.registerFormData[key] !== '' && !this.isFieldInvalid(key));
+  }
+  isLoginFormValid(): boolean {
+    return Object.keys(this.loginFormData).every((key) => this.loginFormData[key] !== '' && !this.isFieldInvalid(key));
+  }
+
+  validateField(fieldName: string): void {
+    const value = this.registerFormData[fieldName] || this.loginFormData[fieldName];
+    const rules = this.fieldRules[fieldName];
+    this.errors[fieldName] = rules ? validateField(value, rules) || '' : '';
+  }
+
+
+  isFieldInvalid(fieldName: string): boolean {
+    return !!this.errors[fieldName];
+  }
+
+
   onLogin(): void {
-    console.log(this.username, this.password);
-    this.userClientService.doLogin(this.username, this.password);
+    const user = this.convertFormDataToLoginUser();
+    if (!this.isLoginFormValid()) {
+      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Por favor, rellena todos los campos'});
+      return;
+    }
+    callAPI(this.userClientService.doLogin(user))
+      .then((response:ApiResponse)=>{
+        if (response.status === 200){
+          this.router.navigate(['**']);
+        }
+      })
+      .catch((error: any) => {
+        this.messageService.add(error.toastMessage);
+      });
   }
 
 

@@ -18,15 +18,15 @@
       <h2 class="mb-9 text-center text-l font-bold tracking-tight text-gray-600">¡Bienvendido de vuelta!</h2>
       <div class="w-full space-y-4">
         <div class="flex flex-col">
-          <label for="login-username" class="block text-m font-medium text-gray-700">Nombre de Usuario</label>
-          <input class="mb-4" id="login-username" type="text" pInputText [(ngModel)]="  username"
+          <label for="loginUsername" class="block text-m font-medium text-gray-700">Nombre de Usuario</label>
+          <input class="mb-4" id="loginUsername" type="text" pInputText [(ngModel)]="loginFormData['loginUsername']"
           />
         </div>
         <div class="flex flex-col">
-          <label for="login-password" class=" block text-m font-medium text-gray-700">Contraseña</label>
-          <p-password id="login-password" type="password" [feedback]="false"
+          <label for="loginPassword" class=" block text-m font-medium text-gray-700">Contraseña</label>
+          <p-password id="loginPassword" type="password" [feedback]="false"
                       styleClass="p-password p-component p-inputwrapper p-input-icon-right mb-4"
-                      [(ngModel)]="password"
+                      [(ngModel)]="loginFormData['loginPassword']"
                       [style]="{'width':'100%'}"
                       [inputStyle]="{'width':'100%'}" [toggleMask]="true"></p-password>
         </div>
@@ -46,10 +46,10 @@
       <div  class="w-full space-y-4">
 
         <div  class="flex flex-col">
-          <label for="registerUsername" class="block text-m font-medium text-gray-700">Nombre de Usuario</label>
-          <input type="text" id="registerUsername" pInputText
+          <label for="username" class="block text-m font-medium text-gray-700">Nombre de Usuario</label>
+          <input type="text" id="username" pInputText
                  class="p-2 border border-gray-300 rounded"
-                 [(ngModel)]="user.username"
+                 [(ngModel)]="registerFormData['username']"
 
 
           />
@@ -57,9 +57,9 @@
 
 
         <div class="flex flex-col">
-          <label for="registerPassword" class=" block text-m font-medium text-gray-700">Contraseña</label>
-          <p-password [(ngModel)]="user.password" [toggleMask]="true"
-                      id="registerPassword"
+          <label for="password" class=" block text-m font-medium text-gray-700">Contraseña</label>
+          <p-password [(ngModel)]="registerFormData['password']" [toggleMask]="true"
+                      id="password"
                       class="text-red-600"
                       styleClass="w-full"
                       [inputStyle]="{'width':'100%'}"
@@ -71,10 +71,10 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="flex flex-col">
-            <label for="registerFirstname" class="block text-m font-medium text-gray-700">Nombre</label>
-            <input type="text" id="registerFirstname" pInputText
+            <label for="firstname" class="block text-m font-medium text-gray-700">Nombre</label>
+            <input type="text" id="firstname" pInputText
                    class="p-2 border border-gray-300 rounded"
-                   [(ngModel)]="user.firstname"
+                   [(ngModel)]="registerFormData['firstname']"
             />
           </div>
 
@@ -86,9 +86,7 @@
               type="text"
               id="surname"
               class="border rounded-md border-gray-300 p-2"
-              [(ngModel)]="user.surname"
-
-
+              [(ngModel)]="registerFormData['surname']"
             >
           </div>
         </div>
@@ -98,13 +96,13 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="flex flex-col">
-            <label for="registerEmail" class="block text-m font-medium text-gray-700">Email</label>
+            <label for="email" class="block text-m font-medium text-gray-700">Email</label>
             <input
               type="email"
-              id="registerEmail"
+              id="email"
               pInputText
               class="p-2 border border-gray-300 rounded"
-              [(ngModel)]="user.email"
+              [(ngModel)]="registerFormData['email']"
             />
           </div>
 
@@ -118,7 +116,7 @@
               type="date"
               id="birthdate"
               class="border rounded-md border-gray-300 p-2"
-              [(ngModel)]="user.birthdate"
+              [(ngModel)]="registerFormData['birthdate']"
             >
           </div>
         </div>
@@ -128,11 +126,12 @@
 
         <div  class="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <div class="">
-            <label class="block text-m font-medium text-gray-700">País</label>
+            <label for="country" class="block text-m font-medium text-gray-700">País</label>
             <p-dropdown [style]="{'width': '100%'}" [options]="countries"
-                        [(ngModel)]="country"
+                        [(ngModel)]="registerFormData['country']"
                         placeholder="Selecciona un país" (onChange)="countryChange()"
-                        [filter]="true" filterBy="name">
+                        [filter]="true" filterBy="name"
+                        id="country">
               <ng-template pTemplate="selectedItem" let-selectedOption>
                 <div class="flex align-items-center gap-2">
                   <div>{{ selectedOption.name }}</div>
@@ -149,13 +148,14 @@
 
           </div>
           <div class="  ">
-            <label class="block text-m font-medium-text text-gray-700">Provincia</label>
+            <label  for="province" class="block text-m font-medium-text text-gray-700">Provincia</label>
+            <!--(onChange)="prueba($event)"-->
             <p-dropdown [style]="{'width': '100%'}" [options]="provinces"
                         optionLabel="name"
                         optionValue="name"
-                        [ngModel]="user.province"
+                        id="province"
+                        [ngModel]="registerFormData['province']"
                         [filter]="true" filterBy="name"
-                        (onChange)="prueba($event)"
                         placeholder="Selecciona una provincia" [disabled]="provinces.length==0">
               <ng-template pTemplate="selectedItem" let-selectedOption>
                 <div class="flex align-items-center gap-2">
@@ -185,6 +185,7 @@
     </div>
   </div>
 </div>
+<p-toast></p-toast>
 
 
 
