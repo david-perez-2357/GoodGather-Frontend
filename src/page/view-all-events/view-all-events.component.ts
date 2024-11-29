@@ -24,6 +24,7 @@ import { CauseService } from '@/service/CauseService';
 import Cause from '@/interface/Cause';
 import { AppService } from '@/service/AppService';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import {DividerModule} from 'primeng/divider';
 
 @Component({
   selector: 'app-page-index',
@@ -51,6 +52,7 @@ import { ProgressSpinnerModule } from 'primeng/progressspinner';
     NgClass,
     ProgressSpinnerModule,
     NgOptimizedImage,
+    DividerModule,
   ],
   templateUrl: './view-all-events.component.html',
   styleUrls: ['./view-all-events.component.css'],
