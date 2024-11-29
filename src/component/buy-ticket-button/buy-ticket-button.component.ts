@@ -1,6 +1,5 @@
-import {Component, Input, ViewChild} from '@angular/core';
+import {Component, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {Button} from 'primeng/button';
-import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket-dialog.component';
 
 @Component({
   selector: 'app-buy-ticket-button',
@@ -19,6 +18,7 @@ export class BuyTicketButtonComponent {
   @Input() labelBeforePrice: string = '';
   @Input() priceLoaded: boolean = true;
   @Input() buttonClass: string = '';
+  @Output() onButtonClick = new EventEmitter<void>();
 
   getLabel(): string {
     if (!this.priceLoaded) {
