@@ -16,7 +16,7 @@ export class UserClientService {
 // this.http.post('/api/api/v1/auth/authenticate', {username: 'jgarcia', password: '1234'}, { withCredentials: true }).subscribe();
 
   createUser(user:UserClient){
-    this.http.post('/api/client', user, { withCredentials: true }).subscribe();
+    return this.http.post('/api/api/v1/auth/register', user, { withCredentials: true });
   }
 
 

@@ -20,10 +20,9 @@ import Location from '@/interface/Location';
 import {MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
 import {StaticValidationRules, validateField, ValidationRule} from '@/method/validate-methods';
-import * as UC from '@uploadcare/file-uploader';
 import "@uploadcare/file-uploader/web/uc-file-uploader-regular.min.css";
 
-UC.defineComponents(UC);
+// UC.defineComponents(UC);
 
 @Component({
   selector: 'app-organize-event',
@@ -38,7 +37,6 @@ UC.defineComponents(UC);
     TooltipModule,
     NgIf,
     InputNumberModule,
-    NgClass,
     ToastModule
   ],
   templateUrl: './organize-event.component.html',

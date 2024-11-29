@@ -7,7 +7,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import {DropdownModule} from 'primeng/dropdown';
+import {DropdownChangeEvent, DropdownModule} from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import {CalendarModule} from 'primeng/calendar';
 import {FloatLabelModule} from 'primeng/floatlabel';
@@ -131,12 +131,16 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   }
 
+  provinceChange(drop:DropdownChangeEvent){
+    console.log(this.registerFormData['province']);
+    console.log(drop.value);
+
+  }
+
 
   countryChange() {
-    const countryCode:string = this.country.code;
-    const user = this.convertFormDataToUser();
-    user.province='';
-    user.country= this.country.name;
+    const countryCode:string = this.registerFormData['country']?.code;
+    // this.registerFormData['province']='';
     console.log('Country name:', countryCode);
     callAPI(this.locationService.getStatesByCountry(countryCode))
       .then((stateResponse:ApiResponse) =>{
@@ -165,7 +169,7 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
   }
 
   // prueba($event: DropdownChangeEvent) {
-  //   this.user.province = $event.value;
+  //   this.registerFormData['country'] = $event.value;
   // }
 
 
@@ -187,7 +191,7 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
       email: this.registerFormData['email'],
       birthdate: this.registerFormData['birthdate'],
       province: this.registerFormData['province'],
-      country: this.registerFormData['country'],
+      country: this.registerFormData['country'].name,
     }
   }
 
@@ -196,13 +200,15 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     const user = this.convertFormDataToUser();
     if (!this.isRegisterFormValid()) {
       this.messageService.add({severity: 'error', summary: 'Error', detail: 'Por favor, rellena todos los campos'});
+      // console.log(this.registerFormData);
       return;
     }
 
     callAPI(this.userClientService.createUser(user))
       .then((response: ApiResponse) => {
-        if (response.status === 200) {
-          console.log('usuario registrado')
+        if (response.status === 200 || 201) {
+          this.router.navigate(['/login']);
+
         }
         else if (response.toastMessage) {
           this.messageService.add(response.toastMessage);

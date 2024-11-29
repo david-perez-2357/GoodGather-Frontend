@@ -50,10 +50,8 @@
           <input type="text" id="username" pInputText
                  class="p-2 border border-gray-300 rounded"
                  [(ngModel)]="registerFormData['username']"
-
-
           />
-        </div>
+                </div>
 
 
         <div class="flex flex-col">
@@ -149,12 +147,13 @@
           </div>
           <div class="  ">
             <label  for="province" class="block text-m font-medium-text text-gray-700">Provincia</label>
-            <!--(onChange)="prueba($event)"-->
+
             <p-dropdown [style]="{'width': '100%'}" [options]="provinces"
+                        (onChange)="provinceChange($event)"
                         optionLabel="name"
                         optionValue="name"
                         id="province"
-                        [ngModel]="registerFormData['province']"
+                        [(ngModel)]="registerFormData['province']"
                         [filter]="true" filterBy="name"
                         placeholder="Selecciona una provincia" [disabled]="provinces.length==0">
               <ng-template pTemplate="selectedItem" let-selectedOption>
