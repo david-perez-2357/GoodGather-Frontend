@@ -107,6 +107,16 @@
 
               </div>
             </div>
+            <div class="flex flex-col gap-3 align-middle items-center">
+              <label class="font-semibold text-xl">Tickets disponibles</label>
+              <p-inputNumber
+                [(ngModel)]="minTickets"
+                [min]="1"
+                [max]="1000000"
+                [showButtons]="true"
+                (ngModelChange)="onMinTicketsChange()"
+              ></p-inputNumber>
+            </div>
           </div>
         </p-overlayPanel>
       </div>
@@ -138,13 +148,17 @@
           </div>
           <p-divider></p-divider>
         }
-        <div class="flex flex-col items-center overflow-hidden text-center text-gray-500 max-w-52 mr-auto ml-auto" *ngIf="filteredEvents.length === 0">
+        <div class="flex flex-col items-center  text-center text-gray-500 max-w-[208px] mr-auto ml-auto" *ngIf="filteredEvents.length === 0">
           <img src="/gg-not-found.jpg" alt="not-found" class="w-72">
-          <p class="text-xl font-semibold truncate" *ngIf="searchQuery; else noQuery">No se han encontrado eventos para "{{ searchQuery }}"</p>
+          <p class="text-xl font-semibold" *ngIf="searchQuery; else noQuery">No se han encontrado eventos con</p>
+          <p class="text-xl font-semibold break-words max-w-72">
+            "{{ searchQuery }}"
+          </p>
           <ng-template #noQuery>
             <p>No hay eventos disponibles para esta causa.</p>
           </ng-template>
         </div>
+
       </div>
       <div class="card flex justify-center">
         <p-paginator
