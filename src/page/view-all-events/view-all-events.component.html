@@ -1,7 +1,7 @@
-<div class="w-full justify-center align-middle items-center flex flex-col gap-16">
-  <div class="w-fit p-4 pb-1 bg-white rounded-lg justify-center align-middle border border-1 border-gray-300">
-    <h4 class="w-full text-center text-xl font-semibold">Elige Tu Aventura</h4>
-    <div class="gap-16 flex sm:flex-row p-6 text-xl flex-wrap align-middle items-center justify-center">
+<div class="w-full justify-center align-middle items-center flex flex-col gap-12">
+  <div class="w-fit p-4 mt-14 pb-1 bg-white rounded-lg justify-center align-middle border border-1 border-gray-300">
+    <h4 class="w-full text-gray-800 text-center text-xl font-semibold">Elige Tu Aventura</h4>
+    <div class="gap-16 flex lg:flex-row p-6 text-xl flex-wrap align-middle items-center justify-center">
       <div class="flex flex-col text-center gap-3 p-4 rounded-xl cursor-pointer max-w-36 min-w-36"
            [ngClass]="{'bg-green-500': activeFilter === 'cheapest', 'hover:bg-green-50': activeFilter !== 'cheapest'}"
            (click)="onCheapestClick(searchInput)">
@@ -27,23 +27,22 @@
             [ngClass]="{'text-white': activeFilter === 'recent', 'text-green-600': activeFilter !== 'recent'}">Próximos</h4>
       </div>
     </div>
-
   </div>
-  <div class="w-full p-4 bg-white rounded-2xl flex sm:flex-col  align-middle justify-center flex-col sm:gap-5 gap-5 items-center  border border-1 border-gray-300">
-    <div class="w-full p-4 bg-white rounded-2xl flex sm:flex-row  align-middle justify-center flex-col  items-center gap-6 sm:gap-0">
+  <div class="w-full p-4 bg-white rounded-2xl flex lg:flex-col  align-middle justify-center flex-col lg:gap-5 gap-5 items-center  border border-1 border-gray-300">
+    <div id="scrollDiv" class="w-full scroll-mt-24 p-4 bg-white rounded-2xl flex lg:flex-row  align-middle justify-center flex-col  items-center gap-6 lg:gap-0">
       <div class="w-full flex flex-row align-middle justify-end items-center">
         <p-iconField iconPosition="left" class="w-11/12">
           <p-inputIcon styleClass="pi pi-search"></p-inputIcon>
-          <input
-            #searchInput
-            type="text"
-            pInputText
-            placeholder="Buscar evento"
-            class="rounded w-full"
-            (input)="onSearch(searchInput.value)" />
+            <input
+              #searchInput
+              type="text"
+              pInputText
+              placeholder="Buscar evento"
+              class="rounded w-full"
+              (input)="onSearch(searchInput.value)"/>
         </p-iconField>
       </div>
-      <div class="sm:w-1/3 w-full flex justify-center">
+      <div class="lg:w-1/3 w-full flex justify-center">
         <p-button
           label="Filtrar"
           icon="pi pi-sliders-v"
@@ -58,7 +57,7 @@
           <div class="flex flex-col gap-10 p-3 align-middle items-center pb-8">
             <div class="flex flex-col gap-3 align-middle items-center">
               <label class="font-semibold text-xl">Rango de búsqueda</label>
-              <div class="flex gap-3 sm:flex-row flex-col">
+              <div class="flex gap-3 lg:flex-row flex-col">
                 <p-selectButton
                   [options]="stateOptions"
                   [(ngModel)]="value"
@@ -70,7 +69,7 @@
             </div>
             <div class="flex flex-col gap-3 align-middle items-center">
               <label class="font-semibold text-xl">Precio</label>
-              <div class="flex sm:flex-row flex-col">
+              <div class="flex lg:flex-row flex-col">
                 <div class="flex flex-col gap-5">
                   <div class="flex gap-3">
                     <p-inputNumber
@@ -108,6 +107,16 @@
 
               </div>
             </div>
+            <div class="flex flex-col gap-3 align-middle items-center">
+              <label class="font-semibold text-xl">Tickets disponibles</label>
+              <p-inputNumber
+                [(ngModel)]="minTickets"
+                [min]="1"
+                [max]="1000000"
+                [showButtons]="true"
+                (ngModelChange)="onMinTicketsChange()"
+              ></p-inputNumber>
+            </div>
           </div>
         </p-overlayPanel>
       </div>
@@ -118,23 +127,39 @@
     </div>
 
     <div *ngIf="!loadingData" class="flex w-full flex-col gap-5">
-      <div *ngFor="let cause of paginatedCauses" class="flex w-full gap-5 flex-col sm:flex-row">
-        <!-- Causa -->
-        <div class="flex w-full sm:w-1/3 justify-center items-center">
-          <app-cause [cause]="cause"></app-cause>
-        </div>
+      <div class="flex w-full lg:gap-10 flex-col gap-28">
 
-        <!-- Eventos -->
-        <div class="flex flex-col w-full gap-3 p-5 items-center">
-          <div class="flex flex-col sm:w-full gap-10 sm:gap-4 mb-28 sm:mb-0" *ngIf="filteredGroupedEvents[cause.id]?.length">
-            <app-event *ngFor="let event of filteredGroupedEvents[cause.id]" (onBuyButtonClicked)="showBuyTicketDialog($event)" [event]="event"></app-event>
+        @for (cause of paginatedCauses; track cause.id) {
+          <div class="flex w-full gap-5 flex-col p-2 lg:flex-row">
+            <!-- Causa -->
+            <div class="flex w-full lg:w-1/3 justify-center items-center">
+              <app-cause [cause]="cause"></app-cause>
+            </div>
+
+            <!-- Eventos -->
+            <div class="flex flex-col w-full gap-3 p-5 items-center">
+              <!-- Si hay eventos disponibles -->
+
+              <div class="flex flex-col sm:w-full gap-10 sm:gap-4 mb-28 sm:mb-0">
+                <app-event *ngFor="let event of filteredGroupedEvents[cause.id]" (onBuyButtonClicked)="showBuyTicketDialog($event)" [event]="event"></app-event>
+              </div>
+
+            </div>
           </div>
-          <div class="text-center text-gray-500" *ngIf="!filteredGroupedEvents[cause.id]?.length">
+          <p-divider></p-divider>
+        }
+        <div class="flex flex-col items-center  text-center text-gray-500 max-w-[208px] mr-auto ml-auto" *ngIf="filteredEvents.length === 0">
+          <img src="/gg-not-found.jpg" alt="not-found" class="w-72">
+          <p class="text-xl font-semibold" *ngIf="searchQuery; else noQuery">No se han encontrado eventos con</p>
+          <p class="text-xl font-semibold break-words max-w-72">
+            "{{ searchQuery }}"
+          </p>
+          <ng-template #noQuery>
             <p>No hay eventos disponibles para esta causa.</p>
-          </div>
+          </ng-template>
         </div>
-      </div>
 
+      </div>
       <div class="card flex justify-center">
         <p-paginator
           (onPageChange)="onPageChange($event)"
