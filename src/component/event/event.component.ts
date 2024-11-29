@@ -1,13 +1,11 @@
 import {Component, EventEmitter, Output} from '@angular/core';
 import {IconFieldModule} from 'primeng/iconfield';
 import {ProgressBarModule} from 'primeng/progressbar';
-import {Button} from 'primeng/button';
 import {Input} from '@angular/core';
 import Event from '@/interface/Event';
 import {convertSecondsToString} from '@/method/date-methods';
 import {BuyTicketButtonComponent} from "@/component/buy-ticket-button/buy-ticket-button.component";
 import {RouterLink} from "@angular/router";
-import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket-dialog.component';
 
 @Component({
   selector: 'app-event',
@@ -15,10 +13,8 @@ import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket
   imports: [
     IconFieldModule,
     ProgressBarModule,
-    Button,
     BuyTicketButtonComponent,
     RouterLink,
-    BuyTicketDialogComponent
   ],
   templateUrl: './event.component.html',
   styles: ``
