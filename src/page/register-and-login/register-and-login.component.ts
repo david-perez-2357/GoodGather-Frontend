@@ -90,8 +90,6 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     ],
     loginPassword:[
       StaticValidationRules['required'],
-      StaticValidationRules['alphanumeric'],
-      DynamicValidationRules['lengthRange'](8, 12),
     ],
     email:[
       StaticValidationRules['required'],
@@ -104,6 +102,8 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     ],
     password:[
       StaticValidationRules['required'],
+      StaticValidationRules['alphanumeric'],
+      DynamicValidationRules['lengthRange'](8, 8),
 
     ],
     birthdate:[
@@ -227,6 +227,7 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
   }
 
   validateField(fieldName: string): void {
+    console.log(fieldName)
     const value = this.registerFormData[fieldName] || this.loginFormData[fieldName];
     const rules = this.fieldRules[fieldName];
     this.errors[fieldName] = rules ? validateField(value, rules) || '' : '';
@@ -247,7 +248,7 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     callAPI(this.userClientService.doLogin(user))
       .then((response:ApiResponse)=>{
         if (response.status === 200){
-          this.router.navigate(['**']);
+          this.router.navigate(['']);
         }
       })
       .catch((error: any) => {
