@@ -84,6 +84,8 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   filteredGroupedEvents: { [causeId: number]: Event[] } = {};
   activeFilter: string | null = null;
   loadingData: boolean = true;
+  minTickets: number = 1;
+
 
   buyTicketDialogVisible: boolean = false;
   buyTicketDialog = {
@@ -124,7 +126,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.renderer.addClass(document.body, 'default-bg');
     this.loadingData = true;
 
-    // Cargar los eventos y causas
     Promise.all([callAPI(this.causeService.getAllCauses()), callAPI(this.eventService.getAllEvents())])
       .then(([causesResponse, eventsResponse]) => {
         if (causesResponse.status === 200) {
@@ -149,6 +150,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
         this.appService.showWErrorInApp(error);
       });
   }
+
 
   ngOnDestroy(): void {
     this.renderer.removeClass(document.body, 'default-bg');
@@ -195,14 +197,25 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
   updateActiveFilters(): void {
     this.activeFilters = 0;
+
     const [minPrice, maxPrice] = this.rangeValues;
     if (minPrice > 0 || maxPrice < 1000) {
       this.activeFilters++;
     }
+
     if (this.value) {
       this.activeFilters++;
     }
+
+    if (this.minTickets > 0) {
+      this.activeFilters++;
+    }
+
+    if (this.searchQuery) {
+      this.activeFilters++;
+    }
   }
+
 
   onRangeChange(): void {
     if (!this.sliderFilterActive) {
@@ -239,6 +252,12 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       );
     }
 
+    if (this.minTickets > 0) {
+      result = result.filter(event =>
+        (event.capacity - event.boughtTickets) >= this.minTickets
+      );
+    }
+
     if (this.activeFilter === 'popular') {
       result = result.sort((a, b) => b.boughtTickets - a.boughtTickets);
     } else if (this.activeFilter === 'recent') {
@@ -250,7 +269,10 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.filteredEvents = result;
     this.totalRecords = this.filteredEvents.length;
     this.updatePaginatedCauses();
+    this.updateActiveFilters();
   }
+
+
 
   toggleOverlay(event: MouseEvent): void {
     this.overlay.toggle(event);
@@ -291,6 +313,22 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     }
     searchInput.value = '';
   }
+
+  onMinTicketsChange(): void {
+    const wasActive = this.minTickets > 0;
+    const isActive = this.minTickets > 0;
+
+    if (!wasActive && isActive) {
+      this.activeFilters++;
+    } else if (wasActive && !isActive) {
+      this.activeFilters--;
+    }
+
+    this.applyFilters();
+    this.updateActiveFilters();
+  }
+
+
 
   scrollToTarget() {
     const target = document.getElementById('scrollDiv');
