@@ -113,8 +113,10 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.child.resetTicketDialog();
     }
 
-    this.child.showDialog();
-    this.buyTicketDialogVisible = true;
+    setTimeout(() => {
+      this.buyTicketDialogVisible = true;
+      this.child.showDialog();
+    }, 2);
   }
 
   ngOnInit(): void {

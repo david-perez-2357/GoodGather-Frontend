@@ -149,4 +149,4 @@
 
 </div>
 <p-toast></p-toast>
-<app-buy-ticket-dialog [eventId]="buyTicketDialog.eventId" [ticketPrice]=buyTicketDialog.ticketPrice [ticketsLeft]="buyTicketDialog.ticketsLeft" [eventName]="buyTicketDialog.eventName" (closeTicketDialog)="buyTicketDialogVisible = false"></app-buy-ticket-dialog>
+<app-buy-ticket-dialog [onHomePage]="true" [eventId]="buyTicketDialog.eventId" [ticketPrice]=buyTicketDialog.ticketPrice [ticketsLeft]="buyTicketDialog.ticketsLeft" [eventName]="buyTicketDialog.eventName" (closeTicketDialog)="buyTicketDialogVisible = false"></app-buy-ticket-dialog>
