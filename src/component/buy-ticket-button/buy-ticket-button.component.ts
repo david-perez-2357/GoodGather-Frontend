@@ -7,7 +7,6 @@ import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket
   standalone: true,
   imports: [
     Button,
-    BuyTicketDialogComponent
   ],
   templateUrl: './buy-ticket-button.component.html',
   styles: ``
@@ -16,15 +15,10 @@ export class BuyTicketButtonComponent {
   @Input() price: number = 0;
   @Input() eventFinished: boolean = false;
   @Input() eventId: number = 0;
-  @Input() eventName: string = '';
-  @Input() userId: number = 0;
   @Input() ticketsLeft: number = 10;
   @Input() labelBeforePrice: string = '';
   @Input() priceLoaded: boolean = true;
   @Input() buttonClass: string = '';
-  dialogVisible: boolean = false;
-
-  @ViewChild(BuyTicketDialogComponent) child!: BuyTicketDialogComponent;
 
   getLabel(): string {
     if (!this.priceLoaded) {
@@ -44,10 +38,5 @@ export class BuyTicketButtonComponent {
     }
 
     return this.labelBeforePrice + this.price + '€';
-  }
-
-  showDialog() {
-    this.dialogVisible = true;
-    this.child.showDialog();
   }
 }

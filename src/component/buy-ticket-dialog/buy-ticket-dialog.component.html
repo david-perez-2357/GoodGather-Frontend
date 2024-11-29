@@ -67,7 +67,7 @@
               </div>
 
               <div class="flex items center gap-3">
-                <h1 class="text-2xl font-bold">{{ quantity * ticketPrice }} €</h1>
+                <h1 class="text-2xl font-bold">{{ (quantity * ticketPrice).toFixed(2) }} €</h1>
               </div>
             </div>
 
@@ -295,7 +295,7 @@
 
             <div class="flex text-gray-800 mt-5 items-center gap-3 text-xl">
               <span>Precio total:</span>
-              <span class="font-bold">{{ ticketPrice * quantity }} €</span>
+              <span class="font-bold">{{ (ticketPrice * quantity).toFixed(2) }} €</span>
             </div>
           </div>
         </div>
@@ -363,7 +363,17 @@
         icon="pi pi-home"
         [text]="true"
         severity="primary"
-        routerLink = "/"/>
+        routerLink = "/"
+        *ngIf="!onHomePage"
+      />
+
+      <p-button
+        label="Volver al evento"
+        icon="pi pi-arrow-left"
+        [text]="true"
+        severity="primary"
+        routerLink = "/event/{{ eventId }}"
+        *ngIf="onHomePage"></p-button>
     </div>
   </div>
 </p-dialog>
