@@ -119,9 +119,9 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
           callAPI(this.causeService.getCauseFunds(this.event.idCause))
         ])
       }).then(([ticketsBoughtInLast24hResponse, causeResponse, causeFundsResponse]: ApiResponse[]) => {
-        this.ticketsBoughtInLast24h = ticketsBoughtInLast24hResponse.data;
+        this.ticketsBoughtInLast24h = ticketsBoughtInLast24hResponse.data ?? 0;
         this.cause = causeResponse.data;
-        this.causeFunds = causeFundsResponse.data;
+        this.causeFunds = causeFundsResponse.data ?? 0;
         this.contentLoaded = true;
       }).catch((error) => {
         this.catchErrorMessage(error);
