@@ -163,7 +163,6 @@ export class BuyTicketDialogComponent implements OnInit {
     this.updateMaxQuantity();
   }
 
-
   // Funciones relacionadas con el diálogo de compra
   openPurchaseProcessDialog() {
     this.purchaseProcessDialogVisible = true;
@@ -254,8 +253,8 @@ export class BuyTicketDialogComponent implements OnInit {
       cvv: ''
     };
     this.paypalFormData = {
-      email: '',
-      password: ''
+      paypalEmail: '',
+      paypalPassword: ''
     };
     this.updateMaxQuantity();
     this.errors = {};
@@ -264,6 +263,9 @@ export class BuyTicketDialogComponent implements OnInit {
 
   // Funciones relacionadas con la obtención de tickets
   async getBoughtTickets(): Promise<Ticket[]> {
+    this.ticketsBought = [];
+    this.numTicketsBought = 0;
+    // TODO: Cambiar el id del usuario logueado
     return callAPI(this.ticketService.getTicketsBoughtByUserAndEvent(1, this.eventId)).then((response) => {
       return response.data;
     }).catch((error) => {
@@ -275,6 +277,7 @@ export class BuyTicketDialogComponent implements OnInit {
 
   async showDialog() {
     this.visible = true;
+
     this.ticketsBought = await this.getBoughtTickets();
     this.updateNumTicketsBought();
     this.updateMaxQuantity();
