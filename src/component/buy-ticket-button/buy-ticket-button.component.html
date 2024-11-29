@@ -3,5 +3,6 @@
           label="{{ getLabel() }}"
           icon="pi pi-ticket"
           iconPos="left"
+          (click)="onButtonClick.emit()"
           class="min-w-24 whitespace-nowrap {{ buttonClass }}">
 </p-button>
