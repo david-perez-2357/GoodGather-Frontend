@@ -8,6 +8,10 @@ function convertSecondsToString(seconds: any) {
     'segundos': 1,
   }
 
+  if (seconds === 0) {
+    return '0 segundos';
+  }
+
   let roundedNumber = seconds;
   let metric = '';
   let result: any = '';

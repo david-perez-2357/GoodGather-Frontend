@@ -19,6 +19,6 @@
     </div>
   </div>
 
-  <span class="text-sm text-gray-800 truncate absolute top-2 md:right-2 right-1/2 translate-x-1/2 md:translate-x-0 transform">Dentro de {{ showStartDateDiff() }}</span>
+  <span class="text-sm text-gray-800 truncate absolute top-2 md:right-2 right-1/2 translate-x-1/2 md:translate-x-0 transform">{{ showStartDateDiff() }}</span>
   <app-buy-ticket-button (click)="onBuyButtonClicked.emit(event)" [price]=event.ticketPrice [ticketsLeft]="event.capacity - event.boughtTickets" [eventId]=event.id class="absolute md:bottom-3 -bottom-4 md:right-3 right-1/2 translate-x-1/2 md:translate-x-0 transform"></app-buy-ticket-button>
 </div>
