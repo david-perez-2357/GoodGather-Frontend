@@ -22,7 +22,7 @@
 
 
     <p-skeleton height="2rem" styleClass="mt-6" *ngIf="!contentLoaded" />
-    <h2 class="text-3xl text-gray-900 text-center font-bold mt-6" *ngIf="contentLoaded">{{ event.name }}</h2>
+    <h2 class="text-3xl  text-center font-bold mt-6" *ngIf="contentLoaded">{{ event.name }}</h2>
 
     <div class="flex overflow-hidden items-start sm:items-center justify-center mt-1 gap-2 text-lg text-gray-700">
       <i class="pi pi-map-marker mt-1 sm:mt-0"></i>
@@ -79,8 +79,8 @@
           </span>
         </div>
         <app-buy-ticket-button [eventId]="event.id" [eventFinished]="isEventFinished()" [price]=event.ticketPrice [priceLoaded]="contentLoaded" [ticketsLeft]="event.capacity - event.boughtTickets" (click)="showBuyTicketDialog()" labelBeforePrice="Comprar por " buttonClass="absolute -bottom-4 right-1/2 translate-x-1/2 transform"></app-buy-ticket-button>
-        <app-buy-ticket-dialog [eventId]="event.id" [ticketPrice]=event.ticketPrice [ticketsLeft]="event.capacity - event.boughtTickets" [eventName]="event.name" (closeTicketDialog)="buyTicketDialogVisible = false"></app-buy-ticket-dialog>
       </div>
     </div>
   </div>
 </div>
+<app-buy-ticket-dialog [eventId]="event.id" [ticketPrice]=event.ticketPrice [ticketsLeft]="event.capacity - event.boughtTickets" [eventName]="event.name" (closeTicketDialog)="buyTicketDialogVisible = false"></app-buy-ticket-dialog>
