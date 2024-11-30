@@ -1,12 +1,109 @@
 
-<div class="w-full bg-white p-10 mb-10 rounded-xl border border-1 border-gray-300 mt-10 grid grid-cols-[1fr_300px]">
-  <div>
-    Hola
+<div class="w-full bg-white p-9 gap-16 mb-10 rounded-xl border border-1 border-gray-300 mt-10 xl:grid flex flex-col-reverse grid-cols-[1fr_310px]">
+  <div class="xl:grid grid-rows-[64px_1fr] gap-6 flex flex-col">
+    <div class="lg:grid flex flex-col grid-cols-[auto_1fr_auto] gap-2 lg:gap-5">
+      <p-avatar class="rounded-lg mx-auto md-mx-0 overflow-hidden h-[64px]" image="https://api.dicebear.com/9.x/thumbs/svg?seed=Pepe123" size="xlarge"/>
+
+      <div class="flex min-w-[200px] flex-col mb-5 lg:mb-0 mx-auto md-mx-0 text-center lg:text-start justify-between py-1 w-full">
+        <span class="text-xl  font-semibold">Manolo Lama</span>
+        <span class="text-md text-gray-800 font-semibold">23 años</span>
+      </div>
+
+      <div class="grid sm:grid-cols-4 xl:hidden gap-7 sm:gap-2">
+        <div class="w-full bg-green-50 rounded-lg relative border border-1 border-green-600 flex gap-2 justify-center items-center flex-col p-2">
+          <span class="text-sm font-semibold text-gray-900 bg-white absolute -top-3 truncate">Has aportado:</span>
+          <span class="text-lg font-extrabold text-green-600">1,25 €</span>
+        </div>
+
+        <div class="p-2 border justify-center relative text-gray-900 flex-col text-center border-1 border-gray-400 flex rounded-lg gap-2 items-center text-sm font-semibold">
+          <i class="pi pi-bell text-md bg-white p-1 absolute pt-0 -top-3"></i>
+          <span>2 eventos programados</span>
+        </div>
+
+        <div class="p-2 border border-1 flex-col relative justify-center text-gray-900 border-gray-400 text-center flex rounded-lg gap-2 items-center text-sm font-semibold">
+          <i class="pi pi-calendar text-md absolute -top-3 pt-0 bg-white p-1"></i>
+          <span>4 eventos asistidos</span>
+        </div>
+
+        <div class="p-2 border border-1 flex-col  relative justify-center text-gray-900 text-center border-gray-400 flex rounded-lg gap-2 items-center text-sm font-semibold">
+          <i class="pi pi-map text-md absolute -top-3 pt-0 bg-white p-1"></i>
+          <span>1 evento creado</span>
+        </div>
+      </div>
+
+    </div>
+
+    <p-tabView>
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <div class="flex text-sm items-center gap-2 ">
+            <i class="pi pi-ticket"></i>
+            <span>Historial</span>
+          </div>
+        </ng-template>
+        <div class="">
+          <p-table
+            [value]="usersBoughtTickets"
+            [paginator]="true"
+            [rows]="5"
+            [tableStyle]="{ 'min-width': '48rem' }"
+            responsiveLayout="stack"
+            breakpoint="960px"
+            [rowsPerPageOptions]="[5, 10, 20]"
+          >
+            <ng-template pTemplate="header">
+              <tr class="text-semibold">
+                <th class="bg-white p-3 font-bold ps-5" style="width:40%">Evento</th>
+                <th class="bg-white p-3 font-bold text-center" style="width:13%">Cantidad</th>
+                <th class="bg-white p-3 font-bold text-center" style="width:15%">Precio</th>
+                <th class="bg-white p-3 font-bold text-center" style="width:17%">Comprado</th>
+                <th class="bg-white p-3 font-bold text-center" style="width:15%">Estado</th>
+              </tr>
+            </ng-template>
+            <ng-template pTemplate="body" let-ticket>
+              <tr>
+                <td class="overflow-hidden">
+                  <div class="w-ful flex hover:bg-gray-100 p-2 px-4 gap-3 cursor-pointer rounded-lg items-center" routerLink="/event/{{ticket.eventId}}" *ngIf="getEvent(ticket.idEvent).id">
+                    <i class="pi pi-calendar"></i>
+                    <span class="truncate">{{ getEvent(ticket.id).name }}</span>
+                  </div>
+
+                  <div class="w-ful flex  p-2 px-4 gap-3 rounded-lg items-center" *ngIf="!getEvent(ticket.idEvent).id">
+                    <i class="pi pi-times"></i>
+                    <span class="truncate">Evento no encontrado</span>
+                  </div>
+                </td>
+                <td class="text-center">{{ ticket.amount }}</td>
+                <td class="text-center font-semibold">{{ ticket.price }} €</td>
+                <td class="text-center">{{ ticket.purchaseDate }}</td>
+                <td class="text-center"><p-tag severity="success" value="Próximo"></p-tag> </td>
+              </tr>
+            </ng-template>
+          </p-table>
+        </div>
+      </p-tabPanel>
+    </p-tabView>
   </div>
 
-  <div>
-    <div class="w-full bg-green-500">
-      hola
+  <div class="xl:flex hidden flex-col gap-5">
+    <div class="w-full bg-green-50 rounded-lg border border-1 border-green-600 flex gap-5 justify-between pb-10 items-center flex-col p-5">
+      <span class="text-xl font-semibold text-gray-900">Tu ayuda total es de:</span>
+      <span class="text-4xl font-extrabold text-green-600">1,25 €</span>
+    </div>
+
+    <div class="p-4 border text-gray-900 border-1 border-gray-400 w-full flex rounded-lg gap-4 items-center text-md font-semibold">
+      <i class="pi pi-bell text-xl"></i>
+      <span>Tienes 2 eventos programados</span>
+    </div>
+
+    <div class="p-4 border border-1 text-gray-900 border-gray-400 w-full flex rounded-lg gap-4 items-center text-md font-semibold">
+      <i class="pi pi-calendar text-xl"></i>
+      <span>Has asistido a 4 eventos</span>
+    </div>
+
+    <div class="p-4 border border-1 text-gray-900 border-gray-400 w-full flex rounded-lg gap-4 items-center text-md font-semibold">
+      <i class="pi pi-map text-xl"></i>
+      <span>Has creado 1 evento</span>
     </div>
   </div>
 </div>
