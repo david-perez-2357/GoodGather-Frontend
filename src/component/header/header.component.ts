@@ -1,13 +1,17 @@
-import {Component, Inject} from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
 import {MenubarModule} from 'primeng/menubar';
 import {MenuItem, MessageService} from 'primeng/api';
 import {ChipsModule} from 'primeng/chips';
 import {AvatarModule} from 'primeng/avatar';
-import {UserClientService} from '@/service/UserClientService';
-import {callAPI} from '@/method/response-mehods';
-import ApiResponse from '@/interface/ApiResponse';
-import {Router} from '@angular/router';
 import {ToastModule} from 'primeng/toast';
+import ApiResponse from '@/interface/ApiResponse';
+import {callAPI} from '@/method/response-mehods';
+import {Router} from '@angular/router';
+import {UserClientService} from '@/service/UserClientService';
+import {SplitButtonModule} from 'primeng/splitbutton';
+import {MenuModule} from 'primeng/menu';
+import {PasswordModule} from 'primeng/password';
+
 
 @Component({
   selector: 'app-header',
@@ -17,12 +21,15 @@ import {ToastModule} from 'primeng/toast';
     ChipsModule,
     AvatarModule,
     ToastModule,
+    SplitButtonModule,
+    MenuModule,
+    PasswordModule,
   ],
   providers:[MessageService],
   templateUrl: './header.component.html',
   styles: ``
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit{
   items: MenuItem[] = [
     {
       label: 'Inicio',
@@ -35,15 +42,47 @@ export class HeaderComponent {
       routerLink: ['/organize-event']
     },
 
+
   ];
 
-  constructor() {
+  perfil: MenuItem[] | undefined;
+
+
+
+  constructor(@Inject(UserClientService)private userClientService:UserClientService, private router: Router,
+              private messageService: MessageService) {
+  }
+
+  onLogout() {
+    callAPI(this.userClientService.doLogOut())
+      .then((response: ApiResponse) => {
+        if (response.status === 200 || 201) {
+          this.router.navigate(['']);
+        }
+      })
+      .catch((error: any) => {
+        console.error('Logout failed:', error);
+        this.messageService.add(error.toastMessage);
+      });
+  }
+
+  ngOnInit(): void{
+    this.perfil = [
+      {
+        label: 'Login',
+        icon: 'pi pi-sign-in',
+        command: () => {
+          this.router.navigate(['/login']);
+        }
+      },
+      {
+        label: 'Cerrar sesión',
+        icon: 'pi pi-sign-out',
+        command: () => this.onLogout()
+      },
+    ]
+
   }
 
 
-
-
-
-
-
-}
+  }
