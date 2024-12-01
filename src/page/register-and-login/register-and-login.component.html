@@ -99,17 +99,13 @@
           </div>
 
           <div class="flex flex-col">
-            <label for="surname" class="block  text-m font-medium text-gray-700">
-              Apellidos
-            </label>
-            <input
-              type="text"
-              id="surname"
-              [(ngModel)]="registerFormData['surname']"
-              [class.ng-invalid]="isFieldInvalid('surname')"
-              [class.ng-dirty]="isFieldInvalid('surname')"
-              (blur)="validateField('surname')"
-            >
+            <label for="surname" class="block text-m font-medium text-gray-700">Apellidos</label>
+            <input type="text" id="surname" pInputText
+                   [(ngModel)]="registerFormData['surname']"
+                   [class.ng-invalid]="isFieldInvalid('surname')"
+                   [class.ng-dirty]="isFieldInvalid('surname')"
+                   (blur)="validateField('surname')"
+            />
             <small *ngIf="isFieldInvalid('surname')" class="text-red-500">{{ errors['surname'] }}</small>
           </div>
         </div>
@@ -132,13 +128,12 @@
             <small *ngIf="isFieldInvalid('email')" class="text-red-500">{{ errors['email'] }}</small>
           </div>
 
-
-
           <div class="flex flex-col">
             <label for="birthdate" class="block  text-m font-medium text-gray-700">
               Fecha de nacimiento
             </label>
             <input
+              pInputText
               type="date"
               id="birthdate"
               [(ngModel)]="registerFormData['birthdate']"
@@ -148,6 +143,7 @@
             >
             <small *ngIf="isFieldInvalid('birthdate')" class="text-red-500">{{ errors['birthdate'] }}</small>
           </div>
+
         </div>
 
 
@@ -185,7 +181,6 @@
             <label  for="province" class="block text-m font-medium-text text-gray-700">Provincia</label>
 
             <p-dropdown [style]="{'width': '100%'}" [options]="provinces"
-                        (onChange)="provinceChange($event)"
                         optionLabel="name"
                         optionValue="name"
                         id="province"

@@ -7,7 +7,7 @@ import { TabViewModule } from 'primeng/tabview';
 import { InputTextModule } from 'primeng/inputtext';
 import { PasswordModule } from 'primeng/password';
 import { ButtonModule } from 'primeng/button';
-import {DropdownChangeEvent, DropdownModule} from 'primeng/dropdown';
+import {DropdownModule} from 'primeng/dropdown';
 import { DialogModule } from 'primeng/dialog';
 import {CalendarModule} from 'primeng/calendar';
 import {FloatLabelModule} from 'primeng/floatlabel';
@@ -17,7 +17,7 @@ import {CommonModule, NgIf} from '@angular/common';
 import {putFormBackground, removeFormBackground} from '@/method/background-methods';
 import {MessageModule} from 'primeng/message';
 import {callAPI} from '@/method/response-mehods';
-import ApiResponse from '../../interface/ApiResponse';
+import ApiResponse from '@/interface/ApiResponse';
 import {convertToLocationList} from '@/method/location-methods';
 import {ActivatedRoute, Router} from '@angular/router';
 import {UserClientService} from '@/service/UserClientService';
@@ -56,8 +56,6 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   countries: Location[] = [];
   provinces:Location[] = [];
-  username: string = '';
-  password: string = '';
   country:Location = {
     name:'',
     code:''
@@ -131,17 +129,10 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   }
 
-  provinceChange(drop:DropdownChangeEvent){
-    console.log(this.registerFormData['province']);
-    console.log(drop.value);
-
-  }
 
 
   countryChange() {
     const countryCode:string = this.registerFormData['country']?.code;
-    // this.registerFormData['province']='';
-    console.log('Country name:', countryCode);
     callAPI(this.locationService.getStatesByCountry(countryCode))
       .then((stateResponse:ApiResponse) =>{
         this.provinces = convertToLocationList(stateResponse.data);
@@ -167,11 +158,6 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     this.activeForm =this.route.snapshot.url[0].path === 'login' ? 'login' : 'register';
 
   }
-
-  // prueba($event: DropdownChangeEvent) {
-  //   this.registerFormData['country'] = $event.value;
-  // }
-
 
   convertFormDataToLoginUser():User{
     return {
@@ -200,22 +186,26 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     const user = this.convertFormDataToUser();
     if (!this.isRegisterFormValid()) {
       this.messageService.add({severity: 'error', summary: 'Error', detail: 'Por favor, rellena todos los campos'});
-      // console.log(this.registerFormData);
       return;
     }
 
     callAPI(this.userClientService.createUser(user))
       .then((response: ApiResponse) => {
-        if (response.status === 200 || 201) {
-          this.router.navigate(['/login']);
+        if (response.status === 200 || response.status === 201) {
+          this.router.navigate(['login']);
+
+        } else if (response.toastMessage) {
+          this.messageService.add(response.toastMessage);
 
         }
-        else if (response.toastMessage) {
-          this.messageService.add(response.toastMessage);
-        }
       }).catch((error: any) => {
-        console.log('error en el registro')
-      this.messageService.add(error.toastMessage);
+      if (error && error.toastMessage){
+        this.messageService.add({ severity: 'error', summary: 'Registration Failed', detail: "El email ya existe"});
+      }
+      else{
+        this.messageService.add(error.toastMessage);
+      }
+
     });
   }
 
@@ -227,7 +217,6 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
   }
 
   validateField(fieldName: string): void {
-    console.log(fieldName)
     const value = this.registerFormData[fieldName] || this.loginFormData[fieldName];
     const rules = this.fieldRules[fieldName];
     this.errors[fieldName] = rules ? validateField(value, rules) || '' : '';
