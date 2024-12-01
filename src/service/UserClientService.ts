@@ -1,10 +1,10 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
-import {catchError, Observable, tap} from 'rxjs';
 import UserClient from '@/interface/UserClient';
 import User from '@/interface/User';
 import {Router} from '@angular/router';
-import ApiResponse from '@/interface/ApiResponse';
+import {Observable} from 'rxjs';
+
 
 
 
@@ -26,8 +26,11 @@ export class UserClientService {
   }
 
 
-  doLogOut(){
-    this.http.post('/api/api/v1/auth/logout', { withCredentials: true });
+
+
+  doLogOut():Observable<any>{
+    return this.http.post('/api/api/v1/auth/logout', {},
+      { withCredentials: true, responseType: 'text' });
 
   }
 
