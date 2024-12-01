@@ -28,6 +28,7 @@ import User from '@/interface/User';
 import {ToastModule} from 'primeng/toast';
 
 
+
 @Component({
   selector: 'app-register-and-login',
   standalone: true,
@@ -200,13 +201,16 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
         }
       }).catch((error: any) => {
       if (error && error.toastMessage){
-        this.messageService.add({ severity: 'error', summary: 'Registration Failed', detail: "El email ya existe"});
+        this.messageService.add({ severity: 'error', summary: 'Registration Failed', detail: "El usuario ya existe"});
       }
       else{
         this.messageService.add(error.toastMessage);
       }
 
     });
+
+
+
   }
 
   isRegisterFormValid(): boolean {
