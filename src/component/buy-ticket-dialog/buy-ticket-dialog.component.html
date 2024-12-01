@@ -6,8 +6,8 @@
   [closable]="false">
   <ng-template pTemplate="header">
     <div class="flex items-center justify-center gap-2">
-      <p-avatar class="rounded overflow-hidden h-[32px]" image="https://api.dicebear.com/9.x/thumbs/svg?seed=Pepe123" size="normal"/>
-      <span class="font-bold white-space-nowrap">Pepe rodriguez torres</span> <!-- TODO: Change to user name -->
+      <p-avatar class="rounded overflow-hidden h-[32px]" image="https://api.dicebear.com/9.x/thumbs/svg?seed={{ getUsername() }}" size="normal"/>
+      <span class="font-bold white-space-nowrap">{{ getFullUserName() }}</span>
     </div>
   </ng-template>
   <p-stepper [(activeStep)]="stepActive">
@@ -324,8 +324,8 @@
   [closable]="false">
   <ng-template pTemplate="header">
     <div class="flex items-center justify-center gap-2">
-      <p-avatar class="rounded overflow-hidden h-[32px]" image="https://api.dicebear.com/9.x/thumbs/svg?seed=Pepe123" size="normal"/>
-      <span class="font-bold white-space-nowrap">Pepe rodriguez torres</span> <!-- TODO: Change to user name -->
+      <p-avatar class="rounded overflow-hidden h-[32px]" image="https://api.dicebear.com/9.x/thumbs/svg?seed={{ getUsername() }}" size="normal"/>
+      <span class="font-bold white-space-nowrap">{{ getFullUserName() }}</span>
     </div>
   </ng-template>
 
