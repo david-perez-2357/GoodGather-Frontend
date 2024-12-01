@@ -12,10 +12,16 @@
       </a>
     </ng-template>
     <ng-template pTemplate="end">
-      <a [routerLink]="['/profile']">
-        <p-avatar icon="pi pi-user" size="large" class="me-3"></p-avatar>
-      </a>
+        <a>
+          <div>
+          <p-button icon="pi pi-user" size="large" class="me-3"  [style]="{'height':'40px', 'background-color':'rgb( 218, 216, 216 )', 'border':'none'}" (onClick)="menu.toggle($event)"/>
+          </div>
+          <p-menu #menu [model]="perfil" [popup]="true" />
+
+        </a>
     </ng-template>
+
   </p-menubar>
 </div>
 <span class="block h-16"></span>
+<p-toast></p-toast>
