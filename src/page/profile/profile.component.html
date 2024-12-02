@@ -2,11 +2,11 @@
 <div class="w-full bg-white p-9 gap-16 mb-10 rounded-xl border border-1 border-gray-300 mt-10 xl:grid flex flex-col-reverse grid-cols-[1fr_310px]">
   <div class="xl:grid grid-rows-[64px_1fr] gap-6 flex flex-col">
     <div class="lg:grid flex flex-col grid-cols-[auto_1fr_auto] gap-2 lg:gap-5">
-      <p-avatar class="rounded-lg mx-auto md-mx-0 overflow-hidden h-[64px]" image="https://api.dicebear.com/9.x/thumbs/svg?seed=Pepe123" size="xlarge"/>
+      <p-avatar class="rounded-lg mx-auto md-mx-0 overflow-hidden h-[64px]" image="https://api.dicebear.com/9.x/thumbs/svg?seed={{ getCurrentUser().username }}" size="xlarge"/>
 
       <div class="flex min-w-[200px] flex-col mb-5 lg:mb-0 mx-auto md-mx-0 text-center lg:text-start justify-between py-1 w-full">
-        <span class="text-xl  font-semibold">Manolo Lama</span>
-        <span class="text-md text-gray-800 font-semibold">23 años</span>
+        <span class="text-xl  font-semibold">{{ getCurrentUser().name + ' ' + getCurrentUser().surname }}</span>
+        <span class="text-md text-gray-800 font-semibold">{{ getCurrentUser().username}}</span>
       </div>
 
       <div class="grid sm:grid-cols-4 xl:hidden gap-7 sm:gap-2">
@@ -41,7 +41,7 @@
             <span>Historial</span>
           </div>
         </ng-template>
-        <div class="">
+        <div *ngIf="usersBoughtTickets.length != 0">
           <p-table
             [value]="usersBoughtTickets"
             [paginator]="true"
@@ -63,9 +63,9 @@
             <ng-template pTemplate="body" let-ticket>
               <tr>
                 <td class="overflow-hidden">
-                  <div class="w-ful flex hover:bg-gray-100 p-2 px-4 gap-3 cursor-pointer rounded-lg items-center" routerLink="/event/{{ticket.eventId}}" *ngIf="getEvent(ticket.idEvent).id">
+                  <div class="w-ful flex hover:bg-gray-100 p-2 px-4 gap-3 cursor-pointer rounded-lg items-center" routerLink="/event/{{ticket.idEvent}}" *ngIf="getEvent(ticket.idEvent).id">
                     <i class="pi pi-calendar"></i>
-                    <span class="truncate">{{ getEvent(ticket.id).name }}</span>
+                    <span class="truncate">{{ getEvent(ticket.idEvent).name }}</span>
                   </div>
 
                   <div class="w-ful flex  p-2 px-4 gap-3 rounded-lg items-center" *ngIf="!getEvent(ticket.idEvent).id">
@@ -75,11 +75,28 @@
                 </td>
                 <td class="text-center">{{ ticket.amount }}</td>
                 <td class="text-center font-semibold">{{ ticket.price }} €</td>
-                <td class="text-center">{{ ticket.purchaseDate }}</td>
-                <td class="text-center"><p-tag severity="success" value="Próximo"></p-tag> </td>
+                <td class="text-center">{{ moment(ticket.purchaseDate).format('DD/MM/YYYY') }}</td>
+                <td class="text-center">
+                  <span class="text-sm font-semibold" *ngIf="returnEventStatus(ticket.idEvent) == 0">Error</span>
+                  <p-tag severity="success" value="Próximo" *ngIf="returnEventStatus(ticket.idEvent) == 1"></p-tag>
+                  <p-tag severity="info" value="En curso" *ngIf="returnEventStatus(ticket.idEvent) == 2"></p-tag>
+                  <p-tag severity="danger" value="Finalizado" *ngIf="returnEventStatus(ticket.idEvent) == 3"></p-tag>
+                </td>
               </tr>
             </ng-template>
           </p-table>
+        </div>
+
+        <div *ngIf="!ticketsLoaded" class="p-5 flex justify-center">
+          <p-progressSpinner ariaLabel="Cargando eventos"></p-progressSpinner>
+        </div>
+
+        <div *ngIf="usersBoughtTickets.length == 0 && ticketsLoaded" class="p-2 pt-0 flex flex-col md:flex-row items-center gap-5">
+          <img src="/gg-people-searching-event.png" alt="No se han encontrado eventos" class="md:w-1/2 w-full" />
+          <div class="flex flex-col items-center gap-5">
+            <span class="text-gray-700 text-xl gap-5 text-center">No has comprado ninguna entrada</span>
+            <p-button label="Explora eventos" routerLink="/" class="p-button-outlined"></p-button>
+          </div>
         </div>
       </p-tabPanel>
     </p-tabView>
