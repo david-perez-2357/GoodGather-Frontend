@@ -2,12 +2,12 @@ import AppUser from '@/interface/AppUser';
 import {getItem, removeItem, setItem} from '@/method/localStorage-methods';
 import moment from 'moment';
 
-function getCurrentUser(): AppUser | null {
-  return getItem('user');
+function getCurrentUser(): AppUser {
+  return getItem('user') || { id: 0, name: 'Anónimo', username: 'Anonimo', surname: '', country: '', province: '', email: '', logDate: '' };
 }
 
 function userIsLoggedIn(): boolean {
-  return getCurrentUser() !== null && moment().isBefore(moment(getCurrentUser()!.logDate).add(1, 'day'));
+  return getCurrentUser() && getCurrentUser().id !== 0 && moment().isBefore(moment(getCurrentUser()!.logDate).add(1, 'day'));
 }
 
 function logOutUser() {
