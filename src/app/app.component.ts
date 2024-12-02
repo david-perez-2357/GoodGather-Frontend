@@ -3,10 +3,9 @@ import { RouterOutlet } from '@angular/router';
 import {HeaderComponent} from '@/component/header/header.component';
 import {ServerErrorComponent} from '@/component/server-error/server-error.component';
 import ApiResponse from '@/interface/ApiResponse';
-import {Button, ButtonDirective, ButtonModule} from 'primeng/button';
-import {Ripple} from 'primeng/ripple';
 import {NgIf} from '@angular/common';
-import {AppService} from '../service/AppService';
+import {AppService} from '@/service/AppService';
+import {userIsLoggedIn} from '@/method/app-user-methods';
 
 @Component({
   selector: 'app-root',

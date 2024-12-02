@@ -1,5 +1,5 @@
 import { Component, Renderer2, ViewChild, OnInit, OnDestroy } from '@angular/core';
-import { NgClass, NgForOf, NgIf } from '@angular/common';
+import {NgClass, NgForOf, NgIf, NgOptimizedImage} from '@angular/common';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { FormsModule } from '@angular/forms';
 import { ChipsModule } from 'primeng/chips';
@@ -14,16 +14,17 @@ import { PaginatorModule } from 'primeng/paginator';
 import { Ripple } from 'primeng/ripple';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
-import { EventService } from '../../service/EventService';
-import { callAPI } from '../../method/response-mehods';
-import Event from '../../interface/Event';
-import { EventComponent } from '../../component/event/event.component';
+import { EventService } from '@/service/EventService';
+import { callAPI } from '@/method/response-mehods';
+import Event from '@/interface/Event';
+import { EventComponent } from '@/component/event/event.component';
 import { HttpClientModule } from '@angular/common/http';
-import { CauseComponent } from '../../component/cause/cause.component';
-import { CauseService } from '../../service/CauseService';
-import Cause from '../../interface/Cause';
-import { AppService } from '../../service/AppService';
+import { CauseComponent } from '@/component/cause/cause.component';
+import { CauseService } from '@/service/CauseService';
+import Cause from '@/interface/Cause';
+import { AppService } from '@/service/AppService';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
+import {DividerModule} from 'primeng/divider';
 import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket-dialog.component';
 
 @Component({
@@ -51,6 +52,8 @@ import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket
     NgIf,
     NgClass,
     ProgressSpinnerModule,
+    NgOptimizedImage,
+    DividerModule,
     BuyTicketDialogComponent,
   ],
   templateUrl: './view-all-events.component.html',
@@ -70,9 +73,9 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     { label: 'En tu país', value: 'country' },
     { label: 'En tu provincia', value: 'province' },
   ];
-  value: string = 'province'; // Inicialización con el valor por defecto
+  value: string = 'province';
   rangeValues: [number, number] = [0, 1000];
-  activeFilters: number = 1; // Se establece a 1 por defecto, ya que 'province' está seleccionado
+  activeFilters: number = 1;
   first: number = 0;
   rows: number = 10;
   totalRecords: number = 0;
@@ -81,6 +84,8 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   filteredGroupedEvents: { [causeId: number]: Event[] } = {};
   activeFilter: string | null = null;
   loadingData: boolean = true;
+  minTickets: number = 1;
+
 
   buyTicketDialogVisible: boolean = false;
   buyTicketDialog = {
@@ -113,15 +118,16 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.child.resetTicketDialog();
     }
 
-    this.child.showDialog();
-    this.buyTicketDialogVisible = true;
+    setTimeout(() => {
+      this.buyTicketDialogVisible = true;
+      this.child.showDialog();
+    }, 2);
   }
 
   ngOnInit(): void {
     this.renderer.addClass(document.body, 'default-bg');
     this.loadingData = true;
 
-    // Cargar los eventos y causas
     Promise.all([callAPI(this.causeService.getAllCauses()), callAPI(this.eventService.getAllEvents())])
       .then(([causesResponse, eventsResponse]) => {
         if (causesResponse.status === 200) {
@@ -139,13 +145,14 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
         this.totalRecords = this.filteredEvents.length;
         this.updatePaginatedCauses();
-        this.updateActiveFilters(); // Verifica los filtros activos al cargar la página
+        this.updateActiveFilters();
         this.loadingData = false;
       })
       .catch((error) => {
         this.appService.showWErrorInApp(error);
       });
   }
+
 
   ngOnDestroy(): void {
     this.renderer.removeClass(document.body, 'default-bg');
@@ -191,38 +198,45 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   }
 
   updateActiveFilters(): void {
-    this.activeFilters = 0; // Reinicia el contador
+    this.activeFilters = 0;
+
     const [minPrice, maxPrice] = this.rangeValues;
     if (minPrice > 0 || maxPrice < 1000) {
-      this.activeFilters++; // Si el slider tiene algún filtro activado
+      this.activeFilters++;
     }
+
     if (this.value) {
-      this.activeFilters++; // Si el select tiene una opción seleccionada
+      this.activeFilters++;
+    }
+
+    if (this.minTickets > 0) {
+      this.activeFilters++;
+    }
+
+    if (this.searchQuery) {
+      this.activeFilters++;
     }
   }
+
 
   onRangeChange(): void {
     if (!this.sliderFilterActive) {
       this.sliderFilterActive = true;
-      this.activeFilters++; // Aumenta el contador cuando el slider cambia
+      this.activeFilters++;
     }
     this.applyFilters();
-    this.updateActiveFilters(); // Actualiza los filtros
+    this.updateActiveFilters();
   }
 
   onSelectChange(): void {
     if (this.value && !this.selectFilterActive) {
       this.selectFilterActive = true;
-      this.activeFilters++; // Aumenta el contador cuando se selecciona una opción válida
+      this.activeFilters++;
     } else if (!this.value && this.selectFilterActive) {
       this.selectFilterActive = false;
-      this.activeFilters--; // Decrementa el contador si no hay opción seleccionada
+      this.activeFilters--;
     }
-    this.updateActiveFilters(); // Actualiza los filtros
-  }
-
-  incrementFilters(): void {
-    this.activeFilters++;
+    this.updateActiveFilters();
   }
 
   applyFilters(): void {
@@ -240,6 +254,12 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       );
     }
 
+    if (this.minTickets > 0) {
+      result = result.filter(event =>
+        (event.capacity - event.boughtTickets) >= this.minTickets
+      );
+    }
+
     if (this.activeFilter === 'popular') {
       result = result.sort((a, b) => b.boughtTickets - a.boughtTickets);
     } else if (this.activeFilter === 'recent') {
@@ -251,14 +271,10 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.filteredEvents = result;
     this.totalRecords = this.filteredEvents.length;
     this.updatePaginatedCauses();
+    this.updateActiveFilters();
   }
 
-  load(): void {
-    this.loading = true;
-    setTimeout(() => {
-      this.loading = false;
-    }, 1000);
-  }
+
 
   toggleOverlay(event: MouseEvent): void {
     this.overlay.toggle(event);
@@ -269,6 +285,8 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.resetFilter();
     } else {
       this.activeFilter = 'popular';
+      this.searchQuery = '';
+      this.scrollToTarget();
       this.applyFilters();
     }
     searchInput.value = '';
@@ -279,6 +297,8 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.resetFilter();
     } else {
       this.activeFilter = 'cheapest';
+      this.searchQuery = '';
+      this.scrollToTarget();
       this.applyFilters();
     }
     searchInput.value = '';
@@ -289,19 +309,47 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.resetFilter();
     } else {
       this.activeFilter = 'recent';
+      this.searchQuery = '';
+      this.scrollToTarget();
       this.applyFilters();
     }
     searchInput.value = '';
   }
 
+  onMinTicketsChange(): void {
+    const wasActive = this.minTickets > 0;
+    const isActive = this.minTickets > 0;
+
+    if (!wasActive && isActive) {
+      this.activeFilters++;
+    } else if (wasActive && !isActive) {
+      this.activeFilters--;
+    }
+
+    this.applyFilters();
+    this.updateActiveFilters();
+  }
+
+
+
+  scrollToTarget() {
+    const target = document.getElementById('scrollDiv');
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+  }
+
   resetFilter(): void {
     this.activeFilter = null;
+    this.searchQuery = '';
     this.filteredEvents = [...this.events];
     this.totalRecords = this.filteredEvents.length;
     this.sliderFilterActive = false;
     this.selectFilterActive = false;
-    this.activeFilters = 0; // Reset to 0
+    this.activeFilters = 0;
     this.value = '';
     this.updatePaginatedCauses();
   }
+
+  protected readonly Object = Object;
 }

@@ -33,6 +33,7 @@ import {callAPI} from '@/method/response-mehods';
 import moment from 'moment';
 import {ToastModule} from 'primeng/toast';
 import {validateField, ValidationRule, StaticValidationRules, DynamicValidationRules} from '@/method/validate-methods';
+import {getCurrentUser, userIsLoggedIn} from '@/method/app-user-methods';
 
 @Component({
   selector: 'app-buy-ticket-dialog',
@@ -163,7 +164,6 @@ export class BuyTicketDialogComponent implements OnInit {
     this.updateMaxQuantity();
   }
 
-
   // Funciones relacionadas con el diálogo de compra
   openPurchaseProcessDialog() {
     this.purchaseProcessDialogVisible = true;
@@ -225,7 +225,7 @@ export class BuyTicketDialogComponent implements OnInit {
       amount: this.quantity,
       purchaseDate: moment().format('YYYY-MM-DD HH:mm'),
       idEvent: this.eventId,
-      idUser: 1 // TODO: Cambiar por el id del usuario logueado
+      idUser: getCurrentUser()?.id || 0
     };
 
     try {
@@ -254,8 +254,8 @@ export class BuyTicketDialogComponent implements OnInit {
       cvv: ''
     };
     this.paypalFormData = {
-      email: '',
-      password: ''
+      paypalEmail: '',
+      paypalPassword: ''
     };
     this.updateMaxQuantity();
     this.errors = {};
@@ -264,7 +264,11 @@ export class BuyTicketDialogComponent implements OnInit {
 
   // Funciones relacionadas con la obtención de tickets
   async getBoughtTickets(): Promise<Ticket[]> {
-    return callAPI(this.ticketService.getTicketsBoughtByUserAndEvent(1, this.eventId)).then((response) => {
+    this.ticketsBought = [];
+    this.numTicketsBought = 0;
+    const idUser = getCurrentUser()?.id || 0;
+
+    return callAPI(this.ticketService.getTicketsBoughtByUserAndEvent(idUser, this.eventId)).then((response) => {
       return response.data;
     }).catch((error) => {
       this.messageService.add(error.toastMessage);
@@ -275,6 +279,7 @@ export class BuyTicketDialogComponent implements OnInit {
 
   async showDialog() {
     this.visible = true;
+
     this.ticketsBought = await this.getBoughtTickets();
     this.updateNumTicketsBought();
     this.updateMaxQuantity();
@@ -326,5 +331,22 @@ export class BuyTicketDialogComponent implements OnInit {
 
   isFieldInvalid(fieldName: string): boolean {
     return !!this.errors[fieldName];
+  }
+
+  // Funciones de usuario
+  getFullUserName() {
+    if (userIsLoggedIn()) {
+      return getCurrentUser()?.name + ' ' + getCurrentUser()?.surname;
+    }else {
+      return 'Anónimo';
+    }
+  }
+
+  getUsername() {
+    if (userIsLoggedIn()) {
+      return getCurrentUser()?.username;
+    }else {
+      return 'Anónimo';
+    }
   }
 }

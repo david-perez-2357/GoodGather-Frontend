@@ -19,6 +19,7 @@ import {CauseComponent} from '@/component/cause/cause.component';
 import {CauseService} from '@/service/CauseService';
 import Cause from '@/interface/Cause';
 import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket-dialog.component';
+import {getCurrentUser, userIsLoggedIn} from '@/method/app-user-methods';
 
 moment.locale("es");
 
@@ -119,9 +120,9 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
           callAPI(this.causeService.getCauseFunds(this.event.idCause))
         ])
       }).then(([ticketsBoughtInLast24hResponse, causeResponse, causeFundsResponse]: ApiResponse[]) => {
-        this.ticketsBoughtInLast24h = ticketsBoughtInLast24hResponse.data;
+        this.ticketsBoughtInLast24h = ticketsBoughtInLast24hResponse.data ?? 0;
         this.cause = causeResponse.data;
-        this.causeFunds = causeFundsResponse.data;
+        this.causeFunds = causeFundsResponse.data ?? 0;
         this.contentLoaded = true;
       }).catch((error) => {
         this.catchErrorMessage(error);
