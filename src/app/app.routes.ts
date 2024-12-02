@@ -5,8 +5,6 @@ import {EventDetailsComponent} from '@/page/event-details/event-details.componen
 import {OrganizeEventComponent} from '@/page/organize-event/organize-event.component';
 import {RegisterAndLoginComponent} from '@/page/register-and-login/register-and-login.component';
 
-
-
 export const routes: Routes = [
   {'path': '', component: ViewAllEventsComponent},
   {'path': 'login', component: RegisterAndLoginComponent},
