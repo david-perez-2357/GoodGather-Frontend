@@ -75,7 +75,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   ];
   value: string = 'province';
   rangeValues: [number, number] = [0, 1000];
-  activeFilters: number = 1;
+  activeFilters: number = 0;
   first: number = 0;
   rows: number = 10;
   totalRecords: number = 0;
@@ -85,6 +85,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   activeFilter: string | null = null;
   loadingData: boolean = true;
   minTickets: number = 1;
+  previousMinTicketsWasOne = false;
 
 
   buyTicketDialogVisible: boolean = false;
@@ -194,7 +195,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.first = event.first;
     this.rows = event.rows;
     this.updatePaginatedCauses();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.scrollToTarget();
   }
 
   updateActiveFilters(): void {
@@ -209,7 +210,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.activeFilters++;
     }
 
-    if (this.minTickets > 0) {
+    if (this.minTickets !== 1) {
       this.activeFilters++;
     }
 
@@ -217,7 +218,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.activeFilters++;
     }
   }
-
 
   onRangeChange(): void {
     if (!this.sliderFilterActive) {
@@ -274,8 +274,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.updateActiveFilters();
   }
 
-
-
   toggleOverlay(event: MouseEvent): void {
     this.overlay.toggle(event);
   }
@@ -317,20 +315,19 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   }
 
   onMinTicketsChange(): void {
-    const wasActive = this.minTickets > 0;
-    const isActive = this.minTickets > 0;
-
-    if (!wasActive && isActive) {
+    if (this.minTickets !== 1 && this.previousMinTicketsWasOne) {
       this.activeFilters++;
-    } else if (wasActive && !isActive) {
+      this.previousMinTicketsWasOne = false;
+    }
+
+    if (this.minTickets === 1 && !this.previousMinTicketsWasOne) {
       this.activeFilters--;
+      this.previousMinTicketsWasOne = true;
     }
 
     this.applyFilters();
     this.updateActiveFilters();
   }
-
-
 
   scrollToTarget() {
     const target = document.getElementById('scrollDiv');
@@ -346,8 +343,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.totalRecords = this.filteredEvents.length;
     this.sliderFilterActive = false;
     this.selectFilterActive = false;
-    this.activeFilters = 0;
-    this.value = '';
     this.updatePaginatedCauses();
   }
 
