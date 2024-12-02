@@ -26,6 +26,7 @@ import { AppService } from '@/service/AppService';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import {DividerModule} from 'primeng/divider';
 import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket-dialog.component';
+import {getCurrentUser} from '@/method/app-user-methods';
 
 @Component({
   selector: 'app-page-index',
@@ -148,6 +149,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
         this.updatePaginatedCauses();
         this.updateActiveFilters();
         this.loadingData = false;
+        this.applyFilters();
       })
       .catch((error) => {
         this.appService.showWErrorInApp(error);
@@ -213,10 +215,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     if (this.minTickets !== 1) {
       this.activeFilters++;
     }
-
-    if (this.searchQuery) {
-      this.activeFilters++;
-    }
   }
 
   onRangeChange(): void {
@@ -236,6 +234,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.selectFilterActive = false;
       this.activeFilters--;
     }
+    this.applyFilters();
     this.updateActiveFilters();
   }
 
@@ -258,6 +257,15 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       result = result.filter(event =>
         (event.capacity - event.boughtTickets) >= this.minTickets
       );
+    }
+
+    const user = getCurrentUser() || { country: '', province: '' };
+    if (user) {
+      if (this.value === 'country') {
+        result = result.filter(event => event.country === user.country);
+      } else if (this.value === 'province') {
+        result = result.filter(event => event.province === user.province);
+      }
     }
 
     if (this.activeFilter === 'popular') {

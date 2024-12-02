@@ -111,11 +111,15 @@
               <label class="font-semibold text-xl">Tickets disponibles</label>
               <p-inputNumber
                 [(ngModel)]="minTickets"
-                [min]="0"
-                [max]="1000000"
                 [showButtons]="true"
+                [min]="0"
+                [max]="10000000"
+                incrementButtonIcon="pi pi-plus"
+                decrementButtonIcon="pi pi-minus"
+                buttonLayout="horizontal"
+                [step]="1"
                 (ngModelChange)="onMinTicketsChange()"
-              ></p-inputNumber>
+              />
             </div>
           </div>
         </p-overlayPanel>
@@ -149,11 +153,11 @@
         <div class="flex flex-col items-center  text-center text-gray-500 max-w-[300px] mr-auto ml-auto" *ngIf="filteredEvents.length === 0">
           <img src="/gg-not-found.jpg" alt="not-found" class="w-72">
           <p class="text-xl font-semibold" *ngIf="searchQuery; else noQuery">No se han encontrado eventos con</p>
-          <p class="text-xl font-semibold break-words max-w-72">
+          <p class="text-xl font-semibold break-words max-w-72" *ngIf="searchQuery">
             "{{ searchQuery }}"
           </p>
           <ng-template #noQuery>
-            <p>No hay eventos disponibles para esta causa.</p>
+            <p>No hay eventos disponibles en tu provincia/país.</p>
           </ng-template>
         </div>
 
