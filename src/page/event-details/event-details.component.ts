@@ -19,6 +19,7 @@ import {CauseComponent} from '@/component/cause/cause.component';
 import {CauseService} from '@/service/CauseService';
 import Cause from '@/interface/Cause';
 import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket-dialog.component';
+import {getCurrentUser, userIsLoggedIn} from '@/method/app-user-methods';
 
 moment.locale("es");
 

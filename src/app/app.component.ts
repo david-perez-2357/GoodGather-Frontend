@@ -5,6 +5,7 @@ import {ServerErrorComponent} from '@/component/server-error/server-error.compon
 import ApiResponse from '@/interface/ApiResponse';
 import {NgIf} from '@angular/common';
 import {AppService} from '@/service/AppService';
+import {userIsLoggedIn} from '@/method/app-user-methods';
 
 @Component({
   selector: 'app-root',
@@ -26,8 +27,10 @@ export class AppComponent implements OnInit {
       this.errorText = apiResponse.toastMessage.summary;
     }
 
-    if (apiResponse.status == 403) {
+    if (apiResponse.status == 403 && !userIsLoggedIn()) {
       window.location.href = '/login';
+    }else if (apiResponse.status == 403) {
+      this.errorText = 'Ha ocurrido un error en el servidor';
     }
   }
 
