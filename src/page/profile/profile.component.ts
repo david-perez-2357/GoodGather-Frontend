@@ -48,6 +48,9 @@ import {Button} from 'primeng/button';
   styles: ``
 })
 export class ProfileComponent implements OnInit, OnDestroy {
+  protected readonly getCurrentUser = getCurrentUser;
+  protected readonly moment = moment;
+
   usersBoughtTickets: Ticket[] = [];
   events: Event[] = [];
   ticketsLoaded = false;
@@ -60,12 +63,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     putDefaultBackground(this.renderer);
+    console.log('ProfileComponent');
 
     Promise.all([
       callAPI(this.ticketService.getTicketsBoughtByActiveUser()),
       callAPI(this.eventService.getAllEvents())
     ]).then(([tickets, events]) => {
-      this.usersBoughtTickets = tickets.data;
+      this.usersBoughtTickets = tickets?.data;
       this.events = events.data;
       this.ticketsLoaded = true;
     }).catch((error) => {
@@ -83,11 +87,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
     return event ?? {} as Event;
   }
 
-  protected readonly moment = moment;
-
   returnEventStatus(eventId: any): number {
     const event = this.getEvent(eventId);
-    console.log(event);
     if (!event.id) {
       return 0;
     }
@@ -105,5 +106,4 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
-  protected readonly getCurrentUser = getCurrentUser;
 }
