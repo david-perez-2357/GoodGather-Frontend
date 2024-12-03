@@ -42,3 +42,8 @@ html, body {
   padding: 0 !important;
   border: none !important;
 }
+
+.delete-border-radius-bottom-of-child > div {
+  border-bottom-left-radius: 0 !important;
+  border-bottom-right-radius: 0 !important;
+}
