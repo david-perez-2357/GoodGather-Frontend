@@ -26,6 +26,7 @@ import { AppService } from '@/service/AppService';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import {DividerModule} from 'primeng/divider';
 import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket-dialog.component';
+import {getCurrentUser} from '@/method/app-user-methods';
 
 @Component({
   selector: 'app-page-index',
@@ -75,7 +76,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   ];
   value: string = 'province';
   rangeValues: [number, number] = [0, 1000];
-  activeFilters: number = 1;
+  activeFilters: number = 0;
   first: number = 0;
   rows: number = 10;
   totalRecords: number = 0;
@@ -85,6 +86,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   activeFilter: string | null = null;
   loadingData: boolean = true;
   minTickets: number = 1;
+  previousMinTicketsWasOne = false;
 
 
   buyTicketDialogVisible: boolean = false;
@@ -147,6 +149,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
         this.updatePaginatedCauses();
         this.updateActiveFilters();
         this.loadingData = false;
+        this.applyFilters();
       })
       .catch((error) => {
         this.appService.showWErrorInApp(error);
@@ -194,7 +197,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.first = event.first;
     this.rows = event.rows;
     this.updatePaginatedCauses();
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    this.scrollToTarget();
   }
 
   updateActiveFilters(): void {
@@ -209,15 +212,10 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.activeFilters++;
     }
 
-    if (this.minTickets > 0) {
-      this.activeFilters++;
-    }
-
-    if (this.searchQuery) {
+    if (this.minTickets !== 1) {
       this.activeFilters++;
     }
   }
-
 
   onRangeChange(): void {
     if (!this.sliderFilterActive) {
@@ -236,6 +234,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.selectFilterActive = false;
       this.activeFilters--;
     }
+    this.applyFilters();
     this.updateActiveFilters();
   }
 
@@ -260,6 +259,15 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       );
     }
 
+    const user = getCurrentUser() || { country: '', province: '' };
+    if (user) {
+      if (this.value === 'country') {
+        result = result.filter(event => event.country === user.country);
+      } else if (this.value === 'province') {
+        result = result.filter(event => event.province === user.province);
+      }
+    }
+
     if (this.activeFilter === 'popular') {
       result = result.sort((a, b) => b.boughtTickets - a.boughtTickets);
     } else if (this.activeFilter === 'recent') {
@@ -273,8 +281,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.updatePaginatedCauses();
     this.updateActiveFilters();
   }
-
-
 
   toggleOverlay(event: MouseEvent): void {
     this.overlay.toggle(event);
@@ -317,20 +323,19 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   }
 
   onMinTicketsChange(): void {
-    const wasActive = this.minTickets > 0;
-    const isActive = this.minTickets > 0;
-
-    if (!wasActive && isActive) {
+    if (this.minTickets !== 1 && this.previousMinTicketsWasOne) {
       this.activeFilters++;
-    } else if (wasActive && !isActive) {
+      this.previousMinTicketsWasOne = false;
+    }
+
+    if (this.minTickets === 1 && !this.previousMinTicketsWasOne) {
       this.activeFilters--;
+      this.previousMinTicketsWasOne = true;
     }
 
     this.applyFilters();
     this.updateActiveFilters();
   }
-
-
 
   scrollToTarget() {
     const target = document.getElementById('scrollDiv');
@@ -346,8 +351,6 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.totalRecords = this.filteredEvents.length;
     this.sliderFilterActive = false;
     this.selectFilterActive = false;
-    this.activeFilters = 0;
-    this.value = '';
     this.updatePaginatedCauses();
   }
 
