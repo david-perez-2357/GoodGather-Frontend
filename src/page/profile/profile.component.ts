@@ -13,7 +13,7 @@ import {FormsModule} from '@angular/forms';
 import Event from '@/interface/Event';
 import Ticket from '@/interface/Ticket';
 import {RouterLink} from '@angular/router';
-import {NgIf} from '@angular/common';
+import {NgForOf, NgIf} from '@angular/common';
 import {TicketService} from '@/service/TicketService';
 import {callAPI} from '@/method/response-mehods';
 import {EventService} from '@/service/EventService';
@@ -23,6 +23,11 @@ import {SpinnerModule} from 'primeng/spinner';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {AppService} from '@/service/AppService';
 import {Button} from 'primeng/button';
+import {EventComponent} from '@/component/event/event.component';
+import {MessageService} from 'primeng/api';
+import {ToastModule} from 'primeng/toast';
+import {CauseService} from '@/service/CauseService';
+import Cause from '@/interface/Cause';
 
 @Component({
   selector: 'app-profile',
@@ -43,9 +48,13 @@ import {Button} from 'primeng/button';
     SpinnerModule,
     ProgressSpinnerModule,
     Button,
+    EventComponent,
+    NgForOf,
+    ToastModule,
   ],
   templateUrl: './profile.component.html',
-  styles: ``
+  styles: ``,
+  providers: [MessageService]
 })
 export class ProfileComponent implements OnInit, OnDestroy {
   protected readonly getCurrentUser = getCurrentUser;
@@ -53,12 +62,18 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   usersBoughtTickets: Ticket[] = [];
   events: Event[] = [];
+  causes: Cause[] = [];
   ticketsLoaded = false;
+  userAssistedEvents = 0;
+  userUpcomingEvents = 0;
+  userTotalContributions = 0;
 
   constructor(private renderer: Renderer2,
               private ticketService: TicketService,
               private eventService: EventService,
-              private appService: AppService
+              private appService: AppService,
+              private messageService: MessageService,
+              private causeService: CauseService
   ) { }
 
   ngOnInit() {
@@ -67,10 +82,16 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
     Promise.all([
       callAPI(this.ticketService.getTicketsBoughtByActiveUser()),
-      callAPI(this.eventService.getAllEvents())
-    ]).then(([tickets, events]) => {
+      callAPI(this.eventService.getAllEventsWithoutFilters()),
+      callAPI(this.causeService.getAllCauses())
+    ]).then(([tickets, events, causes]) => {
       this.usersBoughtTickets = tickets?.data;
       this.events = events.data;
+      this.causes = causes.data;
+
+      this.userAssistedEvents = this.getUserNumOfAssistedEvents();
+      this.userUpcomingEvents = this.getUserNumOfUpcomingEvents();
+      this.userTotalContributions = this.getUserTotalContributions();
       this.ticketsLoaded = true;
     }).catch((error) => {
       this.ticketsLoaded = true;
@@ -85,6 +106,37 @@ export class ProfileComponent implements OnInit, OnDestroy {
   getEvent(idEvent: number): Event {
     const event = this.events.find(event => event.id === idEvent);
     return event ?? {} as Event;
+  }
+
+  getCause(idCause: number): Cause {
+    const cause = this.causes.find(cause => cause.id === idCause);
+    return cause ?? {} as Cause;
+  }
+
+  getUserDistinctEvents(): Event[] {
+    const events: Set<Event> = new Set();
+    this.usersBoughtTickets.forEach(ticket => {
+      events.add(this.getEvent(ticket.idEvent));
+    });
+    return Array.from(events);
+  }
+
+  getUserNumOfAssistedEvents(): number {
+    return this.getUserDistinctEvents().filter((event) => {
+      return moment(event.endDate).isBefore(moment());
+    }).length;
+  }
+
+  getUserNumOfUpcomingEvents(): number {
+    return this.getUserDistinctEvents().filter((event) => {
+      return moment(event.startDate).isAfter(moment());
+    }).length;
+  }
+
+  getUserTotalContributions(): number {
+    return this.usersBoughtTickets.reduce((acc, ticket) => {
+      return acc + ticket.price;
+    }, 0);
   }
 
   returnEventStatus(eventId: any): number {
@@ -104,6 +156,41 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }else {
       return 2;
     }
+  }
+
+  showInfoTicketButtonMessage() {
+    this.messageService.add({severity: 'info', summary: 'Info', detail: 'No se puede comprar un ticket aquí'});
+  }
+
+  calculatePercentage(value: number, total: number): number {
+    return Math.round((value / total) * 100);
+  }
+
+  /**
+   * Obtiene la posición de un evento basado en la recaudación total de los eventos asociados a la misma causa.
+   * @param event - El evento cuya posición se desea calcular.
+   * @returns La posición del evento basado en la recaudación, con posiciones únicas.
+   */
+  getEventFundPositionOnCause(event: Event): number {
+    // Filtrar eventos relacionados con la misma causa
+    const eventsOfSameCause = this.events.filter(e => e.idCause === event.idCause);
+
+    // Crear una lista de objetos con recaudación y criterio de desempate
+    const eventsWithFunds = eventsOfSameCause.map(e => ({
+      id: e.id,
+      fund: e.boughtTickets * e.ticketPrice,
+    }));
+
+    // Ordenar eventos primero por recaudación y luego por ID para desempatar
+    eventsWithFunds.sort((a, b) => {
+      if (b.fund !== a.fund) {
+        return b.fund - a.fund; // Ordenar por recaudación de mayor a menor
+      }
+      return a.id - b.id; // Desempatar por ID (orden ascendente)
+    });
+
+    // Buscar la posición del evento actual en la lista ordenada
+    return eventsWithFunds.findIndex(e => e.id === event.id) + 1; // Retornar la posición basada en el índice (1-based)
   }
 
 }
