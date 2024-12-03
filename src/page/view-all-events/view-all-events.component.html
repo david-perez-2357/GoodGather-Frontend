@@ -48,7 +48,7 @@
           icon="pi pi-sliders-v"
           severity="secondary"
           [loading]="loading"
-          class="p-button-rounded"
+          class="p-button-rounded text-lg"
           (onClick)="toggleOverlay($event)"
           [badge]="activeFilters > 0 ? activeFilters.toString() : undefined"
           badgeClass="text-gray-600">
@@ -111,11 +111,15 @@
               <label class="font-semibold text-xl">Tickets disponibles</label>
               <p-inputNumber
                 [(ngModel)]="minTickets"
-                [min]="1"
-                [max]="1000000"
                 [showButtons]="true"
+                [min]="0"
+                [max]="10000000"
+                incrementButtonIcon="pi pi-plus"
+                decrementButtonIcon="pi pi-minus"
+                buttonLayout="horizontal"
+                [step]="1"
                 (ngModelChange)="onMinTicketsChange()"
-              ></p-inputNumber>
+              />
             </div>
           </div>
         </p-overlayPanel>
@@ -139,23 +143,21 @@
             <!-- Eventos -->
             <div class="flex flex-col w-full gap-3 p-5 items-center">
               <!-- Si hay eventos disponibles -->
-
-              <div class="flex flex-col sm:w-full gap-10 sm:gap-4 mb-28 sm:mb-0">
-                <app-event *ngFor="let event of filteredGroupedEvents[cause.id]" (onBuyButtonClicked)="showBuyTicketDialog($event)" [event]="event"></app-event>
+              <div class="flex flex-col sm:w-full w-full gap-10 sm:gap-4 sm:mb-0 items-center">
+                <app-event class="w-full sm:w-auto md:w-full" *ngFor="let event of filteredGroupedEvents[cause.id]" (onBuyButtonClicked)="showBuyTicketDialog($event)" [event]="event"></app-event>
               </div>
-
             </div>
           </div>
           <p-divider></p-divider>
         }
-        <div class="flex flex-col items-center  text-center text-gray-500 max-w-[208px] mr-auto ml-auto" *ngIf="filteredEvents.length === 0">
+        <div class="flex flex-col items-center  text-center text-gray-500 max-w-[300px] mr-auto ml-auto" *ngIf="filteredEvents.length === 0">
           <img src="/gg-not-found.jpg" alt="not-found" class="w-72">
           <p class="text-xl font-semibold" *ngIf="searchQuery; else noQuery">No se han encontrado eventos con</p>
-          <p class="text-xl font-semibold break-words max-w-72">
+          <p class="text-xl font-semibold break-words max-w-72" *ngIf="searchQuery">
             "{{ searchQuery }}"
           </p>
           <ng-template #noQuery>
-            <p>No hay eventos disponibles para esta causa.</p>
+            <p>No hay eventos disponibles en tu provincia/país.</p>
           </ng-template>
         </div>
 
