@@ -28,6 +28,14 @@ import {MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
 import {CauseService} from '@/service/CauseService';
 import Cause from '@/interface/Cause';
+import {PaginatorModule, PaginatorState} from 'primeng/paginator';
+
+interface PageEvent {
+  first: number;
+  rows: number;
+  page: number;
+  pageCount: number;
+}
 
 @Component({
   selector: 'app-profile',
@@ -51,6 +59,7 @@ import Cause from '@/interface/Cause';
     EventComponent,
     NgForOf,
     ToastModule,
+    PaginatorModule,
   ],
   templateUrl: './profile.component.html',
   styles: ``,
@@ -63,10 +72,15 @@ export class ProfileComponent implements OnInit, OnDestroy {
   usersBoughtTickets: Ticket[] = [];
   events: Event[] = [];
   causes: Cause[] = [];
+  eventsCreatedByUser: Event[] = [];
+  paginatedEventsCreatedByUser: Event[] = [];
   ticketsLoaded = false;
   userAssistedEvents = 0;
   userUpcomingEvents = 0;
   userTotalContributions = 0;
+
+  first: number = 0;
+  rows: number = 5;
 
   constructor(private renderer: Renderer2,
               private ticketService: TicketService,
@@ -78,7 +92,6 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     putDefaultBackground(this.renderer);
-    console.log('ProfileComponent');
 
     Promise.all([
       callAPI(this.ticketService.getTicketsBoughtByActiveUser()),
@@ -88,6 +101,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
       this.usersBoughtTickets = tickets?.data;
       this.events = events.data;
       this.causes = causes.data;
+      this.eventsCreatedByUser = this.getEventsCreatedByUser(this.events);
+      this.paginatedEventsCreatedByUser = this.eventsCreatedByUser.slice(this.first, this.first + this.rows);
 
       this.userAssistedEvents = this.getUserNumOfAssistedEvents();
       this.userUpcomingEvents = this.getUserNumOfUpcomingEvents();
@@ -111,6 +126,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
   getCause(idCause: number): Cause {
     const cause = this.causes.find(cause => cause.id === idCause);
     return cause ?? {} as Cause;
+  }
+
+  getEventsCreatedByUser(events: Event[]): Event[] {
+    return events.filter(event => event.idOwner === this.getCurrentUser().id);
   }
 
   getUserDistinctEvents(): Event[] {
@@ -193,4 +212,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
     return eventsWithFunds.findIndex(e => e.id === event.id) + 1; // Retornar la posición basada en el índice (1-based)
   }
 
+  onPageChange(event: PaginatorState) {
+    this.first = event.first ?? 0;
+    this.rows = event.rows ?? 5;
+
+    this.paginatedEventsCreatedByUser = this.eventsCreatedByUser.slice(this.first, this.first + this.rows);
+  }
 }

@@ -100,7 +100,7 @@
         </div>
       </p-tabPanel>
 
-      <p-tabPanel>
+      <p-tabPanel *ngIf="eventsCreatedByUser.length != 0">
         <ng-template pTemplate="header">
           <div class="flex text-sm items-center gap-2 ">
             <i class="pi pi-calendar"></i>
@@ -108,8 +108,8 @@
           </div>
         </ng-template>
 
-        <div *ngIf="ticketsLoaded" class="flex flex-col gap-20">
-          <div *ngFor="let event of events" class="flex justify-center flex-col items-center w-full">
+        <div class="flex flex-col gap-20">
+          <div *ngFor="let event of paginatedEventsCreatedByUser" class="flex justify-center flex-col items-center w-full">
             <app-event  [event]="event" class="delete-border-radius-bottom-of-child sm:min-w-[320px] w-full sm:w-auto md:w-full" (onBuyButtonClicked)="showInfoTicketButtonMessage()"></app-event>
             <div class="w-full grid grid-cols-1 rounded-xl pt-5 md:rounded-t-none lg:grid-cols-3 bg-green-500 p-5 rounded-b-xl gap-7 lg:gap-20">
               <div class="rounded-xl bg-white h-full p-4 flex flex-col justify-around items-center gap-4 text-center w-full">
@@ -136,6 +136,17 @@
           </div>
         </div>
 
+        <p-paginator
+          *ngIf="eventsCreatedByUser.length > 5"
+          (onPageChange)="onPageChange($event)"
+          [first]="first"
+          [rows]="rows"
+          [totalRecords]="eventsCreatedByUser.length"
+          [showCurrentPageReport]="true"
+          [showPageLinks]="true"
+          [showJumpToPageDropdown]="false"
+          styleClass="mt-8"
+          currentPageReportTemplate="{currentPage} de {totalPages} páginas"/>
       </p-tabPanel>
     </p-tabView>
   </div>
