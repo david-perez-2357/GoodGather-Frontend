@@ -12,17 +12,17 @@
       <div class="grid sm:grid-cols-4 xl:hidden gap-7 sm:gap-2">
         <div class="w-full bg-green-50 rounded-lg relative border border-1 border-green-600 flex gap-2 justify-center items-center flex-col p-2">
           <span class="text-sm font-semibold text-gray-900 bg-white absolute -top-3 truncate">Has aportado:</span>
-          <span class="text-lg font-extrabold text-green-600">1,25 €</span>
+          <span class="text-lg font-extrabold text-green-600">{{ userTotalContributions }} €</span>
         </div>
 
         <div class="p-2 border justify-center relative text-gray-900 flex-col text-center border-1 border-gray-400 flex rounded-lg gap-2 items-center text-sm font-semibold">
           <i class="pi pi-bell text-md bg-white p-1 absolute pt-0 -top-3"></i>
-          <span>2 eventos programados</span>
+          <span>{{ userUpcomingEvents }} {{ userUpcomingEvents === 1 ? 'evento programado' : 'eventos programados' }}</span>
         </div>
 
         <div class="p-2 border border-1 flex-col relative justify-center text-gray-900 border-gray-400 text-center flex rounded-lg gap-2 items-center text-sm font-semibold">
           <i class="pi pi-calendar text-md absolute -top-3 pt-0 bg-white p-1"></i>
-          <span>4 eventos asistidos</span>
+          <span>{{ userAssistedEvents }} {{ userAssistedEvents === 1 ? 'evento asistido' : 'eventos asistidos' }}</span>
         </div>
 
         <div class="p-2 border border-1 flex-col  relative justify-center text-gray-900 text-center border-gray-400 flex rounded-lg gap-2 items-center text-sm font-semibold">
@@ -91,13 +91,51 @@
           <p-progressSpinner ariaLabel="Cargando eventos"></p-progressSpinner>
         </div>
 
-        <div *ngIf="usersBoughtTickets.length == 0 && ticketsLoaded" class="p-2 pt-0 flex flex-col md:flex-row items-center gap-5">
-          <img src="/gg-people-searching-event.png" alt="No se han encontrado eventos" class="md:w-1/2 w-full" />
+        <div *ngIf="usersBoughtTickets.length == 0 && ticketsLoaded" class="p-2 pt-0 justify-center flex flex-col md:flex-row items-center gap-5">
+          <img src="/gg-people-searching-event.png" alt="No se han encontrado eventos" class="md:w-1/2 w-full max-h-96 max-w-96" />
           <div class="flex flex-col items-center gap-5">
             <span class="text-gray-700 text-xl gap-5 text-center">No has comprado ninguna entrada</span>
             <p-button label="Explorar eventos" routerLink="/" class="p-button-outlined"></p-button>
           </div>
         </div>
+      </p-tabPanel>
+
+      <p-tabPanel>
+        <ng-template pTemplate="header">
+          <div class="flex text-sm items-center gap-2 ">
+            <i class="pi pi-calendar"></i>
+            <span>Mis eventos</span>
+          </div>
+        </ng-template>
+
+        <div *ngIf="ticketsLoaded" class="flex flex-col gap-20">
+          <div *ngFor="let event of events" class="flex justify-center flex-col items-center w-full">
+            <app-event  [event]="event" class="delete-border-radius-bottom-of-child sm:min-w-[320px] w-full sm:w-auto md:w-full" (onBuyButtonClicked)="showInfoTicketButtonMessage()"></app-event>
+            <div class="w-full grid grid-cols-1 rounded-xl pt-5 md:rounded-t-none lg:grid-cols-3 bg-green-500 p-5 rounded-b-xl gap-7 lg:gap-20">
+              <div class="rounded-xl bg-white h-full p-4 flex flex-col justify-around items-center gap-4 text-center w-full">
+                <div class="flex flex-col justify-center items-center">
+                  <span class="text-gray-800 font-bold text-4xl">#{{ getEventFundPositionOnCause(event) }}</span>
+                  <span class="text-gray-800 font-semibold text-xl">recaudación</span>
+                </div>
+
+                <a class="text-gray-700 text-md underline break-all" routerLink="/cause/{{ event.idCause }}">{{ getCause(event.idCause).name}}</a>
+              </div>
+
+              <div class="rounded-xl bg-white h-full p-4 flex flex-col justify-center items-center gap-4 text-center w-full">
+                <span class="text-gray-800 font-bold text-4xl">{{calculatePercentage(event.boughtTickets, event.capacity)}}%</span>
+
+                <span class="text-gray-800 font-semibold text-lg">Entradas vendidas</span>
+              </div>
+
+              <div class="rounded-xl bg-white h-full p-4 flex flex-col justify-center items-center gap-4 text-center w-full">
+                <span class="text-gray-800 font-bold text-3xl">{{ event.boughtTickets * event.ticketPrice }} €</span>
+
+                <span class="text-gray-800 font-semibold text-lg">Dinero recaudado</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </p-tabPanel>
     </p-tabView>
   </div>
@@ -105,22 +143,23 @@
   <div class="xl:flex hidden flex-col gap-5">
     <div class="w-full bg-green-50 rounded-lg border border-1 border-green-600 flex gap-5 justify-between pb-10 items-center flex-col p-5">
       <span class="text-xl font-semibold text-gray-900">Tu ayuda total es de:</span>
-      <span class="text-4xl font-extrabold text-green-600">1,25 €</span>
+      <span class="text-4xl font-extrabold text-green-600">{{ userTotalContributions }} €</span>
     </div>
 
     <div class="p-4 border text-gray-900 border-1 border-gray-400 w-full flex rounded-lg gap-4 items-center text-md font-semibold">
       <i class="pi pi-bell text-xl"></i>
-      <span>Tienes 2 eventos programados</span>
+      <span>Tienes {{ userUpcomingEvents }} {{ userUpcomingEvents === 1 ? 'evento programado' : 'eventos programados' }}</span>
     </div>
 
     <div class="p-4 border border-1 text-gray-900 border-gray-400 w-full flex rounded-lg gap-4 items-center text-md font-semibold">
       <i class="pi pi-calendar text-xl"></i>
-      <span>Has asistido a 4 eventos</span>
+      <span>Has asistido a {{ userAssistedEvents }} {{ userAssistedEvents === 1 ? 'evento' : 'eventos' }}</span>
     </div>
 
     <div class="p-4 border border-1 text-gray-900 border-gray-400 w-full flex rounded-lg gap-4 items-center text-md font-semibold">
       <i class="pi pi-map text-xl"></i>
-      <span>Has creado 1 evento</span>
+      <span>Has creado 0 eventos</span>
     </div>
   </div>
 </div>
+<p-toast></p-toast>
