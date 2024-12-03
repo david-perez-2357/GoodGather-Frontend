@@ -17,7 +17,10 @@ export class EventService {
   }
 
   getAllEvents(): Observable<Event[]> {
-    this.http.post('/api/api/v1/auth/authenticate', {username: 'jgarcia', password: '1234'}, { withCredentials: true }).subscribe();
     return this.http.get<Event[]>('/api/event', { withCredentials: true });
+  }
+
+  getAllEventsWithoutFilters(): Observable<Event[]> {
+    return this.http.get<Event[]>('/api/event/all', { withCredentials: true });
   }
 }
