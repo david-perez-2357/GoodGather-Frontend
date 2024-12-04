@@ -22,7 +22,7 @@
     </div>
     <div class="p-field p-col-12">
       <label>Descripción Detallada</label>
-      <textarea id="description" placeholder="¿En qué consiste tu causa?" pInputTextarea [autoResize]="true" rows="5" [(ngModel)]="formData['description']" [class.ng-invalid]="isFieldInvalid('description')" [class.ng-dirty]="isFieldInvalid('description')" (blur)="validateField('description')"></textarea>
+      <textarea id="description" placeholder="¿En qué consiste tu causa?" pInputTextarea [autoResize]="false" rows="5" [(ngModel)]="formData['description']" [class.ng-invalid]="isFieldInvalid('description')" [class.ng-dirty]="isFieldInvalid('description')" (blur)="validateField('description')"></textarea>
       <small class="p-error" *ngIf="isFieldInvalid('description')">{{ errors['description'] }}</small>
     </div>
   </div>

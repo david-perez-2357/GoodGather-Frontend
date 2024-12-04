@@ -28,7 +28,7 @@
                   </div>
                 </ng-template>
               </p-dropdown>
-              <p-button class="text-right block mt-2 text-blue-500" (onClick)="openCreateCauseDialog()">¿No encuentras tu causa? Creala aquí</p-button>
+              <a (click)="openCreateCauseDialog()" class="text-right block mt-2 text-blue-500 cursor-pointer underline underline-offset-3">¿No encuentras tu causa? Creala aquí</a>
             </div>
             <div class="flex gap-4 w-full lg:grid grid-cols-[2fr_2fr_3fr] flex flex-col">
               <div class="flex flex-col">
