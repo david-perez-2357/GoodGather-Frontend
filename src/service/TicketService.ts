@@ -22,7 +22,7 @@ export class TicketService {
   }
 
   getTicketsBoughtByActiveUser(): Observable<Ticket[]> {
-    const activeUser = userIsLoggedIn() ? getCurrentUser() : { id: 0 };
+    const activeUser = getCurrentUser();
     return this.http.get<Ticket[]>(`/api/ticket/byUser/${activeUser.id}`, { withCredentials: true });
   }
 }

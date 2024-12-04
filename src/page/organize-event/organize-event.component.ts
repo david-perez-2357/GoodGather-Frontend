@@ -264,7 +264,7 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
       country: this.formData['country'].name,
       ticketPrice: this.formData['ticketPrice'],
       deleted: 0,
-      idOwner: getCurrentUser()?.id || 1,
+      idOwner: getCurrentUser().id,
       idCause: this.formData['cause']
     }
   }

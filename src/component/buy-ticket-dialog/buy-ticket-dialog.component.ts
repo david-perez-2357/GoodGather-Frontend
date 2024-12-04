@@ -225,7 +225,7 @@ export class BuyTicketDialogComponent implements OnInit {
       amount: this.quantity,
       purchaseDate: moment().format('YYYY-MM-DD HH:mm'),
       idEvent: this.eventId,
-      idUser: getCurrentUser()?.id || 0
+      idUser: getCurrentUser().id
     };
 
     try {
@@ -266,7 +266,7 @@ export class BuyTicketDialogComponent implements OnInit {
   async getBoughtTickets(): Promise<Ticket[]> {
     this.ticketsBought = [];
     this.numTicketsBought = 0;
-    const idUser = getCurrentUser()?.id || 0;
+    const idUser = getCurrentUser().id;
 
     return callAPI(this.ticketService.getTicketsBoughtByUserAndEvent(idUser, this.eventId)).then((response) => {
       return response.data;
