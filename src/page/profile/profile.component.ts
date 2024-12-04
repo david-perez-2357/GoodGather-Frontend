@@ -168,10 +168,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const eventEndDate = moment(event.endDate);
     const now = moment();
 
-    if (now.isBefore(eventStartDate)) {
+    if (eventStartDate.isAfter(now)) {
+      return 1;
+    }else if (eventEndDate.isAfter(now)) {
       return 3;
-    }else if (now.isAfter(eventEndDate)) {
-      return 1
     }else {
       return 2;
     }
