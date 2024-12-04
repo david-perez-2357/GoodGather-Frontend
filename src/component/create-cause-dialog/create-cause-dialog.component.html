@@ -1,0 +1,33 @@
+<p-dialog [(visible)]="createCauseProcessDialogVisible" [modal]="true" [style]="{ width: '35rem', 'border-radius': '1rem', 'overflow': 'hidden' }" [closable]="true">
+  <p-header>
+    <h3>Creación de causa</h3>
+  </p-header>
+  <div class="p-field p-col-12 mb-8">
+    <img [src]="formData['image']" class="w-full max-w-[200px] max-h-[150px] object-cover ml-auto mr-auto h-auto rounded-2xl " alt="event-image" (error)="onImageError($event)" />
+    <div class="flex justify-center items-center font-medium mt-4">
+      <uc-config ctx-name="my-uploader" multiple="false" removeCopyright="true" source-list="local, url, gdrive" use-cloud-image-editor="false" img-only="true" pubkey="d1b9085e489afdaa5ef9"></uc-config>
+      <uc-file-uploader-regular ctx-name="my-uploader" class="uc-light uc-green" id="my-uploader"></uc-file-uploader-regular>
+      <uc-upload-ctx-provider ctx-name="my-uploader" #ctxProvider></uc-upload-ctx-provider>
+    </div>
+  </div>
+  <div class="p-fluid p-form grid p-grid gap-6">
+    <div class="p-field p-col-12">
+      <label>Nombre de la causa</label>
+      <input id="name" type="text" placeholder="Escribe aquí un nombre corto y descriptivo para tu causa" pInputText maxlength="50" [(ngModel)]="formData['name']" [class.ng-invalid]="isFieldInvalid('name')" [class.ng-dirty]="isFieldInvalid('name')" (blur)="validateField('name')"/>
+      <small class="p-error" *ngIf="isFieldInvalid('name')">{{ errors['name'] }}</small>
+    </div>
+    <div class="p-field p-col-12">
+      <label>Rango</label>
+      <p-dropdown id="scope" optionValue="code" [options]="Scopes" [(ngModel)]="formData['scope']" optionLabel="name" placeholder="Selecciona un rango"></p-dropdown>
+    </div>
+    <div class="p-field p-col-12">
+      <label>Descripción Detallada</label>
+      <textarea id="description" placeholder="¿En qué consiste tu causa?" pInputTextarea [autoResize]="false" rows="5" [(ngModel)]="formData['description']" [class.ng-invalid]="isFieldInvalid('description')" [class.ng-dirty]="isFieldInvalid('description')" (blur)="validateField('description')"></textarea>
+      <small class="p-error" *ngIf="isFieldInvalid('description')">{{ errors['description'] }}</small>
+    </div>
+  </div>
+  <div class="flex justify-between mt-4">
+    <button pButton type="button" label="Cancelar" icon="pi pi-times" [text]="true" (click)="createCauseProcessDialogVisible = false"></button>
+    <button pButton type="button" label="Guardar" icon="pi pi-check" (click)="onSubmit()"></button>
+  </div>
+</p-dialog>

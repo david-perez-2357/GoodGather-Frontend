@@ -6,9 +6,9 @@ import {OrganizeEventComponent} from '@/page/organize-event/organize-event.compo
 import {ProfileComponent} from '@/page/profile/profile.component';
 
 export const routes: Routes = [
-  {'path': '', component: ViewAllEventsComponent},
-  {'path': 'event/:id', component: EventDetailsComponent},
+  {'path': '', 'component': ViewAllEventsComponent},
+  {'path': 'event/:id', 'component': EventDetailsComponent},
   {'path': 'organize-event', 'component': OrganizeEventComponent},
-  {'path': 'profile', component: ProfileComponent},
+  {'path': 'profile', 'component': ProfileComponent},
   {'path': '**', 'component': PageNotFoundComponent}
 ];
