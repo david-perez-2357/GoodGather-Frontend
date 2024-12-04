@@ -33,6 +33,10 @@ export class CauseDetailsComponent implements OnInit, OnDestroy{
   cause: Cause = {} as Cause;
   events: Event[] = []
 
+  totalfunds: number = 0;
+  totalEvents: number = 0;
+  totalDonors: number = 0;
+
 
   setCause(response: ApiResponse): void {
     if (response.status === 200) {
@@ -46,7 +50,11 @@ export class CauseDetailsComponent implements OnInit, OnDestroy{
     callAPI(this.causeService.getAllEventsFromCause(this.causeId))
       .then((eventsResponse: ApiResponse) => {
         this.events = eventsResponse.data;
-        console.log('Eventos recibidos:', this.events);
+        this.getDataCause();
+        console.log(this.events);
+      })
+      .catch((error) => {
+        this.catchErrorMessage(error);
       });
   }
 
@@ -60,18 +68,29 @@ export class CauseDetailsComponent implements OnInit, OnDestroy{
   }
 
   ngOnInit() {
-    this.causeId = Number(this.route.snapshot.paramMap.get('id'))
+    this.causeId = Number(this.route.snapshot.paramMap.get('id'));
     this.loadEvents();
-    putDefaultBackground(this.renderer)
+    putDefaultBackground(this.renderer);
     callAPI(this.causeService.getCause(this.causeId))
       .then((causeResponse: ApiResponse) => {
         this.setCause(causeResponse);
-      }).catch((error) => {
-      this.catchErrorMessage(error);
-    });
+      })
+      .catch((error) => {
+        this.catchErrorMessage(error);
+      });
   }
 
   ngOnDestroy() {
     removeDefaultBackground(this.renderer);
+  }
+
+  getDataCause(): void {
+    this.totalEvents = this.events.length;
+    this.totalDonors = this.events.reduce((total, event) => {
+      return total + (event.boughtTickets || 0);
+    }, 0);
+    this.totalfunds = this.events.reduce((total, event) => {
+      return total + (event.boughtTickets * event.ticketPrice);
+    }, 0);
   }
 }
