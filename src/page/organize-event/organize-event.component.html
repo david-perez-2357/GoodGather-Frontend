@@ -10,13 +10,13 @@
         <ng-template pTemplate="content" let-nextCallback="nextCallback" let-index="index">
           <div class="flex flex-col gap-6">
             <div>
-              <h3 class="text-md font-semibold mb-2">Nombre del evento</h3>
+              <h3 class="text-md font-semibold m-0">Nombre del evento</h3>
               <input type="text" placeholder="Escribe aquí un nombre corto y descriptivo para tu evento" pInputText class="p-component w-full"  maxlength="50" [(ngModel)]="formData['name']" [class.ng-invalid]="isFieldInvalid('name')" [class.ng-dirty]="isFieldInvalid('name')" (blur)="validateField('name')"/>
               <small class="text-red-500" *ngIf="isFieldInvalid('name')">{{ errors['name'] }}</small>
             </div>
             <div>
-              <h3 class="text-md font-semibold mb-2">Causa</h3>
-              <p-dropdown [style]="{'width': '100%'}" [options]="causes" optionValue="id" optionLabel="name" [filter]="true" filterBy="name" [showClear]="true" placeholder="Selecciona una causa" [(ngModel)]="formData['cause']">
+              <h3 class="text-md font-semibold m-0">Causa</h3>
+              <p-dropdown [style]="{'width': '100%'}" [options]="causes" optionValue="id" optionLabel="name" [filter]="true" filterBy="name"  placeholder="Selecciona una causa" emptyFilterMessage="No se han encontrado resultados" [(ngModel)]="formData['cause']">
                 <ng-template pTemplate="selectedItem" let-selectedOption>
                   <div class="flex align-items-center gap-2">
                     <div>{{ selectedOption.name }}</div>
@@ -28,12 +28,12 @@
                   </div>
                 </ng-template>
               </p-dropdown>
-              <a href="#" class="text-right block mt-2 text-blue-500">¿No encuentras tu causa? Creala aquí</a>
+              <p-button class="text-right block mt-2 text-blue-500" (onClick)="openCreateCauseDialog()">¿No encuentras tu causa? Creala aquí</p-button>
             </div>
             <div class="flex gap-4 w-full lg:grid grid-cols-[2fr_2fr_3fr] flex flex-col">
               <div class="flex flex-col">
-                <h3 class="text-md font-semibold mb-2">País</h3>
-                <p-dropdown [style]="{'width': '100%'}" [options]="countries" [showClear]="false" optionLabel="name" [filter]="true" filterBy="name"  placeholder="Selecciona un país" (onChange)="countryChange()" [(ngModel)]="formData['country']">
+                <h3 class="text-md font-semibold m-0">País</h3>
+                <p-dropdown [style]="{'width': '100%'}" [options]="countries" [showClear]="false" optionLabel="name" [filter]="true" filterBy="name"  placeholder="Selecciona un país" emptyFilterMessage="No se han encontrado resultados" (onChange)="countryChange()" [(ngModel)]="formData['country']">
                   <ng-template pTemplate="selectedItem" let-selectedOption>
                     <div class="flex align-items-center gap-2">
                       <div>{{ selectedOption.name }}</div>
@@ -47,8 +47,8 @@
                 </p-dropdown>
               </div>
               <div class="flex flex-col">
-                <h3 class="text-md font-semibold mb-2">Provincia</h3>
-                <p-dropdown [style]="{'width': '100%'}" [options]="provinces" [showClear]="false" optionValue="name" optionLabel="name" [filter]="true" filterBy="name" placeholder="Selecciona una provincia" [disabled]="provinces.length==0" [(ngModel)]="formData['province']">
+                <h3 class="text-md font-semibold m-0">Provincia</h3>
+                <p-dropdown [style]="{'width': '100%'}" [options]="provinces" [showClear]="false" optionValue="name" optionLabel="name" [filter]="true" filterBy="name" placeholder="Selecciona una provincia" emptyFilterMessage="No se han encontrado resultados" [disabled]="provinces.length==0" [(ngModel)]="formData['province']">
                   <ng-template pTemplate="selectedItem" let-selectedOption>
                     <div class="flex align-items-center gap-2">
                       <div>{{ selectedOption.name }}</div>
@@ -62,13 +62,13 @@
                 </p-dropdown>
               </div>
               <div class="flex flex-col">
-                <h3 class="text-md font-semibold mb-2">Dirección</h3>
+                <h3 class="text-md font-semibold m-0">Dirección</h3>
                 <input type="text" placeholder="¿Dónde se va a producir el evento?" pInputText class="p-component w-full" maxlength="100" [(ngModel)]="formData['address']" [class.ng-invalid]="isFieldInvalid('address')" [class.ng-dirty]="isFieldInvalid('address')" (blur)="validateField('address')"/>
                 <small class="text-red-500" *ngIf="isFieldInvalid('address')">{{ errors['address'] }}</small>
               </div>
             </div>
             <div>
-              <h3 class="text-md font-semibold mb-2">Descripción Detallada</h3>
+              <h3 class="text-md font-semibold m-0">Descripción Detallada</h3>
               <textarea placeholder="¿De qué trata el evento?" pInputTextarea [autoResize]="true" class="w-full resize-none" rows="5" [(ngModel)]="formData['description']" [class.ng-invalid]="isFieldInvalid('description')" [class.ng-dirty]="isFieldInvalid('description')" (blur)="validateField('description')"></textarea>
               <small class="text-red-500" *ngIf="isFieldInvalid('description')">{{ errors['description'] }}</small>
             </div>
@@ -90,19 +90,19 @@
             <div class="bg-gray-50 p-4 rounded-lg col-span-1 lg:col-span-2 h-full flex flex-col">
               <div class="flex items-center mb-4">
                 <i class="pi pi-ticket mr-2"></i>
-                <h3 class="text-md font-semibold">Ticket</h3>
+                <h3 class="text-md font-semibold m-0">Ticket</h3>
               </div>
               <div class="flex flex-col gap-4 justify-between flex-grow">
                 <div class="flex flex-col">
                   <div class="flex flex-row items-center gap-1.5">
-                    <h4 class="text-sm font-semibold mb-2">Precio del ticket</h4>
+                    <h4 class="text-sm font-semibold m-0">Precio del ticket</h4>
                     <i class="pi pi-question-circle text-sm cursor-pointer" pTooltip="Se refiere al precio individual para asistir al evento"></i>
                   </div>
                   <p-inputNumber [min]="0.00" [max]="1000.00" [step]="0.01" currency="EUR" class="w-full" styleClass="w-full" inputStyleClass="w-full" [(ngModel)]="formData['ticketPrice']" [mode]="'currency'"></p-inputNumber>
                 </div>
                 <div class="flex flex-col">
                   <div class="flex flex-row items-center gap-1.5">
-                    <h4 class="text-sm font-semibold mb-2">Plazas Máximas</h4>
+                    <h4 class="text-sm font-semibold m-0">Plazas Máximas</h4>
                     <i class="pi pi-question-circle text-sm cursor-pointer" pTooltip="Se refiere al número máximo de tickets que se pueden vender en el evento"></i>
                   </div>
                   <p-inputNumber [min]="1" [max]="1000000" [step]="1" suffix=" personas" class="w-full" styleClass="w-full" inputStyleClass="w-full" [(ngModel)]="formData['capacity']"/>
@@ -112,31 +112,31 @@
             <div class="bg-gray-50 p-4 rounded-lg col-span-1 lg:col-span-3 h-full flex flex-col">
               <div class="flex items-center mb-4">
                 <i class="pi pi-calendar mr-2"></i>
-                <h3 class="text-md font-semibold">Calendario</h3>
+                <h3 class="text-md font-semibold m-0">Calendario</h3>
               </div>
               <div class="flex flex-col gap-4 justify-between flex-grow">
                 <div>
-                  <h4 class="text-sm font-semibold mb-2">Inicio</h4>
+                  <h4 class="text-sm font-semibold m-0">Inicio</h4>
                   <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
                     <div>
-                      <h5 class="text-xs font-semibold mb-2">Fecha</h5>
+                      <h5 class="text-xs font-semibold m-0">Fecha</h5>
                       <input type="date" pInputText class="p-component w-full" [min]="minStartDateDate" [(ngModel)]="formData['startDate']" (change)="dateAndTimeValidator($event)"/>
                     </div>
                     <div>
-                      <h5 class="text-xs font-semibold mb-2">Hora</h5>
+                      <h5 class="text-xs font-semibold m-0">Hora</h5>
                       <input type="time" pInputText class="p-component w-full" [(ngModel)]="formData['startTime']" (change)="dateAndTimeValidator($event)"/>
                     </div>
                   </div>
                 </div>
                 <div class="mt-4">
-                  <h4 class="text-sm font-semibold mb-2">Fin</h4>
+                  <h4 class="text-sm font-semibold m-0">Fin</h4>
                   <div class="grid gap-4 grid-cols-1 md:grid-cols-2">
                     <div>
-                      <h5 class="text-xs font-semibold mb-2">Fecha</h5>
+                      <h5 class="text-xs font-semibold m-0">Fecha</h5>
                       <input type="date" pInputText class="p-component w-full" [min]="formData['startDate']" [(ngModel)]="formData['endDate']" (change)="dateAndTimeValidator($event)"/>
                     </div>
                     <div>
-                      <h5 class="text-xs font-semibold mb-2">Hora</h5>
+                      <h5 class="text-xs font-semibold m-0">Hora</h5>
                       <input type="time" pInputText class="p-component w-full" [(ngModel)]="formData['endTime']" (change)="dateAndTimeValidator($event)"/>
                     </div>
                   </div>
@@ -168,9 +168,9 @@
             </div>
           </div>
           <div class="flex pt-4 justify-between">
-            <p-button label="Back" icon="pi pi-arrow-left" class="hidden sm:block" [text]="true" (onClick)="prevCallback.emit()"/>
+            <p-button label="Atras" icon="pi pi-arrow-left" class="hidden sm:block" [text]="true" (onClick)="prevCallback.emit()"/>
             <p-button icon="pi pi-arrow-left" class="block sm:hidden" (onClick)="prevCallback.emit()"/>
-            <p-button label="Guardar" icon="pi pi-check" (onClick)="onSubmit()"/>
+            <p-button label="Guardar" icon="pi pi-check" (onClick)="confirm()"/>
           </div>
         </ng-template>
       </p-stepperPanel>
