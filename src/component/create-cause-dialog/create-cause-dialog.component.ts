@@ -1,4 +1,4 @@
-import {Component, OnDestroy, OnInit, Renderer2, CUSTOM_ELEMENTS_SCHEMA} from '@angular/core';
+import {Component, OnDestroy, OnInit, Renderer2, CUSTOM_ELEMENTS_SCHEMA, Output, EventEmitter} from '@angular/core';
 import {DialogModule} from 'primeng/dialog';
 import {DropdownModule} from 'primeng/dropdown';
 import {FormsModule} from '@angular/forms';
@@ -58,6 +58,7 @@ export class CreateCauseDialogComponent implements OnInit, OnDestroy {
   };
 
   constructor(private renderer: Renderer2, private locationService: LocationService, private causeService: CauseService, private messageService: MessageService) {}
+  @Output() causeCreated = new EventEmitter<Cause>();
 
   ngOnInit(): void {
     this.initializeImageUpdater();
@@ -116,6 +117,7 @@ export class CreateCauseDialogComponent implements OnInit, OnDestroy {
         if (response.status === 200) {
           this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Causa creada con éxito' });
           this.createCauseProcessDialogVisible = false;
+          this.causeCreated.emit(cause);
         } else {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al crear la causa' });
         }

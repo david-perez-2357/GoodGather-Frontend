@@ -264,7 +264,7 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
       country: this.formData['country'].name,
       ticketPrice: this.formData['ticketPrice'],
       deleted: 0,
-      idOwner: getCurrentUser()?.id || 0,
+      idOwner: getCurrentUser()?.id || 1,
       idCause: this.formData['cause']
     }
   }
@@ -344,4 +344,8 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     this.child.openDialog();
   }
 
+  addCause($event: Cause) {
+    this.causes.push($event);
+    this.formData['cause'] = $event.id;
+  }
 }
