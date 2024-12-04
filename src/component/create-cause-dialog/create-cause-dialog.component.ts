@@ -138,7 +138,7 @@ export class CreateCauseDialogComponent implements OnInit, OnDestroy {
       description: this.formData['description'],
       image: this.formData['image'],
       scope: this.formData['scope'],
-      idOwner: getCurrentUser()?.id || 1
+      idOwner: getCurrentUser().id
     };
   }
 
