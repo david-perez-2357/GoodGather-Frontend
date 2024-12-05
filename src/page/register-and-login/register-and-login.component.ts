@@ -232,6 +232,7 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
   }
 
   usernameExists: boolean | null = null;
+  emailExists: boolean | null = null;
 
   validateUsername():void{
     const user = this.registerFormData['username'];
@@ -255,6 +256,28 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   }
 
+
+  validateEmail():void{
+    const user = this.registerFormData['email'];
+    this.validateField('email');
+    if (this.isFieldInvalid('email')) {
+      // Stop further processing if validation fails
+      return;
+    }
+
+    callAPI(this.authService.isEmailExist(user))
+      .then((response:ApiResponse)=>{
+        this.emailExists = response.data;
+
+      })
+      .catch((error:any) =>{
+        console.log('Error checking username:', error);
+        if (error.toastMessage) {
+          this.messageService.add(error.toastMessage);
+        }
+      });
+
+  }
 
 
 
