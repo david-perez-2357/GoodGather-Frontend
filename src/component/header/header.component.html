@@ -12,7 +12,7 @@
       </a>
     </ng-template>
     <ng-template pTemplate="end">
-      <a [routerLink]="['/profile']" (click)="menu.toggle($event)">
+      <a (click)="menu.toggle($event)">
         <p-avatar icon="pi pi-user" size="large" class="me-3" *ngIf="!activeUser.id"></p-avatar>
         <p-avatar size="large" class="me-3 rounded overflow-hidden h-[48px] block" *ngIf="activeUser.id" [image]="activeUser.avatar"></p-avatar>
 

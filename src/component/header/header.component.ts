@@ -51,11 +51,6 @@ export class HeaderComponent implements OnInit {
       icon: 'pi pi-calendar-plus',
       routerLink: ['/organize-event']
     },
-    {
-      label: 'Cerrar sesión',
-      icon: 'pi pi-sign-out',
-      command: () => this.onLogout()
-    },
 
 
   ];
@@ -67,12 +62,8 @@ export class HeaderComponent implements OnInit {
       command: () => {
         this.router.navigate(['/login']);
       }
-    },
-    {
-      label: 'Cerrar sesión',
-      icon: 'pi pi-sign-out',
-      command: () => this.onLogout()
-    },
+    }
+
   ]
 
 
@@ -98,6 +89,11 @@ export class HeaderComponent implements OnInit {
           command: () => {
             this.router.navigate(['/profile']);
           }
+        },
+        {
+          label: 'Cerrar sesión',
+          icon: 'pi pi-sign-out',
+          command: () => this.onLogout()
         },
 
       ];
