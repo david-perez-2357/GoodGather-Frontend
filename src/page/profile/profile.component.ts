@@ -18,7 +18,6 @@ import {TicketService} from '@/service/TicketService';
 import {callAPI} from '@/method/response-mehods';
 import {EventService} from '@/service/EventService';
 import moment from 'moment';
-import {getCurrentUser} from '@/method/app-user-methods';
 import {SpinnerModule} from 'primeng/spinner';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {AppService} from '@/service/AppService';
@@ -29,6 +28,7 @@ import {ToastModule} from 'primeng/toast';
 import {CauseService} from '@/service/CauseService';
 import Cause from '@/interface/Cause';
 import {PaginatorModule, PaginatorState} from 'primeng/paginator';
+import AppUser from '@/interface/AppUser';
 
 interface PageEvent {
   first: number;
@@ -66,7 +66,6 @@ interface PageEvent {
   providers: [MessageService]
 })
 export class ProfileComponent implements OnInit, OnDestroy {
-  protected readonly getCurrentUser = getCurrentUser;
   protected readonly moment = moment;
 
   usersBoughtTickets: Ticket[] = [];
@@ -81,6 +80,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   first: number = 0;
   rows: number = 5;
+  activeUser: AppUser = {} as AppUser;
 
   constructor(private renderer: Renderer2,
               private ticketService: TicketService,
@@ -92,9 +92,12 @@ export class ProfileComponent implements OnInit, OnDestroy {
 
   ngOnInit() {
     putDefaultBackground(this.renderer);
+    this.appService.appUser$.subscribe(user => {
+      this.activeUser = user;
+    });
 
     Promise.all([
-      callAPI(this.ticketService.getTicketsBoughtByActiveUser()),
+      callAPI(this.ticketService.getTicketsBoughtByActiveUser(this.activeUser)),
       callAPI(this.eventService.getAllEventsWithoutFilters()),
       callAPI(this.causeService.getAllCauses())
     ]).then(([tickets, events, causes]) => {
@@ -129,7 +132,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   getEventsCreatedByUser(events: Event[]): Event[] {
-    return events.filter(event => event.idOwner === this.getCurrentUser().id);
+    return events.filter(event => event.idOwner === this.activeUser.id);
   }
 
   getUserDistinctEvents(): Event[] {
@@ -168,10 +171,10 @@ export class ProfileComponent implements OnInit, OnDestroy {
     const eventEndDate = moment(event.endDate);
     const now = moment();
 
-    if (now.isBefore(eventStartDate)) {
+    if (eventStartDate.isAfter(now)) {
+      return 1;
+    }else if (eventEndDate.isAfter(now)) {
       return 3;
-    }else if (now.isAfter(eventEndDate)) {
-      return 1
     }else {
       return 2;
     }

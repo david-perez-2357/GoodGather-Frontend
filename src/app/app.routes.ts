@@ -7,10 +7,10 @@ import {CauseDetailsComponent} from '@/page/cause-details/cause-details.componen
 import {ProfileComponent} from '@/page/profile/profile.component';
 
 export const routes: Routes = [
-  {'path': 'cause/:id', component: CauseDetailsComponent},
-  {'path': '', component: ViewAllEventsComponent},
-  {'path': 'event/:id', component: EventDetailsComponent},
+  {'path': 'cause/:id', 'component': CauseDetailsComponent},
+  {'path': '', 'component': ViewAllEventsComponent},
+  {'path': 'event/:id', 'component': EventDetailsComponent},
   {'path': 'organize-event', 'component': OrganizeEventComponent},
-  {'path': 'profile', component: ProfileComponent},
+  {'path': 'profile', 'component': ProfileComponent},
   {'path': '**', 'component': PageNotFoundComponent}
 ];

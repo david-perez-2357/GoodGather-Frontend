@@ -1,4 +1,4 @@
-import {Component, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, OnInit, Renderer2,} from '@angular/core';
+import {Component, CUSTOM_ELEMENTS_SCHEMA, OnDestroy, OnInit, Renderer2, ViewChild,} from '@angular/core';
 import { StepperModule } from 'primeng/stepper';
 import { Button } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
@@ -17,11 +17,21 @@ import {LocationService} from '@/service/LocationService';
 import ApiResponse from '@/interface/ApiResponse';
 import {convertToLocationList} from '@/method/location-methods';
 import Location from '@/interface/Location';
-import {MessageService} from 'primeng/api';
+import {ConfirmationService, MessageService} from 'primeng/api';
 import {ToastModule} from 'primeng/toast';
 import {StaticValidationRules, validateField, ValidationRule} from '@/method/validate-methods';
 import * as UC from '@uploadcare/file-uploader';
 import "@uploadcare/file-uploader/web/uc-file-uploader-regular.min.css";
+import {DialogModule} from 'primeng/dialog';
+import {ConfirmDialogModule} from 'primeng/confirmdialog';
+import {AvatarModule} from 'primeng/avatar';
+import {ProgressSpinnerModule} from 'primeng/progressspinner';
+import {RouterLink} from '@angular/router';
+import Cause from '@/interface/Cause';
+import {CauseService} from '@/service/CauseService';
+import {AppService} from '@/service/AppService';
+import {CreateCauseDialogComponent} from '@/component/create-cause-dialog/create-cause-dialog.component';
+import AppUser from '@/interface/AppUser';
 
 UC.defineComponents(UC);
 
@@ -39,20 +49,30 @@ UC.defineComponents(UC);
     NgIf,
     InputNumberModule,
     NgClass,
-    ToastModule
+    ToastModule,
+    DialogModule,
+    ConfirmDialogModule,
+    AvatarModule,
+    ProgressSpinnerModule,
+    RouterLink,
+    CreateCauseDialogComponent
   ],
   templateUrl: './organize-event.component.html',
   styles: ``,
-  providers: [MessageService],
+  providers: [MessageService, ConfirmationService],
   schemas: [CUSTOM_ELEMENTS_SCHEMA]
 })
 
 export class OrganizeEventComponent implements OnInit, OnDestroy {
-  causes: any[] | undefined;
+  causes: Cause[] = [];
   countries: any[] | undefined;
   provinces: Location[] = [];
   minStartDateDate: string = moment().format('YYYY-MM-DD');
   stepActive: number = 0;
+  createEventProcessDialogVisible: boolean = false;
+  createEventProcessDialogStepActive: number = 0;
+  createdEventId: number = 0;
+  activeUser: AppUser = {} as AppUser;
 
   formData: { [key: string]: any } = {
     name: '',
@@ -113,15 +133,21 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
       StaticValidationRules['required']
     ]
   }
-  constructor(private renderer: Renderer2, private locationService: LocationService, private eventService: EventService, private messageService: MessageService) {}
+
+  @ViewChild(CreateCauseDialogComponent) child!: CreateCauseDialogComponent;
+
+  constructor(private renderer: Renderer2, private locationService: LocationService, private eventService: EventService, private messageService: MessageService, private confirmationService: ConfirmationService, private causeService: CauseService, private appService: AppService) {}
 
   ngOnInit(): void {
     putFormBackground(this.renderer);
     this.loadCountries();
+    this.loadCausesInUsersRange();
     this.initializeImageUpdater();
     this.setUploaderDefaultText();
+    this.appService.appUser$.subscribe(user => {
+      this.activeUser = user;
+    });
   }
-
 
   /**
    * Loads the list of countries from the API and converts them to the desired format.
@@ -134,6 +160,22 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
       .catch((error: any) => {
         this.messageService.add({severity: 'error', summary: 'Error', detail: 'Error al cargar los países'});
       });
+  }
+
+  loadCausesInUsersRange(): void {
+    const userId = 1; // Replace with your method to get the current user ID
+
+    callAPI(this.causeService.getCausesInUsersRange(userId)).then((response: ApiResponse) => {
+      if (response.status !== 200) {
+        this.messageService.add({severity: 'error', summary: 'Error', detail: 'Error al cargar las causas'});
+        return;
+      }else{
+        this.causes = response.data;
+      }
+    }).catch((error: any) => {
+      this.appService.showWErrorInApp(error);
+    });
+
   }
 
   /**
@@ -226,27 +268,28 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
       country: this.formData['country'].name,
       ticketPrice: this.formData['ticketPrice'],
       deleted: 0,
-      idOwner: 1,
+      idOwner: this.activeUser.id,
       idCause: this.formData['cause']
     }
   }
 
   onSubmit(): void {
     const event = this.convertFormDataToEvent();
-    if (!this.isFormValid()) {
-      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Por favor, rellena todos los campos'});
-      return;
-    }
-    callAPI(this.eventService.createEvent(event))
+    this.createEventProcessDialogStepActive = 1;
+    setTimeout(() => {
+      callAPI(this.eventService.createEvent(event))
         .then((response: ApiResponse) => {
           if (response.status === 200) {
-            this.messageService.add({severity: 'success', summary: 'Evento creado', detail: 'El evento se ha creado correctamente'});
-          } else if (response.toastMessage) {
-            this.messageService.add(response.toastMessage);
+            this.createEventProcessDialogStepActive = 2;
+            this.createdEventId = response.data.id;
+          } else {
+            this.createEventProcessDialogStepActive = 3;
           }
         }).catch((error: any) => {
-          this.messageService.add(error.toastMessage);
-        });
+        this.messageService.add(error.toastMessage);
+        this.createEventProcessDialogStepActive = 3;
+      });
+    }, 1500);
   }
 
   isFormValid(): boolean {
@@ -265,5 +308,48 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
 
   isFieldInvalid(fieldName: string): boolean {
     return !!this.errors[fieldName];
+  }
+
+  confirm() {
+    if (!this.isFormValid()) {
+      this.messageService.add({severity: 'error', summary: 'Error', detail: 'Por favor, rellena todos los campos'});
+      return;
+    } else {
+      this.confirmationService.confirm({
+        header: 'Confirmación de creación',
+        message: `Estás a punto de crear el evento "${this.convertFormDataToEvent().name}". ¿Estás seguro de que quieres continuar?`,
+        acceptIcon: 'pi pi-check mr-2',
+        rejectIcon: 'pi pi-times mr-2',
+        icon: 'pi pi-info-circle',
+        rejectButtonStyleClass: 'p-button-text',
+        acceptLabel: 'Confirmar',
+        accept: () => {
+          this.openDialog();
+        },
+      });
+    }
+  }
+
+  openDialog() {
+    this.createEventProcessDialogVisible = true;
+    try {
+      this.onSubmit();
+    } catch (error) {
+      this.createEventProcessDialogStepActive = 3;
+    }
+  }
+
+  closeCreateEventProcessDialog() {
+    this.createEventProcessDialogVisible = false;
+    this.createEventProcessDialogStepActive = 0;
+  }
+
+  openCreateCauseDialog() {
+    this.child.openDialog();
+  }
+
+  addCause($event: Cause) {
+    this.causes.push($event);
+    this.formData['cause'] = $event.id;
   }
 }

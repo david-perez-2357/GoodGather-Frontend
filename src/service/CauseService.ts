@@ -24,4 +24,12 @@ export class CauseService {
   getAllEventsFromCause(id: number): Observable<Event[]> {
     return this.http.get<Event[]>(`/api/cause/${id}/events`, { withCredentials: true });
   }
+
+  getCausesInUsersRange(userId: number): Observable<Cause[]> {
+    return this.http.get<Cause[]>(`/api/cause/user/${userId}`, { withCredentials: true });
+  }
+
+  createCause(cause: Cause): Observable<Cause> {
+    return this.http.post<Cause>('/api/cause', cause, { withCredentials: true });
+  }
 }

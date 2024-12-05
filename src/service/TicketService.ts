@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import Ticket from '@/interface/Ticket';
-import {getCurrentUser, userIsLoggedIn} from '@/method/app-user-methods';
+import AppUser from '@/interface/AppUser';
 
 @Injectable({providedIn: 'root'})
 export class TicketService {
@@ -21,8 +21,7 @@ export class TicketService {
     return this.http.post<void>('/api/ticket', ticket, { withCredentials: true });
   }
 
-  getTicketsBoughtByActiveUser(): Observable<Ticket[]> {
-    const activeUser = userIsLoggedIn() ? getCurrentUser() : { id: 0 };
+  getTicketsBoughtByActiveUser(activeUser: AppUser): Observable<Ticket[]> {
     return this.http.get<Ticket[]>(`/api/ticket/byUser/${activeUser.id}`, { withCredentials: true });
   }
 }

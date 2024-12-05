@@ -1,22 +1,40 @@
 import AppUser from '@/interface/AppUser';
-import {getItem, removeItem, setItem} from '@/method/localStorage-methods';
-import moment from 'moment';
+import {callAPI} from '@/method/response-mehods';
+import {AuthService} from '@/service/AuthService';
+import ApiResponse from '@/interface/ApiResponse';
+import {Injectable} from '@angular/core';
 
-function getCurrentUser(): AppUser {
-  return getItem('user') || { id: 0, name: 'Anónimo', username: 'Anonimo', surname: '', country: '', province: '', email: '', logDate: '' };
+@Injectable({
+  providedIn: 'root'
+})
+class AppUserMethods {
+  constructor(private authService: AuthService) {
+  }
+
+  getCurrentUser(): Promise<ApiResponse> {
+    return callAPI(this.authService.getCurrentUserFromServer()).then((response: ApiResponse) => {
+      if (response.status === 200) {
+        response.data = this.parseAppUser(response.data);
+      }
+      return response;
+    }).catch((error: ApiResponse) => {
+      return error;
+    });
+  }
+
+  private parseAppUser(data: any) {
+    const appUser: AppUser = {
+      id: data.id,
+      username: data.username,
+      email: data.email,
+      name: data.firstname,
+      surname: data.surname,
+      country: data.country,
+      province: data.province,
+      avatar: `https://api.dicebear.com/9.x/thumbs/svg?seed=${data.username}`
+    };
+    return appUser;
+  }
 }
 
-function userIsLoggedIn(): boolean {
-  return getCurrentUser() && getCurrentUser().id !== 0 && moment().isBefore(moment(getCurrentUser()!.logDate).add(1, 'day'));
-}
-
-function logOutUser() {
-  removeItem('user');
-}
-
-function logInUser(user: AppUser) {
-  user.logDate = moment().toISOString();
-  setItem('user', user);
-}
-
-export {userIsLoggedIn, getCurrentUser, logOutUser, logInUser};
+export {AppUserMethods};
