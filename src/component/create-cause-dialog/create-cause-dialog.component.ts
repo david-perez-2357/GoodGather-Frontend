@@ -60,12 +60,20 @@ export class CreateCauseDialogComponent implements OnInit, OnDestroy {
   constructor(private renderer: Renderer2, private locationService: LocationService, private causeService: CauseService, private messageService: MessageService) {}
   @Output() causeCreated = new EventEmitter<Cause>();
 
+  /**
+   * Coloca la imagen de fondo
+   * @returns void
+   */
   ngOnInit(): void {
     this.initializeImageUpdater();
   }
 
   ngOnDestroy(): void {}
 
+  /**
+   * Inicializa el actualizador de imagen
+   * @returns void
+   */
   initializeImageUpdater(): void {
     setInterval(() => {
       this.updateImageFromDOM();
@@ -73,6 +81,10 @@ export class CreateCauseDialogComponent implements OnInit, OnDestroy {
     }, 1500);
   }
 
+  /**
+   * Actualiza la imagen de fondo
+   * @returns void
+   */
   updateImageFromDOM(): void {
     const imageElement = document.querySelector('.uc-thumb');
     const styleAttribute = imageElement?.getAttribute('style');
@@ -83,6 +95,11 @@ export class CreateCauseDialogComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Actualiza el texto del actualizador de imagen
+   * @param selector
+   * @param text
+   */
   updateUploaderText(selector: string, text: string): void {
     const element = document.querySelector(selector);
     if (element) {
@@ -90,21 +107,40 @@ export class CreateCauseDialogComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Valida un campo
+   * @param fieldName
+   * @returns void
+   */
   validateField(fieldName: string): void {
     const value = this.formData[fieldName];
     const rules = this.fieldRules[fieldName];
     this.errors[fieldName] = rules? validateField(value, rules) || '':'';
   }
 
+  /**
+   * Verifica si un campo es inválido
+   * @param fieldName
+   * @returns boolean
+   */
   isFieldInvalid(fieldName: string): boolean {
     return !!this.errors[fieldName];
   }
 
+  /**
+   * Si la imagen da error se coloca una imagen por defecto
+   * @param $event
+   * @returns void
+   */
   onImageError($event: ErrorEvent): void {
     const target = $event.target as HTMLImageElement;
     target.src = 'gg-placeholder-image.png';
   }
 
+  /**
+   * Se envía la información de la causa
+   * @returns void
+   */
   onSubmit(): void {
     const cause = this.convertFormDataToCause();
     console.log(cause);
@@ -127,10 +163,18 @@ export class CreateCauseDialogComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Verifica si el formulario es válido
+   * @returns boolean
+   */
   isFormValid(): boolean {
     return Object.keys(this.formData).every((key) => this.formData[key] !== '' && !this.isFieldInvalid(key));
   }
 
+  /**
+   * Convierte la información del formulario en una causa
+   * @returns Cause
+   */
   convertFormDataToCause(): Cause {
     return {
       id: 0,
@@ -142,6 +186,10 @@ export class CreateCauseDialogComponent implements OnInit, OnDestroy {
     };
   }
 
+  /**
+   * Abre el modal
+   * @returns void
+   */
   openDialog() {
     this.createCauseProcessDialogVisible = true;
   }
