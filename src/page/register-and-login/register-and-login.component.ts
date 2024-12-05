@@ -191,6 +191,22 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     }
   }
 
+  clearRegisterFormData():void{
+    this.registerFormData ={
+      id: 0,
+      username:'',
+      password: '',
+      idClient: 0,
+      firstname: '',
+      surname: '',
+      email: '',
+      birthdate: '',
+      province: '',
+      country: '',
+
+}
+}
+
 
   onSubmit(): void {
     const user = this.convertFormDataToUser();
@@ -203,6 +219,8 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
       .then((response: ApiResponse) => {
         console.log('Response status:', response.status);
         if (response.status === 200 || response.status === 201) {
+         this.clearRegisterFormData();
+         this.activeForm ="login"
           this.router.navigate(['/login']);
 
         } else if (response.toastMessage) {
