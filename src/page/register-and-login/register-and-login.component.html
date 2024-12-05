@@ -60,16 +60,12 @@
                  [(ngModel)]="registerFormData['username']"
                  [class.ng-invalid]="isFieldInvalid('username')"
                  [class.ng-dirty]="isFieldInvalid('username')"
+
                  (blur)="validateUsername()"
 
 
           />
           <small *ngIf="isFieldInvalid('username')" class="text-red-500">{{ errors['username'] }}</small>
-         <small *ngIf="usernameExists !== null || isFieldInvalid('username')" class="text-red-500">
-            {{ usernameExists ? 'El usuario ya existe' : '' }}
-          </small>
-
-
         </div>
 
 
@@ -134,9 +130,6 @@
 
             />
             <small *ngIf="isFieldInvalid('email')" class="text-red-500">{{ errors['email'] }}</small>
-            <small *ngIf="usernameExists !== null || isFieldInvalid('email')" class="text-red-500">
-              {{ emailExists ? 'El email ya existe' : '' }}
-            </small>
           </div>
 
           <div class="flex flex-col">

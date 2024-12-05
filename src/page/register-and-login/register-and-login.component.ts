@@ -246,6 +246,9 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
       .then((response:ApiResponse)=>{
         this.usernameExists = response.data;
 
+        if (this.usernameExists) {
+          this.errors['username'] = "El usuario ya existe"
+        }
       })
       .catch((error:any) =>{
         console.log('Error checking username:', error);
@@ -268,6 +271,9 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     callAPI(this.authService.isEmailExist(user))
       .then((response:ApiResponse)=>{
         this.emailExists = response.data;
+        if (this.emailExists) {
+          this.errors['email'] = "El email ya existe"
+        }
 
       })
       .catch((error:any) =>{
