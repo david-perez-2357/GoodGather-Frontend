@@ -60,17 +60,24 @@
                  [(ngModel)]="registerFormData['username']"
                  [class.ng-invalid]="isFieldInvalid('username')"
                  [class.ng-dirty]="isFieldInvalid('username')"
-                 (blur)="validateField('username')"
+                 (blur)="validateUsername()"
+
+
           />
           <small *ngIf="isFieldInvalid('username')" class="text-red-500">{{ errors['username'] }}</small>
-                </div>
+         <small *ngIf="usernameExists !== null || isFieldInvalid('username')" class="text-red-500">
+            {{ usernameExists ? 'El usuario ya existe' : '' }}
+          </small>
+
+
+        </div>
 
 
 
 
         <div class="flex flex-col">
           <label for="password" class=" block text-m font-medium text-gray-700">Contraseña</label>
-          <p-password [(ngModel)]="registerFormData['password']" [toggleMask]="true" [feedback]="false"
+          <p-password [(ngModel)]="registerFormData['password']" [toggleMask]="true" [feedback]="true"
                       id="password"
                       type="password"
                       styleClass="w-full"
@@ -124,7 +131,11 @@
               [class.ng-invalid]="isFieldInvalid('email')"
               [class.ng-dirty]="isFieldInvalid('email')"
               (blur)="validateField('email')"
+
             />
+          <!--  <small *ngIf="emailExist !== null" class="text-red-500">
+              {{ emailExist ? 'El email ya existe' : '' }}
+            </small>-->
             <small *ngIf="isFieldInvalid('email')" class="text-red-500">{{ errors['email'] }}</small>
           </div>
 

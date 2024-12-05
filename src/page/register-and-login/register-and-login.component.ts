@@ -20,12 +20,15 @@ import {callAPI} from '@/method/response-mehods';
 import ApiResponse from '@/interface/ApiResponse';
 import {convertToLocationList} from '@/method/location-methods';
 import {ActivatedRoute, Router} from '@angular/router';
-import {UserClientService} from '@/service/UserClientService';
+import {AuthService} from '@/service/AuthService';
 import {MessageService} from 'primeng/api';
 import UserClient from '@/interface/UserClient';
 import {validateField, DynamicValidationRules, StaticValidationRules, ValidationRule} from '@/method/validate-methods';
 import User from '@/interface/User';
 import {ToastModule} from 'primeng/toast';
+import AppUser from '@/interface/AppUser';
+import {debounceTime, distinctUntilChanged, Subject} from 'rxjs';
+
 
 
 
@@ -46,7 +49,8 @@ import {ToastModule} from 'primeng/toast';
 export class RegisterAndLoginComponent implements OnInit, OnDestroy {
   constructor(private renderer: Renderer2,
               private locationService:LocationService, private route: ActivatedRoute, private router: Router,
-              @Inject(UserClientService)private userClientService:UserClientService, private messageService: MessageService) {
+              private authService:AuthService, private messageService: MessageService) {
+
   }
 
   stateOptions: any[] = [
@@ -57,6 +61,8 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   countries: Location[] = [];
   provinces:Location[] = [];
+
+
   country:Location = {
     name:'',
     code:''
@@ -69,6 +75,8 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     loginPassword:'',
   }
 
+
+
   registerFormData:{[key:string]:any} ={
     username:'',
     password:'',
@@ -79,11 +87,12 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     country:'',
     province:''
 
-}
+  }
 
 
 
-  fieldRules: { [key: string]: ValidationRule[] } = {
+
+    fieldRules: { [key: string]: ValidationRule[] } = {
     loginUsername:[StaticValidationRules['required']
 
     ],
@@ -190,32 +199,28 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
       return;
     }
 
-    callAPI(this.userClientService.createUser(user))
+    callAPI(this.authService.createUser(user))
       .then((response: ApiResponse) => {
+        console.log('Response status:', response.status);
         if (response.status === 200 || response.status === 201) {
-          this.router.navigate(['login']);
+          this.router.navigate(['/login']);
 
         } else if (response.toastMessage) {
           this.messageService.add(response.toastMessage);
 
         }
       }).catch((error: any) => {
-      if (error && error.toastMessage){
-        this.messageService.add({ severity: 'error', summary: 'Registration Failed', detail: "El usuario ya existe"});
-      }
-      else{
+      console.log('Error:', error);
+      if (error.toastMessage){
         this.messageService.add(error.toastMessage);
       }
-
     });
-
-
-
   }
 
   isRegisterFormValid(): boolean {
     return Object.keys(this.registerFormData).every((key) => this.registerFormData[key] !== '' && !this.isFieldInvalid(key));
   }
+
   isLoginFormValid(): boolean {
     return Object.keys(this.loginFormData).every((key) => this.loginFormData[key] !== '' && !this.isFieldInvalid(key));
   }
@@ -226,29 +231,57 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     this.errors[fieldName] = rules ? validateField(value, rules) || '' : '';
   }
 
+  usernameExists: boolean | null = null;
+
+  validateUsername():void{
+    const user = this.registerFormData['username'];
+    this.validateField('username');
+    if (this.isFieldInvalid('username')) {
+      // Stop further processing if validation fails
+      return;
+    }
+
+    callAPI(this.authService.isUserExist(user))
+      .then((response:ApiResponse)=>{
+        this.usernameExists = response.data;
+
+      })
+      .catch((error:any) =>{
+        console.log('Error checking username:', error);
+        if (error.toastMessage) {
+          this.messageService.add(error.toastMessage);
+        }
+      });
+
+  }
+
+
+
 
   isFieldInvalid(fieldName: string): boolean {
     return !!this.errors[fieldName];
   }
 
 
+
   onLogin(): void {
     const user = this.convertFormDataToLoginUser();
+
     if (!this.isLoginFormValid()) {
       this.messageService.add({severity: 'error', summary: 'Error', detail: 'Por favor, rellena todos los campos'});
       return;
     }
-    callAPI(this.userClientService.doLogin(user))
+
+    callAPI(this.authService.doLogin(user))
       .then((response:ApiResponse)=>{
-        if (response.status === 200){
-          this.router.navigate(['']);
+        if (response.status === 200 || response.status===2001){
+          window.location.href= "/";
         }
       })
       .catch((error: any) => {
         this.messageService.add(error.toastMessage);
       });
   }
-
 
   ngOnDestroy() {
     removeFormBackground(this.renderer);
