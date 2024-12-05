@@ -1,10 +1,8 @@
 import {Component, Inject, OnInit} from '@angular/core';
-import {Component, OnInit} from '@angular/core';
 import {MenubarModule} from 'primeng/menubar';
 import {MenuItem, MessageService} from 'primeng/api';
 import {ChipsModule} from 'primeng/chips';
 import {AvatarModule} from 'primeng/avatar';
-import AppUser from '@/interface/AppUser';
 import {AppService} from '@/service/AppService';
 import {ToastModule} from 'primeng/toast';
 import ApiResponse from '@/interface/ApiResponse';
@@ -14,6 +12,9 @@ import {UserClientService} from '@/service/UserClientService';
 import {SplitButtonModule} from 'primeng/splitbutton';
 import {MenuModule} from 'primeng/menu';
 import {PasswordModule} from 'primeng/password';
+import AppUser from '@/interface/AppUser';
+import {NgIf} from '@angular/common';
+
 
 
 @Component({
@@ -27,6 +28,7 @@ import {PasswordModule} from 'primeng/password';
     SplitButtonModule,
     MenuModule,
     PasswordModule,
+    NgIf,
   ],
   providers:[MessageService],
   templateUrl: './header.component.html',
@@ -49,6 +51,13 @@ export class HeaderComponent implements OnInit {
       icon: 'pi pi-calendar-plus',
       routerLink: ['/organize-event']
     },
+    {
+      label: 'Cerrar sesión',
+      icon: 'pi pi-sign-out',
+      command: () => this.onLogout()
+    },
+
+
   ];
 
   perfil: MenuItem[] = [
@@ -71,7 +80,7 @@ export class HeaderComponent implements OnInit {
     callAPI(this.userClientService.doLogOut())
       .then((response: ApiResponse) => {
         if (response.status === 200 || 201) {
-          this.router.navigate(['']);
+          window.location.reload();
         }
       })
       .catch((error: any) => {
@@ -80,10 +89,46 @@ export class HeaderComponent implements OnInit {
       });
   }
 
+  updateMenu(): void{
+    if (this.activeUser.username){
+      this.perfil = [
+        {
+          label:'Ver perfil',
+          icon:'pi pi-user',
+          command: () => {
+            this.router.navigate(['/profile']);
+          }
+        },
+
+      ];
+    } else {
+      this.perfil = [
+        {
+          label: 'Iniciar sesión',
+          icon: 'pi pi-sign-in',
+          command: () => {
+            this.router.navigate(['/login']);
+          }
+        },
+        {
+          label: 'Registrarse',
+          icon: 'pi pi-user-plus',
+          command: () => {
+            this.router.navigate(['/register']);
+          }
+        },
+      ];
+
+    }
+  }
+
 
   ngOnInit() {
     this.appService.appUser$.subscribe(user => {
       this.activeUser = user;
+      this.updateMenu();
     });
+
+      this.updateMenu();
   }
 }
