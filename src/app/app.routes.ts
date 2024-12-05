@@ -7,11 +7,11 @@ import {RegisterAndLoginComponent} from '@/page/register-and-login/register-and-
 import {ProfileComponent} from '@/page/profile/profile.component';
 
 export const routes: Routes = [
-  {'path': '', component: ViewAllEventsComponent},
-  {'path': 'login', component: RegisterAndLoginComponent},
-  {'path': 'register', component: RegisterAndLoginComponent},
-  {'path': 'event/:id', component: EventDetailsComponent},
+  {'path': '', 'component': ViewAllEventsComponent},
+  {'path': 'event/:id', 'component': EventDetailsComponent},
+  {'path': 'login', 'component': RegisterAndLoginComponent},
+  {'path': 'register', 'component': RegisterAndLoginComponent},
   {'path': 'organize-event', 'component': OrganizeEventComponent},
-  {'path': 'profile', component: ProfileComponent},
+  {'path': 'profile', 'component': ProfileComponent},
   {'path': '**', 'component': PageNotFoundComponent}
 ];

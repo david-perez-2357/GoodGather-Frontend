@@ -26,7 +26,7 @@ import { AppService } from '@/service/AppService';
 import { ProgressSpinnerModule } from 'primeng/progressspinner';
 import {DividerModule} from 'primeng/divider';
 import {BuyTicketDialogComponent} from '@/component/buy-ticket-dialog/buy-ticket-dialog.component';
-import {getCurrentUser} from '@/method/app-user-methods';
+import AppUser from '@/interface/AppUser';
 
 @Component({
   selector: 'app-page-index',
@@ -87,6 +87,7 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   loadingData: boolean = true;
   minTickets: number = 1;
   previousMinTicketsWasOne = false;
+  activeUser = {} as AppUser;
 
 
   buyTicketDialogVisible: boolean = false;
@@ -129,6 +130,9 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.renderer.addClass(document.body, 'default-bg');
     this.loadingData = true;
+    this.appService.appUser$.subscribe(user => {
+      this.activeUser = user;
+    });
 
     Promise.all([callAPI(this.causeService.getAllCauses()), callAPI(this.eventService.getAllEvents())])
       .then(([causesResponse, eventsResponse]) => {
@@ -259,12 +263,11 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       );
     }
 
-    const user = getCurrentUser() || { country: '', province: '' };
-    if (user) {
+    if (this.activeUser) {
       if (this.value === 'country') {
-        result = result.filter(event => event.country === user.country);
+        result = result.filter(event => event.country === this.activeUser.country);
       } else if (this.value === 'province') {
-        result = result.filter(event => event.province === user.province);
+        result = result.filter(event => event.province === this.activeUser.province);
       }
     }
 

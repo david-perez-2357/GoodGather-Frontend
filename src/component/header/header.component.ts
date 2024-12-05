@@ -1,8 +1,11 @@
 import {Component, Inject, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MenubarModule} from 'primeng/menubar';
 import {MenuItem, MessageService} from 'primeng/api';
 import {ChipsModule} from 'primeng/chips';
 import {AvatarModule} from 'primeng/avatar';
+import AppUser from '@/interface/AppUser';
+import {AppService} from '@/service/AppService';
 import {ToastModule} from 'primeng/toast';
 import ApiResponse from '@/interface/ApiResponse';
 import {callAPI} from '@/method/response-mehods';
@@ -29,7 +32,12 @@ import {PasswordModule} from 'primeng/password';
   templateUrl: './header.component.html',
   styles: ``
 })
-export class HeaderComponent implements OnInit{
+export class HeaderComponent implements OnInit {
+  constructor(private appService: AppService, private messageService: MessageService, private router: Router, private userClientService: UserClientService){
+  }
+
+  activeUser: AppUser = {} as AppUser
+
   items: MenuItem[] = [
     {
       label: 'Inicio',
@@ -41,17 +49,23 @@ export class HeaderComponent implements OnInit{
       icon: 'pi pi-calendar-plus',
       routerLink: ['/organize-event']
     },
-
-
   ];
 
-  perfil: MenuItem[] | undefined;
+  perfil: MenuItem[] = [
+    {
+      label: 'Login',
+      icon: 'pi pi-sign-in',
+      command: () => {
+        this.router.navigate(['/login']);
+      }
+    },
+    {
+      label: 'Cerrar sesión',
+      icon: 'pi pi-sign-out',
+      command: () => this.onLogout()
+    },
+  ]
 
-
-
-  constructor(@Inject(UserClientService)private userClientService:UserClientService, private router: Router,
-              private messageService: MessageService) {
-  }
 
   onLogout() {
     callAPI(this.userClientService.doLogOut())
@@ -66,23 +80,10 @@ export class HeaderComponent implements OnInit{
       });
   }
 
-  ngOnInit(): void{
-    this.perfil = [
-      {
-        label: 'Login',
-        icon: 'pi pi-sign-in',
-        command: () => {
-          this.router.navigate(['/login']);
-        }
-      },
-      {
-        label: 'Cerrar sesión',
-        icon: 'pi pi-sign-out',
-        command: () => this.onLogout()
-      },
-    ]
 
+  ngOnInit() {
+    this.appService.appUser$.subscribe(user => {
+      this.activeUser = user;
+    });
   }
-
-
-  }
+}

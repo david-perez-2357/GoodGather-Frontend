@@ -12,15 +12,12 @@
       </a>
     </ng-template>
     <ng-template pTemplate="end">
-        <a>
-          <div>
-          <p-button icon="pi pi-user" size="large" class="me-3"  [style]="{'height':'40px', 'background-color':'rgb( 218, 216, 216 )', 'border':'none'}" (onClick)="menu.toggle($event)"/>
-          </div>
-          <p-menu #menu [model]="perfil" [popup]="true" />
-
-        </a>
+      <a [routerLink]="['/profile']" (click)="menu.toggle($event)">
+        <p-avatar icon="pi pi-user" size="large" class="me-3" *ngIf="!activeUser.id"></p-avatar>
+        <p-avatar size="large" class="me-3 rounded overflow-hidden h-[48px] block" *ngIf="activeUser.id" [image]="activeUser.avatar"></p-avatar>
+      </a>
+      <p-menu #menu [model]="perfil" [popup]="true" />
     </ng-template>
-
   </p-menubar>
 </div>
 <span class="block h-16"></span>

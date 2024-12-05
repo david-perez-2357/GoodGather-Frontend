@@ -2,11 +2,11 @@
 <div class="w-full bg-white p-9 gap-16 mb-10 rounded-xl border border-1 border-gray-300 mt-10 xl:grid flex flex-col-reverse grid-cols-[1fr_310px]">
   <div class="xl:grid grid-rows-[64px_1fr] gap-6 flex flex-col">
     <div class="lg:grid flex flex-col grid-cols-[auto_1fr_auto] gap-2 lg:gap-5">
-      <p-avatar class="rounded-lg mx-auto md-mx-0 overflow-hidden h-[64px]" image="https://api.dicebear.com/9.x/thumbs/svg?seed={{ getCurrentUser().username }}" size="xlarge"/>
+      <p-avatar class="rounded-lg mx-auto md-mx-0 overflow-hidden h-[64px]" image="https://api.dicebear.com/9.x/thumbs/svg?seed={{ activeUser.username }}" size="xlarge"/>
 
       <div class="flex min-w-[200px] flex-col mb-5 lg:mb-0 mx-auto md-mx-0 text-center lg:text-start justify-between py-1 w-full">
-        <span class="text-xl  font-semibold">{{ getCurrentUser().name + ' ' + getCurrentUser().surname }}</span>
-        <span class="text-md text-gray-800 font-semibold">{{ getCurrentUser().username}}</span>
+        <span class="text-xl  font-semibold">{{ activeUser.name + ' ' + activeUser.surname }}</span>
+        <span class="text-md text-gray-800 font-semibold">{{ activeUser.username}}</span>
       </div>
 
       <div class="grid sm:grid-cols-4 xl:hidden gap-7 sm:gap-2">
@@ -169,7 +169,7 @@
 
     <div class="p-4 border border-1 text-gray-900 border-gray-400 w-full flex rounded-lg gap-4 items-center text-md font-semibold">
       <i class="pi pi-map text-xl"></i>
-      <span>Has creado 0 eventos</span>
+      <span>Has creado {{ eventsCreatedByUser.length }} eventos</span>
     </div>
   </div>
 </div>
