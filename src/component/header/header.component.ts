@@ -81,7 +81,7 @@ export class HeaderComponent implements OnInit {
   }
 
   updateMenu(): void{
-    if (this.activeUser.username){
+    if (this.activeUser.id){
       this.perfil = [
         {
           label:'Ver perfil',
