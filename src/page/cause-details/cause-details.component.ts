@@ -42,7 +42,7 @@ export class CauseDetailsComponent implements OnInit, OnDestroy{
 
   activeFilter: string | null = null;
 
-  rows: number = 10;
+  rows: number = 5;
   first: number = 0;
   totalRecords: number = 0;
   visibleEvents: Event[] = [];

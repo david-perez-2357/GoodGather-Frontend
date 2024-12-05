@@ -1,7 +1,7 @@
 <div class="flex flex-col w-full items-center">
   <div class="flex flex-col md:flex-row bg-white gap-5 rounded-lg p-5 w-full max-w-[1100px] mt-10">
     <div class="flex justify-center w-full md:max-w-64 p-5">
-      <img class="rounded-2xl w-full md:min-w-[216px] max-w-[300px]" src="{{ cause.image }}" alt="Imagen de la causa" (error)="onImageError($event)">
+      <img class="rounded-2xl h-[150px] object-cover w-[300px]" src="{{ cause.image }}" alt="Imagen de la causa" (error)="onImageError($event)">
     </div>
     <div class="flex flex-col m-5 justify-between items-center md:items-start gap-5">
       <label class="text-4xl pt-0 md:pt-5 font-semibold text-gray-800 text-center">{{ cause.name }}</label>
@@ -42,17 +42,21 @@
     </div>
 
   </div>
-  <div class="flex flex-col gap-5 rounded-lg p-5 w-full max-w-[1100px] mt-10">
+  <div class="flex flex-col gap-10 rounded-lg p-5 w-full max-w-[1100px] mt-10">
     <div *ngFor="let event of visibleEvents" class="flex flex-col sm:w-full w-full gap-10 sm:gap-4 sm:mb-0 items-center">
-      <app-event class="w-full sm:w-auto md:w-full" [event]="event"></app-event>
+      <app-event class="sm:min-w-[320px] w-full sm:w-auto md:w-full" [event]="event"></app-event>
     </div>
   </div>
-  <div class="card flex justify-center mt-5">
+  <div class="bg-white flex justify-center mt-5 p-2 rounded-lg">
     <p-paginator
       (onPageChange)="onPageChange($event)"
       [first]="first"
       [rows]="rows"
-      [totalRecords]="totalRecords">
+      [totalRecords]="totalRecords"
+      [showCurrentPageReport]="true"
+      [showPageLinks]="true"
+      [showJumpToPageDropdown]="false"
+      currentPageReportTemplate="{currentPage} de {totalPages} páginas">
     </p-paginator>
   </div>
 </div>
