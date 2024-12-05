@@ -33,7 +33,9 @@ import {callAPI} from '@/method/response-mehods';
 import moment from 'moment';
 import {ToastModule} from 'primeng/toast';
 import {validateField, ValidationRule, StaticValidationRules, DynamicValidationRules} from '@/method/validate-methods';
-import {getCurrentUser, userIsLoggedIn} from '@/method/app-user-methods';
+import AppUser from '@/interface/AppUser';
+import {AppService} from '@/service/AppService';
+
 
 @Component({
   selector: 'app-buy-ticket-dialog',
@@ -80,6 +82,7 @@ export class BuyTicketDialogComponent implements OnInit {
   @Input() ticketsLeft: number = 10;
   @Input() onHomePage: boolean = false;
   @Output() closeTicketDialog = new EventEmitter<void>();
+  activeUser: AppUser = {} as AppUser;
 
   // Estado del proceso de compra
   stepActive: number = 0;
@@ -157,11 +160,14 @@ export class BuyTicketDialogComponent implements OnInit {
   purchaseProcessDialogVisible: boolean = false;
   purchaseProcessDialogStepActive: number = 0;
 
-  constructor(private confirmationService: ConfirmationService, private ticketService: TicketService, private messageService: MessageService) {}
+  constructor(private confirmationService: ConfirmationService, private appService: AppService, private ticketService: TicketService, private messageService: MessageService) {}
 
   // Inicialización de la componente
   ngOnInit() {
     this.updateMaxQuantity();
+    this.appService.appUser$.subscribe(user => {
+      this.activeUser = user;
+    });
   }
 
   // Funciones relacionadas con el diálogo de compra
@@ -225,7 +231,7 @@ export class BuyTicketDialogComponent implements OnInit {
       amount: this.quantity,
       purchaseDate: moment().format('YYYY-MM-DD HH:mm'),
       idEvent: this.eventId,
-      idUser: getCurrentUser().id
+      idUser: this.activeUser.id,
     };
 
     try {
@@ -240,7 +246,8 @@ export class BuyTicketDialogComponent implements OnInit {
     this.purchaseProcessDialogVisible = false;
     this.purchaseProcessDialogStepActive = 0;
     this.resetTicketDialog();
-    window.location.reload();
+    if (!this.onHomePage)
+      window.location.reload();
   }
 
   // Resetear el diálogo de compra
@@ -266,7 +273,7 @@ export class BuyTicketDialogComponent implements OnInit {
   async getBoughtTickets(): Promise<Ticket[]> {
     this.ticketsBought = [];
     this.numTicketsBought = 0;
-    const idUser = getCurrentUser().id;
+    const idUser = this.activeUser.id;
 
     return callAPI(this.ticketService.getTicketsBoughtByUserAndEvent(idUser, this.eventId)).then((response) => {
       return response.data;
@@ -335,18 +342,10 @@ export class BuyTicketDialogComponent implements OnInit {
 
   // Funciones de usuario
   getFullUserName() {
-    if (userIsLoggedIn()) {
-      return getCurrentUser()?.name + ' ' + getCurrentUser()?.surname;
-    }else {
-      return 'Anónimo';
-    }
+    return `${this.activeUser.name} ${this.activeUser.surname}`;
   }
 
   getUsername() {
-    if (userIsLoggedIn()) {
-      return getCurrentUser()?.username;
-    }else {
-      return 'Anónimo';
-    }
+    return this.activeUser.username;
   }
 }

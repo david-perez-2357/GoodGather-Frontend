@@ -2,7 +2,7 @@
   <img src="/gg-error-word.png" class="w-60" alt="error word" />
   <h2 class="text-xl m-0 text-center p-3 font-bold text-green-600">{{ error }}</h2>
   <div class="mt-8 flex gap-3 flex-wrap justify-center">
-    <p-button label="Volver al inicio" [outlined]="true" (onClick)="goHome()"></p-button>
-    <p-button label="Reintentar" (click)="reloadPage()"></p-button>
+    <p-button [label]="getSecondaryButtonText()" [outlined]="true" (onClick)="secondaryButtonAction()"></p-button>
+    <p-button [label]="getPrimaryButtonText()" (click)="primaryButtonAction()"></p-button>
   </div>
 </div>

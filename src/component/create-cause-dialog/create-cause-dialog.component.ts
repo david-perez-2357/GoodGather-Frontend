@@ -9,12 +9,13 @@ import {CauseService} from '@/service/CauseService';
 import {MessageService} from 'primeng/api';
 import {callAPI} from '@/method/response-mehods';
 import Cause from '@/interface/Cause';
-import {getCurrentUser} from '@/method/app-user-methods';
 import * as UC from '@uploadcare/file-uploader';
 import "@uploadcare/file-uploader/web/uc-file-uploader-regular.min.css"
 import {NgIf} from '@angular/common';
 import {InputTextModule} from 'primeng/inputtext';
 import {ButtonDirective} from 'primeng/button';
+import AppUser from '@/interface/AppUser';
+import {AppService} from '@/service/AppService';
 
 UC.defineComponents(UC);
 
@@ -43,6 +44,7 @@ export class CreateCauseDialogComponent implements OnInit, OnDestroy {
     deleted: 0,
     scope: ''
   };
+  activeUser: AppUser = {} as AppUser;
   errors: { [key: string]: string } = {};
   Scopes: any[] = [
     { name: 'Global', code: 'GLOBAL' },
@@ -57,11 +59,14 @@ export class CreateCauseDialogComponent implements OnInit, OnDestroy {
     scope: [StaticValidationRules['required']]
   };
 
-  constructor(private renderer: Renderer2, private locationService: LocationService, private causeService: CauseService, private messageService: MessageService) {}
+  constructor(private renderer: Renderer2, private appService: AppService, private locationService: LocationService, private causeService: CauseService, private messageService: MessageService) {}
   @Output() causeCreated = new EventEmitter<Cause>();
 
   ngOnInit(): void {
     this.initializeImageUpdater();
+    this.appService.appUser$.subscribe(user => {
+      this.activeUser = user;
+    });
   }
 
   ngOnDestroy(): void {}
@@ -138,7 +143,7 @@ export class CreateCauseDialogComponent implements OnInit, OnDestroy {
       description: this.formData['description'],
       image: this.formData['image'],
       scope: this.formData['scope'],
-      idOwner: getCurrentUser().id
+      idOwner: this.activeUser.id,
     };
   }
 

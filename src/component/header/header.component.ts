@@ -1,9 +1,11 @@
-import { Component } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {MenubarModule} from 'primeng/menubar';
 import {MenuItem} from 'primeng/api';
 import {ChipsModule} from 'primeng/chips';
 import {NgClass, NgIf} from '@angular/common';
 import {AvatarModule} from 'primeng/avatar';
+import AppUser from '@/interface/AppUser';
+import {AppService} from '@/service/AppService';
 
 @Component({
   selector: 'app-header',
@@ -18,7 +20,12 @@ import {AvatarModule} from 'primeng/avatar';
   templateUrl: './header.component.html',
   styles: ``
 })
-export class HeaderComponent {
+export class HeaderComponent implements OnInit {
+  constructor(private appService: AppService) {
+  }
+
+  activeUser: AppUser = {} as AppUser
+
   items: MenuItem[] = [
     {
       label: 'Inicio',
@@ -31,5 +38,11 @@ export class HeaderComponent {
       routerLink: ['/organize-event']
     },
   ];
+
+  ngOnInit() {
+    this.appService.appUser$.subscribe(user => {
+      this.activeUser = user;
+    });
+  }
 
 }

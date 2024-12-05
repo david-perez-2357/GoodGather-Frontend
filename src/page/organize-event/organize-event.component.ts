@@ -27,11 +27,11 @@ import {ConfirmDialogModule} from 'primeng/confirmdialog';
 import {AvatarModule} from 'primeng/avatar';
 import {ProgressSpinnerModule} from 'primeng/progressspinner';
 import {RouterLink} from '@angular/router';
-import {getCurrentUser} from '@/method/app-user-methods';
 import Cause from '@/interface/Cause';
 import {CauseService} from '@/service/CauseService';
 import {AppService} from '@/service/AppService';
 import {CreateCauseDialogComponent} from '@/component/create-cause-dialog/create-cause-dialog.component';
+import AppUser from '@/interface/AppUser';
 
 UC.defineComponents(UC);
 
@@ -72,6 +72,7 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
   createEventProcessDialogVisible: boolean = false;
   createEventProcessDialogStepActive: number = 0;
   createdEventId: number = 0;
+  activeUser: AppUser = {} as AppUser;
 
   formData: { [key: string]: any } = {
     name: '',
@@ -143,6 +144,9 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     this.loadCausesInUsersRange();
     this.initializeImageUpdater();
     this.setUploaderDefaultText();
+    this.appService.appUser$.subscribe(user => {
+      this.activeUser = user;
+    });
   }
 
   /**
@@ -264,7 +268,7 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
       country: this.formData['country'].name,
       ticketPrice: this.formData['ticketPrice'],
       deleted: 0,
-      idOwner: getCurrentUser().id,
+      idOwner: this.activeUser.id,
       idCause: this.formData['cause']
     }
   }
