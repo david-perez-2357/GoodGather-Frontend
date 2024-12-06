@@ -143,7 +143,7 @@
               [(ngModel)]="registerFormData['birthdate']"
               [class.ng-invalid]="isFieldInvalid('birthdate')"
               [class.ng-dirty]="isFieldInvalid('birthdate')"
-              (blur)="validateField('birthdate')"
+              (blur)="validateAge()"
             >
             <small *ngIf="isFieldInvalid('birthdate')" class="text-red-500">{{ errors['birthdate'] }}</small>
           </div>

@@ -28,6 +28,7 @@ import User from '@/interface/User';
 import {ToastModule} from 'primeng/toast';
 import AppUser from '@/interface/AppUser';
 import {debounceTime, distinctUntilChanged, Subject} from 'rxjs';
+import moment from 'moment';
 
 
 
@@ -300,6 +301,26 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
           this.messageService.add(error.toastMessage);
         }
       });
+
+  }
+
+  validateAge(){
+    const birthdate = this.registerFormData['birthdate'];
+    this.validateField('birthdate');
+    if (this.isFieldInvalid('birthdate')) {
+      // Stop further processing if validation fails
+      return;
+    }
+    const inputValue = moment(birthdate, 'YYYY-MM-DD', true);
+    const currentDate = moment();
+    const age = currentDate.diff(inputValue, 'years')
+
+    if (age < 18) {
+      this.errors['birthdate'] = "Debes ser mayor de edad";
+    } else {
+      // Clear the error if validation passes
+      delete this.errors['birthdate'];
+    }
 
   }
 
