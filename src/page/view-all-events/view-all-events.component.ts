@@ -245,24 +245,28 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
   applyFilters(): void {
     let result = [...this.events];
 
-    if (this.rangeValues[0] !== 0 || this.rangeValues[1] !== Infinity) {
+    // Filtrar por rango de precio
+    if (this.rangeValues[0] !== 0 || this.rangeValues[1] !== 1000) {
       result = result.filter(event =>
         event.ticketPrice >= this.rangeValues[0] && event.ticketPrice <= this.rangeValues[1]
       );
     }
 
+    // Filtrar por búsqueda
     if (this.searchQuery) {
       result = result.filter(event =>
         event.name.toLowerCase().includes(this.searchQuery)
       );
     }
 
+    // Filtrar por cantidad mínima de tickets
     if (this.minTickets > 0) {
       result = result.filter(event =>
         (event.capacity - event.boughtTickets) >= this.minTickets
       );
     }
 
+    // Filtrar por ubicación del usuario
     if (this.activeUser) {
       if (this.value === 'country') {
         result = result.filter(event => event.country === this.activeUser.country);
@@ -271,34 +275,30 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       }
     }
 
+    // Aplicar el filtro activo
     if (this.activeFilter === 'popular') {
       result = result.sort((a, b) => b.boughtTickets - a.boughtTickets);
     } else if (this.activeFilter === 'recent') {
       result = result.sort((a, b) => new Date(a.startDate).getTime() - new Date(b.startDate).getTime());
     } else if (this.activeFilter === 'cheapest') {
-      result = result.sort((a, b) => (a.ticketPrice || Infinity) - (b.ticketPrice || Infinity));
+      result = result.sort((a, b) => {
+        const priceA = a.ticketPrice || 0; // Eventos gratis considerados como 0
+        const priceB = b.ticketPrice || 0;
+        return priceA - priceB;
+      });
     }
 
+    // Actualizar eventos filtrados y paginación
     this.filteredEvents = result;
     this.totalRecords = this.filteredEvents.length;
     this.updatePaginatedCauses();
     this.updateActiveFilters();
   }
 
+
+
   toggleOverlay(event: MouseEvent): void {
     this.overlay.toggle(event);
-  }
-
-  onPopularClick(searchInput: HTMLInputElement): void {
-    if (this.activeFilter === 'popular') {
-      this.resetFilter();
-    } else {
-      this.activeFilter = 'popular';
-      this.searchQuery = '';
-      this.scrollToTarget();
-      this.applyFilters();
-    }
-    searchInput.value = '';
   }
 
   onCheapestClick(searchInput: HTMLInputElement): void {
@@ -306,10 +306,20 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.resetFilter();
     } else {
       this.activeFilter = 'cheapest';
-      this.searchQuery = '';
-      this.scrollToTarget();
-      this.applyFilters();
     }
+    this.searchQuery = '';
+    this.applyFilters();
+    searchInput.value = '';
+  }
+
+  onPopularClick(searchInput: HTMLInputElement): void {
+    if (this.activeFilter === 'popular') {
+      this.resetFilter();
+    } else {
+      this.activeFilter = 'popular';
+    }
+    this.searchQuery = '';
+    this.applyFilters();
     searchInput.value = '';
   }
 
@@ -318,10 +328,9 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       this.resetFilter();
     } else {
       this.activeFilter = 'recent';
-      this.searchQuery = '';
-      this.scrollToTarget();
-      this.applyFilters();
     }
+    this.searchQuery = '';
+    this.applyFilters();
     searchInput.value = '';
   }
 
@@ -349,13 +358,9 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
   resetFilter(): void {
     this.activeFilter = null;
-    this.searchQuery = '';
-    this.filteredEvents = [...this.events];
-    this.totalRecords = this.filteredEvents.length;
-    this.sliderFilterActive = false;
-    this.selectFilterActive = false;
-    this.updatePaginatedCauses();
+    this.applyFilters();
   }
+
 
   protected readonly Object = Object;
 }

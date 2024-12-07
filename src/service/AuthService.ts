@@ -8,7 +8,6 @@ export class AuthService {
   }
 
   getCurrentUserFromServer(): Observable<any> {
-    this.http.post('/api/api/v1/auth/logout', {}, { withCredentials: true }).subscribe();
     return this.http.get('/api/api/v1/auth/user', { withCredentials: true });
   }
 }
