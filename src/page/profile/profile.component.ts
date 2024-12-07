@@ -137,7 +137,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   getEventsCreatedByUser(events: Event[]): Event[] {
-    return events.filter(event => event.idOwner === this.activeUser.id);
+    return events.filter(event => event.idOwner == this.activeUser.id);
   }
 
   getUserDistinctEvents(): Event[] {
