@@ -1,7 +1,8 @@
 import {Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import Cause from '../interface/Cause';
+import Cause from '@/interface/Cause';
+import Event from '@/interface/Event';
 
 @Injectable({providedIn: 'root'})
 export class CauseService {
@@ -18,6 +19,10 @@ export class CauseService {
 
   getCauseFunds(id: number): Observable<number> {
     return this.http.get<number>(`/api/cause/${id}/funds`, { withCredentials: true });
+  }
+
+  getAllEventsFromCause(id: number): Observable<Event[]> {
+    return this.http.get<Event[]>(`/api/cause/${id}/events`, { withCredentials: true });
   }
 
   getCausesInUsersRange(userId: number): Observable<Cause[]> {

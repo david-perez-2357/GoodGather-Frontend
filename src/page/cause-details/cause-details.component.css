@@ -1,0 +1,3 @@
+.selected {
+  @apply p-2 pe-5 ps-5 bg-green-500 text-white font-semibold;
+}
