@@ -1,6 +1,9 @@
 import {Message} from 'primeng/api';
 
-
+/**@
+ * Asocia códigos de error HTTP con mensajes detallados para mostrar al usuario.
+ * @param error
+ */
 function returnErrorMessage(error: any): Message {
   if (error.status === 404) {
     return {severity: 'error', summary: 'No se han encontrado datos', detail: 'Por favor, inténtelo de nuevo más tarde.'};

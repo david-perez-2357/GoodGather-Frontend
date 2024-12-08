@@ -26,8 +26,6 @@ import UserClient from '@/interface/UserClient';
 import {validateField, DynamicValidationRules, StaticValidationRules, ValidationRule} from '@/method/validate-methods';
 import User from '@/interface/User';
 import {ToastModule} from 'primeng/toast';
-import AppUser from '@/interface/AppUser';
-import {debounceTime, distinctUntilChanged, Subject} from 'rxjs';
 import moment from 'moment';
 
 
@@ -54,6 +52,7 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   }
 
+  /*Define los estados de la vista (login o registro).*/
   stateOptions: any[] = [
     { label: ' Iniciar sesión', value: 'login' },
     { label: 'Registrarse', value: 'register' }];
@@ -69,14 +68,15 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     code:''
   }
 
+  /*Objeto que guarda mensajes de error de validación.*/
   errors: { [key: string]: string } = {};
 
+
+/**Objetos que almacenan los datos de los formularios.**/
   loginFormData: { [key: string]: any } ={
     loginUsername: '',
     loginPassword:'',
   }
-
-
 
   registerFormData:{[key:string]:any} ={
     username:'',
@@ -91,7 +91,7 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
   }
 
 
-
+/*Reglas de validación para cada campo del formulario.*/
 
     fieldRules: { [key: string]: ValidationRule[] } = {
     loginUsername:[StaticValidationRules['required']
@@ -140,7 +140,7 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   }
 
-
+/**Carga las provincias según el país seleccionado.**/
 
   countryChange() {
     const countryCode:string = this.registerFormData['country']?.code;
@@ -170,6 +170,11 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   }
 
+  /**@
+   * convertFormDataToLoginUser y convertFormDataToUser:
+   *   Transforman los datos del formulario en estructuras aptas para enviarlas al backend
+   */
+
   convertFormDataToLoginUser():User{
     return {
       username: this.loginFormData['loginUsername'],
@@ -192,6 +197,8 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     }
   }
 
+  /*Limpia los datos del formulario de registro tras su uso*/
+
   clearRegisterFormData():void{
     this.registerFormData ={
       id: 0,
@@ -208,7 +215,9 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 }
 }
 
-
+  /**@
+   * Envía los datos de registro si el formulario es válido.
+   */
   onSubmit(): void {
     const user = this.convertFormDataToUser();
     if (!this.isRegisterFormValid()) {
@@ -244,11 +253,20 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     return Object.keys(this.loginFormData).every((key) => this.loginFormData[key] !== '' && !this.isFieldInvalid(key));
   }
 
+  /**@
+   * Aplica las reglas de validación a un campo específico
+   * @param fieldName
+   */
+
   validateField(fieldName: string): void {
     const value = this.registerFormData[fieldName] || this.loginFormData[fieldName];
     const rules = this.fieldRules[fieldName];
     this.errors[fieldName] = rules ? validateField(value, rules) || '' : '';
   }
+
+  /**@
+   * validateUsername y validateEmail: Validan si un usuario o email ya existen.
+   */
 
   usernameExists: boolean | null = null;
   emailExists: boolean | null = null;
@@ -304,6 +322,9 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   }
 
+  /**@
+   * Comprueba que el usuario sea mayor de edad
+   */
   validateAge(){
     const birthdate = this.registerFormData['birthdate'];
     this.validateField('birthdate');
@@ -325,12 +346,14 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
   }
 
 
-
+/**Devuelve si un campo tiene errores de validación.**/
   isFieldInvalid(fieldName: string): boolean {
     return !!this.errors[fieldName];
   }
 
-
+  /**@
+   * Realiza el inicio de sesión, redirigiendo al usuario tras un login exitoso.
+   */
 
   onLogin(): void {
     const user = this.convertFormDataToLoginUser();

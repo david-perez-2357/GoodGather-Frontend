@@ -9,6 +9,9 @@ export class AuthService {
   constructor(private http: HttpClient) {
   }
 
+  /**@
+   * Recupera al usuario autenticado.
+   */
   getCurrentUserFromServer(): Observable<any> {
     return this.http.get('/api/api/v1/auth/user', { withCredentials: true });
   }
@@ -28,11 +31,21 @@ export class AuthService {
 
   }
 
+  /**@
+   * Comprueba si un nombre de usuario ya está registrado.
+   * @param username
+   */
+
   isUserExist(username:string):Observable<boolean>{
     const params = new HttpParams().set('username', username);
     return this.http.get<boolean>('api/api/v1/auth/ckeck-username-exists', {withCredentials: true, params: { username } });
 
   }
+
+  /**@
+   * Comprueban si un email ya está registrado.
+   * @param email
+   */
 
   isEmailExist(email:string):Observable<boolean>{
     const params = new HttpParams().set('username', email);

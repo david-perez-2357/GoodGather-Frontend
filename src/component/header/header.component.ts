@@ -37,9 +37,10 @@ import {NgIf} from '@angular/common';
 export class HeaderComponent implements OnInit {
   constructor(private appService: AppService, private messageService: MessageService, private router: Router, private userClientService: UserClientService){
   }
-
+/*Objeto que representa al usuario autenticado*/
   activeUser: AppUser = {} as AppUser
 
+  /*Opciones de navegación principales*/
   items: MenuItem[] = [
     {
       label: 'Inicio',
@@ -55,6 +56,7 @@ export class HeaderComponent implements OnInit {
 
   ];
 
+  /*Opciones del menú del perfil, actualizadas dinámicamente según el estado del usuario.*/
   perfil: MenuItem[] = [
     {
       label: 'Login',
@@ -66,7 +68,7 @@ export class HeaderComponent implements OnInit {
 
   ]
 
-
+/*Realiza la solicitud para cerrar sesión. Si tiene éxito, recarga la página.*/
   onLogout() {
     callAPI(this.userClientService.doLogOut())
       .then((response: ApiResponse) => {
@@ -80,6 +82,7 @@ export class HeaderComponent implements OnInit {
       });
   }
 
+  /*Actualiza las opciones del menú de perfil según si el usuario está autenticado.*/
   updateMenu(): void{
     if (this.activeUser.id){
       this.perfil = [
@@ -118,7 +121,7 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-
+/*Suscribe el componente a los cambios del usuario activo y actualiza el menú.*/
   ngOnInit() {
     this.appService.appUser$.subscribe(user => {
       this.activeUser = user;

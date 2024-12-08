@@ -11,6 +11,10 @@ class AppUserMethods {
   constructor(private authService: AuthService) {
   }
 
+  /**@
+   * Obtiene la información del usuario autenticado desde el servidor y la transforma a un formato interno
+   */
+
   getCurrentUser(): Promise<ApiResponse> {
     return callAPI(this.authService.getCurrentUserFromServer()).then((response: ApiResponse) => {
       if (response.status === 200) {
