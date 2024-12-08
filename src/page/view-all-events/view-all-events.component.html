@@ -143,7 +143,7 @@
             <!-- Eventos -->
             <div class="flex flex-col w-full gap-3 p-5 items-center">
               <!-- Si hay eventos disponibles -->
-              <div class="flex flex-col sm:w-full w-full gap-10 sm:gap-4 sm:mb-0 items-center">
+              <div class="flex flex-col sm:w-full w-full gap-10 md:gap-5 sm:mb-0 items-center">
                 <app-event class="w-full sm:w-auto md:w-full" *ngFor="let event of filteredGroupedEvents[cause.id]" (onBuyButtonClicked)="showBuyTicketDialog($event)" [event]="event"></app-event>
               </div>
             </div>
@@ -167,7 +167,11 @@
           (onPageChange)="onPageChange($event)"
           [first]="first"
           [rows]="10"
-          [totalRecords]="totalRecords">
+          [totalRecords]="totalRecords"
+          [showCurrentPageReport]="true"
+          [showPageLinks]="true"
+          [showJumpToPageDropdown]="false"
+          currentPageReportTemplate="{currentPage} de {totalPages} páginas">
         </p-paginator>
       </div>
     </div>

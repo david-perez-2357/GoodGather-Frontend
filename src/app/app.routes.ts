@@ -4,9 +4,11 @@ import {ViewAllEventsComponent} from '@/page/view-all-events/view-all-events.com
 import {EventDetailsComponent} from '@/page/event-details/event-details.component';
 import {OrganizeEventComponent} from '@/page/organize-event/organize-event.component';
 import {RegisterAndLoginComponent} from '@/page/register-and-login/register-and-login.component';
+import {CauseDetailsComponent} from '@/page/cause-details/cause-details.component';
 import {ProfileComponent} from '@/page/profile/profile.component';
 
 export const routes: Routes = [
+  {'path': 'cause/:id', 'component': CauseDetailsComponent},
   {'path': '', 'component': ViewAllEventsComponent},
   {'path': 'event/:id', 'component': EventDetailsComponent},
   {'path': 'login', 'component': RegisterAndLoginComponent},
