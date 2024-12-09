@@ -225,9 +225,8 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Obtiene el estado de un evento basado en la fecha actual.
-   * @param eventId number El ID del evento.
-   * @return string El estado del evento.
+   * Muestra un mensaje informativo en un toast.
+   * @return void
    */
   showInfoTicketButtonMessage() {
     this.messageService.add({severity: 'info', summary: 'Info', detail: 'No se puede comprar un ticket aquí'});
