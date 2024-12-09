@@ -60,15 +60,27 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
 
   @ViewChild(BuyTicketDialogComponent) child!: BuyTicketDialogComponent;
 
+  /**
+   * Muestra el diálogo de compra de entradas
+   * @returns void
+   */
   showBuyTicketDialog() {
     this.child.showDialog();
     this.buyTicketDialogVisible = true;
   }
 
+  /**
+   * Calcula el porcentaje de entradas vendidas
+   * @returns number
+   */
   calculateTicketPercentage() {
     return (this.event.boughtTickets / this.event.capacity) * 100;
   }
 
+  /**
+   * Calcula el porcentaje de fondos recaudados
+   * @returns number
+   */
   getDateRange(): string {
     // Convierte las fechas usando Moment.js, especificando el formato de entrada
     const startDate = moment(this.event.startDate, "YYYY-MM-DD HH:mm");
@@ -93,6 +105,11 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Establece el evento en la página si la respuesta es correcta
+   * @param response ApiResponse
+   * @returns void
+   */
   setEvent(response: ApiResponse): void {
     if (response.status === 200) {
       this.event = response.data;
@@ -101,10 +118,18 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Muestra un mensaje de error en la aplicación
+   * @param error any
+   * @returns void
+   */
   catchErrorMessage(error: any): void {
     this.appService.showWErrorInApp(error);
   }
 
+  /**
+   * Inicializa la página
+   */
   ngOnInit() {
     this.eventId = Number(this.route.snapshot.paramMap.get('id'));
     putDefaultBackground(this.renderer);
@@ -128,19 +153,35 @@ export class EventDetailsComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Elimina el fondo por defecto al destruir el componente
+   */
   ngOnDestroy() {
     removeDefaultBackground(this.renderer);
   }
 
+  /**
+   * Maneja el error de la imagen
+   * @param $event ErrorEvent
+   * @returns void
+   */
   onImageError($event: ErrorEvent) {
     const target = $event.target as HTMLImageElement;
     target.src = 'gg-placeholder-image.png';
   }
 
+  /**
+   * Comprueba si el evento ha finalizado
+   * @returns boolean
+   */
   isEventFinished() {
     return moment().isAfter(this.event.endDate);
   }
 
+  /**
+   * Comprueba si el evento está ocurriendo
+   * @returns boolean
+   */
   isEventHappening() {
     return moment().isBetween(this.event.startDate, this.event.endDate);
   }
