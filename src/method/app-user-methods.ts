@@ -11,6 +11,10 @@ class AppUserMethods {
   constructor(private authService: AuthService) {
   }
 
+  /**
+   * Get the current user from the server
+   * @returns The response
+   */
   getCurrentUser(): Promise<ApiResponse> {
     return callAPI(this.authService.getCurrentUserFromServer()).then((response: ApiResponse) => {
       if (response.status === 200) {
@@ -22,6 +26,11 @@ class AppUserMethods {
     });
   }
 
+  /**
+   * Parse the user data to an AppUser object
+   * @param data The user data
+   * @returns The AppUser object
+   */
   private parseAppUser(data: any) {
     const appUser: AppUser = {
       id: data.id,
