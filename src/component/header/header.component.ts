@@ -68,7 +68,10 @@ export class HeaderComponent implements OnInit {
 
   ]
 
-/*Realiza la solicitud para cerrar sesión. Si tiene éxito, recarga la página.*/
+
+  /**
+   * Realiza la solicitud para cerrar sesión. Si tiene éxito, recarga la página.
+   */
   onLogout() {
     callAPI(this.userClientService.doLogOut())
       .then((response: ApiResponse) => {
@@ -82,7 +85,9 @@ export class HeaderComponent implements OnInit {
       });
   }
 
-  /*Actualiza las opciones del menú de perfil según si el usuario está autenticado.*/
+  /**
+   * Actualiza las opciones del menú de perfil según si el usuario está autenticado.
+   */
   updateMenu(): void{
     if (this.activeUser.id){
       this.perfil = [
@@ -121,7 +126,9 @@ export class HeaderComponent implements OnInit {
     }
   }
 
-/*Suscribe el componente a los cambios del usuario activo y actualiza el menú.*/
+  /**
+   * Suscribe el componente a los cambios del usuario activo y actualiza el menú.
+   */
   ngOnInit() {
     this.appService.appUser$.subscribe(user => {
       this.activeUser = user;

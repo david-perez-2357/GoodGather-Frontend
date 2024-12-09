@@ -52,7 +52,7 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   }
 
-  /*Define los estados de la vista (login o registro).*/
+
   stateOptions: any[] = [
     { label: ' Iniciar sesión', value: 'login' },
     { label: 'Registrarse', value: 'register' }];
@@ -68,7 +68,7 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     code:''
   }
 
-  /*Objeto que guarda mensajes de error de validación.*/
+  /**Objeto que guarda mensajes de error de validación.**/
   errors: { [key: string]: string } = {};
 
 
@@ -91,7 +91,7 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
   }
 
 
-/*Reglas de validación para cada campo del formulario.*/
+/**Reglas de validación para cada campo del formulario**/
 
     fieldRules: { [key: string]: ValidationRule[] } = {
     loginUsername:[StaticValidationRules['required']
@@ -170,11 +170,10 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   }
 
-  /**@
-   * convertFormDataToLoginUser y convertFormDataToUser:
-   *   Transforman los datos del formulario en estructuras aptas para enviarlas al backend
+  /**
+   * Convierte los datos del formulario de inicio de sesión en un objeto de tipo `User`.
+   * @returns {User} Objeto que representa las credenciales del usuario para iniciar sesión.
    */
-
   convertFormDataToLoginUser():User{
     return {
       username: this.loginFormData['loginUsername'],
@@ -182,6 +181,11 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     }
   }
 
+
+  /**
+   * Convierte los datos del formulario de registro en un objeto de tipo `UserClient`.
+   * @returns {UserClient} Objeto que contiene la información del usuario a registrar.
+   */
   convertFormDataToUser(): UserClient {
     return {
       id: 0,
@@ -197,8 +201,10 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  /*Limpia los datos del formulario de registro tras su uso*/
-
+  /**
+   * Limpia los datos del formulario de registro.
+   * @returns {void}
+   */
   clearRegisterFormData():void{
     this.registerFormData ={
       id: 0,
@@ -215,8 +221,10 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 }
 }
 
-  /**@
-   * Envía los datos de registro si el formulario es válido.
+  /**
+   * Maneja el envío del formulario de registro de usuario.
+   * Valida los datos del formulario, realiza la solicitud de registro y navega al formulario de inicio de sesión si tiene éxito.
+   * @returns {void}
    */
   onSubmit(): void {
     const user = this.convertFormDataToUser();
@@ -245,32 +253,39 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
     });
   }
 
+  /**
+   * Verifica si todos los campos del formulario de registro son válidos.
+   * @returns {boolean} `true` si todos los campos son válidos, de lo contrario `false`.
+   */
   isRegisterFormValid(): boolean {
     return Object.keys(this.registerFormData).every((key) => this.registerFormData[key] !== '' && !this.isFieldInvalid(key));
   }
 
+
+  /**
+   * Verifica si todos los campos del formulario de inicio de sesión son válidos.
+   * @returns {boolean} `true` si todos los campos son válidos, de lo contrario `false`.
+   */
   isLoginFormValid(): boolean {
     return Object.keys(this.loginFormData).every((key) => this.loginFormData[key] !== '' && !this.isFieldInvalid(key));
   }
 
-  /**@
-   * Aplica las reglas de validación a un campo específico
-   * @param fieldName
+  /**
+   * Valida un campo específico del formulario utilizando reglas predefinidas.
+   * @param {string} fieldName - Nombre del campo a validar.
    */
-
   validateField(fieldName: string): void {
     const value = this.registerFormData[fieldName] || this.loginFormData[fieldName];
     const rules = this.fieldRules[fieldName];
     this.errors[fieldName] = rules ? validateField(value, rules) || '' : '';
   }
 
-  /**@
-   * validateUsername y validateEmail: Validan si un usuario o email ya existen.
-   */
-
   usernameExists: boolean | null = null;
   emailExists: boolean | null = null;
-
+  /**
+   * Valida si un nombre de usuario ya existe en el sistema.
+   * @returns {void}
+   */
   validateUsername():void{
     const user = this.registerFormData['username'];
     this.validateField('username');
@@ -296,7 +311,10 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   }
 
-
+  /**
+   * Valida si un correo electrónico ya está registrado en el sistema.
+   * @returns {void}
+   */
   validateEmail():void{
     const user = this.registerFormData['email'];
     this.validateField('email');
@@ -322,8 +340,10 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   }
 
-  /**@
-   * Comprueba que el usuario sea mayor de edad
+  /**
+   * Valida la edad del usuario con base en su fecha de nacimiento.
+   * Requiere que el usuario sea mayor de 18 años.
+   * @returns {void}
    */
   validateAge(){
     const birthdate = this.registerFormData['birthdate'];
@@ -345,16 +365,19 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
 
   }
 
-
-/**Devuelve si un campo tiene errores de validación.**/
+  /**
+   * Comprueba si un campo específico es inválido.
+   * @param {string} fieldName - Nombre del campo a verificar.
+   * @returns {boolean} `true` si el campo es inválido, de lo contrario `false`.
+   */
   isFieldInvalid(fieldName: string): boolean {
     return !!this.errors[fieldName];
   }
 
-  /**@
-   * Realiza el inicio de sesión, redirigiendo al usuario tras un login exitoso.
+  /**
+   * Maneja el envío del formulario de inicio de sesión.
+   * Valida los datos del formulario y realiza la solicitud de inicio de sesión.
    */
-
   onLogin(): void {
     const user = this.convertFormDataToLoginUser();
 
@@ -374,6 +397,10 @@ export class RegisterAndLoginComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Limpia cualquier recurso o configuración al destruir el componente.
+   * @returns {void}
+   */
   ngOnDestroy() {
     removeFormBackground(this.renderer);
   }
