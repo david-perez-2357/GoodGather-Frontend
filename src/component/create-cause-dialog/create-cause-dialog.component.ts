@@ -112,7 +112,6 @@ export class CreateCauseDialogComponent implements OnInit, OnDestroy {
 
   onSubmit(): void {
     const cause = this.convertFormDataToCause();
-    console.log(cause);
     if (!this.isFormValid()) {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Por favor, rellena todos los campos' });
       return;
@@ -122,7 +121,7 @@ export class CreateCauseDialogComponent implements OnInit, OnDestroy {
         if (response.status === 200) {
           this.messageService.add({ severity: 'success', summary: 'Éxito', detail: 'Causa creada con éxito' });
           this.createCauseProcessDialogVisible = false;
-          this.causeCreated.emit(cause);
+          this.causeCreated.emit(response.data);
         } else {
           this.messageService.add({ severity: 'error', summary: 'Error', detail: 'Error al crear la causa' });
         }
