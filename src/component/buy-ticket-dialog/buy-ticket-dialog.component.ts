@@ -171,6 +171,11 @@ export class BuyTicketDialogComponent implements OnInit {
   }
 
   // Funciones relacionadas con el diálogo de compra
+
+  /**
+   * Abre el diálogo de compra de entradas y comienza el proceso de compra
+   * @returns void
+   */
   openPurchaseProcessDialog() {
     this.purchaseProcessDialogVisible = true;
     this.purchaseProcessDialogStepActive = 1;
@@ -192,12 +197,19 @@ export class BuyTicketDialogComponent implements OnInit {
     }
   }
 
+  /**
+   * Cierra el diálogo de compra de entradas
+   * @returns void
+   */
   closeDialog() {
     this.visible = false;
     this.closeTicketDialog.emit();
   }
 
-  // Confirmar compra
+  /**
+   * Abre el modal de confirmación de compra de entradas
+   * @param event
+   */
   confirmPurchase(event: Event) {
     if (this.quantity > this.currentMaxQuantity || this.quantity <= 0) {
       this.messageService.add({ severity: 'error', summary: 'Error', detail: `No puedes comprar más de ${this.maxQuantity} entradas para este evento` });
@@ -224,6 +236,11 @@ export class BuyTicketDialogComponent implements OnInit {
   }
 
   // Funciones relacionadas con el proceso de compra
+
+  /**
+   * Compra un ticket para el evento actual
+   * @returns Promise<void>
+   */
   async purchaseTicket() {
     const ticket: Ticket = {
       id: 0,
@@ -242,6 +259,10 @@ export class BuyTicketDialogComponent implements OnInit {
     }
   }
 
+  /**
+   * Cierra el diálogo de proceso de compra
+   * @returns void
+   */
   closePurchaseProcessDialog() {
     this.purchaseProcessDialogVisible = false;
     this.purchaseProcessDialogStepActive = 0;
@@ -250,7 +271,10 @@ export class BuyTicketDialogComponent implements OnInit {
       window.location.reload();
   }
 
-  // Resetear el diálogo de compra
+  /**
+   * Reinicia el formulario de compra de entradas
+   * @returns void
+   */
   resetTicketDialog() {
     this.quantity = 1;
     this.selectedPaymentMethod = 'creditCard';
@@ -270,6 +294,11 @@ export class BuyTicketDialogComponent implements OnInit {
   }
 
   // Funciones relacionadas con la obtención de tickets
+
+  /**
+   * Obtiene los tickets comprados por el usuario
+   * @returns Promise<Ticket[]>
+   */
   async getBoughtTickets(): Promise<Ticket[]> {
     this.ticketsBought = [];
     this.numTicketsBought = 0;
@@ -284,6 +313,10 @@ export class BuyTicketDialogComponent implements OnInit {
     });
   }
 
+  /**
+   * Muestra el diálogo de compra de entradas
+   * @returns Promise<void>
+   */
   async showDialog() {
     this.visible = true;
 
@@ -297,18 +330,27 @@ export class BuyTicketDialogComponent implements OnInit {
     }
   }
 
-  // Función para actualizar la cantidad máxima disponible
-  private updateMaxQuantity() {
+  /**
+   * Actualiza la cantidad máxima de entradas que se pueden comprar
+   * @returns void
+   */
+  updateMaxQuantity() {
     this.currentMaxQuantity = this.maxQuantity - this.numTicketsBought;
   }
 
-  // Funcion para actualizar la cantidad de tickets comprados
-  private updateNumTicketsBought() {
+  /**
+   * Actualiza el número de entradas compradas
+   * @returns void
+   */
+  updateNumTicketsBought() {
     this.numTicketsBought = this.ticketsBought.reduce((acc, ticket) => acc + ticket.amount, 0);
   }
 
-  // Función para actualizar las fechas de compra de los tickets
-  private updateTicketsBoughtDates() {
+  /**
+   * Actualiza las fechas de compra de las entradas
+   * @returns void
+   */
+  updateTicketsBoughtDates() {
     this.ticketsBoughtDates = [];
     for (let ticket of this.ticketsBought) {
       for (let i = 0; i < ticket.amount; i++) {
@@ -317,34 +359,62 @@ export class BuyTicketDialogComponent implements OnInit {
     }
   }
 
-  // Validación de campos
+  /**
+   * Comprueba si el formulario seleccionado es válido
+   * @returns boolean
+   */
   selectedFormIsValid(): boolean {
     return this.selectedPaymentMethod === 'creditCard' ? this.isCreditCardFormValid() : this.isPaypalFormValid();
   }
 
+  /**
+   * Comprueba si el formulario de tarjeta de crédito es válido
+   * @returns boolean
+   */
   isCreditCardFormValid(): boolean {
     return Object.keys(this.creditCardFormData).every((key) => this.creditCardFormData[key] !== '' && !this.isFieldInvalid(key));
   }
 
+  /**
+   * Comprueba si el formulario de Paypal es válido
+   * @returns boolean
+   */
   isPaypalFormValid(): boolean {
     return Object.keys(this.paypalFormData).every((key) => this.paypalFormData[key] !== '' && !this.isFieldInvalid(key));
   }
 
+  /**
+   * Valida un campo del formulario de pago
+   * @param fieldName
+   * @return void
+   */
   validateField(fieldName: string): void {
     const value = this.creditCardFormData[fieldName] || this.paypalFormData[fieldName];
     const rules = this.fieldRules[fieldName];
     this.errors[fieldName] = rules ? validateField(value, rules) || '' : '';
   }
 
+  /**
+   * Comprueba si un campo es inválido
+   * @param fieldName
+   * @return boolean
+   */
   isFieldInvalid(fieldName: string): boolean {
     return !!this.errors[fieldName];
   }
 
-  // Funciones de usuario
+  /**
+   * Obtiene el nombre completo del usuario activo
+   * @returns string
+   */
   getFullUserName() {
     return `${this.activeUser.name} ${this.activeUser.surname}`;
   }
 
+  /**
+   * Obtiene el nombre del usuario activo
+   * @returns string
+   */
   getUsername() {
     return this.activeUser.username;
   }

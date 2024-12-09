@@ -40,10 +40,18 @@ export class EventComponent {
     idCause: 0
   }
 
+  /**
+   * Calcula el porcentaje de entradas vendidas
+   * @returns number
+   */
   calculateTicketPercentage() {
     return (this.event.boughtTickets / this.event.capacity) * 100;
   }
 
+  /**
+   * Calcula la diferencia de tiempo entre la fecha de inicio del evento y la fecha actual y la muestra en formato legible
+   * @returns string
+   */
   showStartDateDiff() {
     const diff = new Date(this.event.startDate).getTime() - new Date().getTime();
     if (diff < 0) {
@@ -52,6 +60,10 @@ export class EventComponent {
     return 'Dentro de ' + convertSecondsToString(diff / 1000);
   }
 
+  /**
+   * Si la imagen del evento no se puede cargar, se muestra una imagen de error
+   * @returns void
+   */
   onImageError($event: ErrorEvent) {
     const target = $event.target as HTMLImageElement;
     target.src = 'gg-placeholder-image.png';
