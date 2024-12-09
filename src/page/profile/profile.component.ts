@@ -122,6 +122,14 @@ export class ProfileComponent implements OnInit, OnDestroy {
   }
 
   /**
+   * Scrolls to the top of the page.
+   * @returns void
+   */
+  scrollToTop() {
+    window.scrollTo(0, 0);
+  }
+
+  /**
    * Obtiene un evento basado en su ID.
    * @param idEvent number El ID del evento.
    * @return Event El evento encontrado, o un objeto vacío si no se encuentra.
@@ -264,6 +272,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   onPageChange(event: PaginatorState) {
     this.first = event.first ?? 0;
     this.rows = event.rows ?? 5;
+    this.scrollToTop();
 
     this.paginatedEventsCreatedByUser = this.eventsCreatedByUser.slice(this.first, this.first + this.rows);
   }
