@@ -52,7 +52,11 @@ export class CauseDetailsComponent implements OnInit, OnDestroy{
   totalRecords: number = 0;
   visibleEvents: Event[] = [];
 
-
+  /**
+   * Establece la causa de la página
+   * @param response
+   * @return void
+   */
   setCause(response: ApiResponse): void {
     if (response.status === 200) {
       this.cause = response.data;
@@ -61,6 +65,10 @@ export class CauseDetailsComponent implements OnInit, OnDestroy{
     }
   }
 
+  /**
+   * Carga los eventos de la causa
+   * @return void
+   * */
   loadEvents(): void {
     callAPI(this.causeService.getAllEventsFromCause(this.causeId))
       .then((eventsResponse: ApiResponse) => {
@@ -75,15 +83,29 @@ export class CauseDetailsComponent implements OnInit, OnDestroy{
       });
   }
 
+  /**
+   * Manejador de errores de imagen
+   * @param $event
+   * @return void
+   */
   onImageError($event: ErrorEvent) {
     const target = $event.target as HTMLImageElement;
     target.src = 'gg-placeholder-image.png';
   }
 
+  /**
+   * Muestra un mensaje de error en la aplicación
+   * @param error
+   * @return void
+   */
   catchErrorMessage(error: any): void {
     this.appService.showWErrorInApp(error);
   }
 
+  /**
+   * Inicializa la página
+   * @return void
+   */
   ngOnInit() {
     this.causeId = Number(this.route.snapshot.paramMap.get('id'));
     this.loadEvents();
@@ -105,10 +127,18 @@ export class CauseDetailsComponent implements OnInit, OnDestroy{
     this.messageService.add({severity: 'info', summary: 'Info', detail: 'No se puede comprar un ticket aquí'});
   }
 
+  /**
+   * Elimina el fondo por defecto de la página
+   * @return void
+   */
   ngOnDestroy() {
     removeDefaultBackground(this.renderer);
   }
 
+  /**
+   * Obtiene los datos de la causa
+   * @return void
+   */
   getDataCause(): void {
     this.totalEvents = this.events.length;
     this.totalDonors = this.events.reduce((total, event) => {
@@ -119,6 +149,10 @@ export class CauseDetailsComponent implements OnInit, OnDestroy{
     }, 0);
   }
 
+  /**
+   * Aplica los filtros a los eventos
+   * @return void
+   */
   applyFilters(): void {
     let filteredEvents = [...this.events];
 
@@ -136,28 +170,49 @@ export class CauseDetailsComponent implements OnInit, OnDestroy{
     this.updateVisibleEvents();
   }
 
+  /**
+   * Actualiza los eventos visibles
+   * @return void
+   */
   updateVisibleEvents(): void {
     const startIndex = this.first;
     const endIndex = this.first + this.rows;
     this.visibleEvents = this.events.slice(startIndex, endIndex);
   }
 
+  /**
+   * Manejador de cambio de página
+   * @param event
+   * @return void
+   */
   onPageChange(event: any): void {
     this.first = event.first;
     this.rows = event.rows;
     this.updateVisibleEvents();
   }
 
+  /**
+   * Manejador de click en el filtro de eventos más baratos
+   * @return void
+   */
   onCheapestClick(): void {
     this.activeFilter = this.activeFilter === 'cheapest' ? null : 'cheapest';
     this.applyFilters();
   }
 
+  /**
+   * Manejador de click en el filtro de eventos más populares
+   * @return
+   * */
   onPopularClick(): void {
     this.activeFilter = this.activeFilter === 'popular' ? null : 'popular';
     this.applyFilters();
   }
 
+  /**
+   * Manejador de click en el filtro de eventos más recientes
+   * @return void
+   */
   onRecentClick(): void {
     this.activeFilter = this.activeFilter === 'recent' ? null : 'recent';
     this.applyFilters();
