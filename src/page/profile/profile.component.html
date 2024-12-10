@@ -27,7 +27,7 @@
 
         <div class="p-2 border border-1 flex-col  relative justify-center text-gray-900 text-center border-gray-400 flex rounded-lg gap-2 items-center text-sm font-semibold">
           <i class="pi pi-map text-md absolute -top-3 pt-0 bg-white p-1"></i>
-          <span>1 evento creado</span>
+          <span>{{ eventsCreatedByUser.length }} {{ eventsCreatedByUser.length === 1 ? 'evento creado' : 'eventos creados' }}</span>
         </div>
       </div>
 

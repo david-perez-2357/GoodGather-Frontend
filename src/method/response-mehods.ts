@@ -3,10 +3,9 @@ import ApiResponse from '@/interface/ApiResponse';
 import {firstValueFrom} from 'rxjs';
 import {returnErrorMessage} from '@/method/error-methods';
 
-/**
- * Call an API service and return the response
- * @param serviceCall The service call
- * @returns The response
+/**@
+ * Realiza una llamada al backend y maneja respuestas y errores, generando objetos ApiResponse para estandarizar el manejo de resultados.
+ * @param serviceCall
  */
 function callAPI(serviceCall: any): Promise<ApiResponse> {
   return firstValueFrom(serviceCall)

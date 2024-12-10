@@ -12,8 +12,8 @@ class AppUserMethods {
   }
 
   /**
-   * Get the current user from the server
-   * @returns The response
+   * Obtiene la información del usuario autenticado desde el servidor y la procesa mediante  'parseAppUser'
+   * @return Promise<ApiRespose>
    */
   getCurrentUser(): Promise<ApiResponse> {
     return callAPI(this.authService.getCurrentUserFromServer()).then((response: ApiResponse) => {
@@ -27,9 +27,12 @@ class AppUserMethods {
   }
 
   /**
-   * Parse the user data to an AppUser object
-   * @param data The user data
-   * @returns The AppUser object
+   * Transforma los datos recibidos en un objeto de tipo `AppUser`.
+   * Este método toma un objeto de datos genérico y lo mapea a la estructura definida
+   * por la interfaz `AppUser`, incluyendo la generación de un avatar basado en el nombre de usuario.
+   * @private
+   * @param {any} data - Datos genéricos obtenidos del servidor que representan al usuario.
+   * @returns {AppUser} Objeto `AppUser` con los datos mapeados.
    */
   private parseAppUser(data: any) {
     const appUser: AppUser = {

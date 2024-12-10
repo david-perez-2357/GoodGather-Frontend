@@ -1,0 +1,232 @@
+<div class="card flex my-6 justify-center">
+  <div>
+    <p-selectButton
+      [options]="stateOptions"
+      [(ngModel)]="activeForm"
+      optionLabel="label"
+      optionValue="value"
+      allowEmpty="false"
+      class="p-selectbutton w-full">
+    </p-selectButton>
+  </div>
+</div>
+
+<div class="mt-5 flex items-center justify-center">
+  <div class="bg-white p-8 rounded-lg shadow-lg max-w-lg w-full">
+    <div class="flex flex-col items-center p-4" *ngIf="activeForm=='login'">
+      <h2 class="mb-2 text-center text-2xl font-bold tracking-tight text-gray-800">Inicio de Sesión</h2>
+      <h2 class="mb-9 text-center text-l font-bold tracking-tight text-gray-600">¡Bienvendido de vuelta!</h2>
+      <div class="w-full space-y-4">
+        <div class="flex flex-col">
+          <label for="loginUsername" class="block text-m font-medium text-gray-700">Nombre de Usuario</label>
+          <input id="loginUsername" type="text" pInputText [(ngModel)]="loginFormData['loginUsername']"
+                 [class.ng-invalid]="isFieldInvalid('loginUsername')"
+                 [class.ng-dirty]="isFieldInvalid('loginUsername')"
+                 (blur)="validateField('loginUsername')"
+          />
+          <small *ngIf="isFieldInvalid('loginUsername')" class="text-red-500">{{ errors['loginUsername'] }}</small>
+        </div>
+        <div class="flex flex-col">
+          <label for="loginPassword" class=" block text-m font-medium text-gray-700">Contraseña</label>
+          <p-password id="loginPassword" type="password" [feedback]="false"
+                      styleClass="p-password p-component p-inputwrapper p-input-icon-right"
+                      [(ngModel)]="loginFormData['loginPassword']"
+                      [style]="{'width':'100%'}"
+                      [inputStyle]="{'width':'100%'}" [toggleMask]="true"
+                      [class.ng-invalid]="isFieldInvalid('loginPassword')"
+                      [class.ng-dirty]="isFieldInvalid('loginPassword')"
+                      (onBlur)="validateField('loginPassword')"
+          ></p-password>
+          <small *ngIf="isFieldInvalid('loginPassword')" class="text-red-500">{{ errors['loginPassword'] }}</small>
+        </div>
+        <p-button
+          [style]="{'width':'80%', 'margin-top':' 3rem', 'margin-left':'2rem'}"
+          type="submit"
+          (onClick)="onLogin()"
+          label="Iniciar Sesión"
+          icon="pi pi-user"
+          styleClass="icon-button"
+        ></p-button>
+      </div>
+    </div>
+    <div  class="flex flex-col items-center p-4" *ngIf="activeForm=='register'">
+      <h2 class="mb-2 text-center text-2xl font-bold tracking-tight text-gray-800">Registro</h2>
+      <h2 class="mb-9 text-center text-l font-bold tracking-tight text-gray-600">¡Ayuda y diviértete al mismo tiempo!</h2>
+      <div  class="w-full space-y-4">
+
+        <div  class="flex flex-col">
+          <label for="username" class="block text-m font-medium text-gray-700">Nombre de Usuario</label>
+          <input type="text" id="username" pInputText
+                 [(ngModel)]="registerFormData['username']"
+                 [class.ng-invalid]="isFieldInvalid('username')"
+                 [class.ng-dirty]="isFieldInvalid('username')"
+
+                 (blur)="validateUsername()"
+
+
+          />
+          <small *ngIf="isFieldInvalid('username')" class="text-red-500">{{ errors['username'] }}</small>
+        </div>
+
+
+
+
+        <div class="flex flex-col">
+          <label for="password" class=" block text-m font-medium text-gray-700">Contraseña</label>
+          <p-password [(ngModel)]="registerFormData['password']" [toggleMask]="true" [feedback]="true"
+                      id="password"
+                      type="password"
+                      styleClass="w-full"
+                      [inputStyle]="{'width':'100%'}"
+                      weakLabel="Fortaleza baja"
+                      mediumLabel="Fortaleza media"
+                      strongLabel="Fortaleza alta"
+                      [class.ng-invalid]="isFieldInvalid('password')"
+                      [class.ng-dirty]="isFieldInvalid('password')"
+                      (onBlur)="validateField('password')"
+          />
+          <small *ngIf="isFieldInvalid('password')" class="text-red-500">{{ errors['password'] }}</small>
+        </div>
+
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex flex-col">
+            <label for="firstname" class="block text-m font-medium text-gray-700">Nombre</label>
+            <input type="text" id="firstname" pInputText
+                   [(ngModel)]="registerFormData['firstname']"
+                   [class.ng-invalid]="isFieldInvalid('firstname')"
+                   [class.ng-dirty]="isFieldInvalid('firstname')"
+                   (blur)="validateField('firstname')"
+            />
+            <small *ngIf="isFieldInvalid('firstname')" class="text-red-500">{{ errors['firstname'] }}</small>
+          </div>
+
+          <div class="flex flex-col">
+            <label for="surname" class="block text-m font-medium text-gray-700">Apellidos</label>
+            <input type="text" id="surname" pInputText
+                   [(ngModel)]="registerFormData['surname']"
+                   [class.ng-invalid]="isFieldInvalid('surname')"
+                   [class.ng-dirty]="isFieldInvalid('surname')"
+                   (blur)="validateField('surname')"
+            />
+            <small *ngIf="isFieldInvalid('surname')" class="text-red-500">{{ errors['surname'] }}</small>
+          </div>
+        </div>
+
+
+
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="flex flex-col">
+            <label for="email" class="block text-m font-medium text-gray-700">Email</label>
+            <input
+              type="email"
+              id="email"
+              pInputText
+              [(ngModel)]="registerFormData['email']"
+              [class.ng-invalid]="isFieldInvalid('email')"
+              [class.ng-dirty]="isFieldInvalid('email')"
+              (blur)="validateEmail()"
+
+            />
+            <small *ngIf="isFieldInvalid('email')" class="text-red-500">{{ errors['email'] }}</small>
+          </div>
+
+          <div class="flex flex-col">
+            <label for="birthdate" class="block  text-m font-medium text-gray-700">
+              Fecha de nacimiento
+            </label>
+            <input
+              pInputText
+              type="date"
+              id="birthdate"
+              [(ngModel)]="registerFormData['birthdate']"
+              [class.ng-invalid]="isFieldInvalid('birthdate')"
+              [class.ng-dirty]="isFieldInvalid('birthdate')"
+              (blur)="validateAge()"
+            >
+            <small *ngIf="isFieldInvalid('birthdate')" class="text-red-500">{{ errors['birthdate'] }}</small>
+          </div>
+
+        </div>
+
+
+
+
+        <div  class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="">
+            <label for="country" class="block text-m font-medium text-gray-700">País</label>
+            <p-dropdown [style]="{'width': '100%'}" [options]="countries"
+                        [(ngModel)]="registerFormData['country']"
+                        placeholder="Selecciona un país" (onChange)="countryChange()"
+                        [filter]="true" filterBy="name"
+                        id="country"
+                        [class.ng-invalid]="isFieldInvalid('country')"
+                        [class.ng-dirty]="isFieldInvalid('country')"
+                        (blur)="validateField('country')"
+            >
+              <small *ngIf="isFieldInvalid('country')" class="text-red-500">{{ errors['country'] }}</small>
+              <ng-template pTemplate="selectedItem" let-selectedOption>
+                <div class="flex align-items-center gap-2">
+                  <div>{{ selectedOption.name }}</div>
+                </div>
+              </ng-template>
+              <ng-template let-country pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ country.name }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+
+
+
+          </div>
+          <div class="  ">
+            <label  for="province" class="block text-m font-medium text-gray-700">Provincia</label>
+
+            <p-dropdown [style]="{'width': '100%'}" [options]="provinces"
+                        optionLabel="name"
+                        optionValue="name"
+                        id="province"
+                        [(ngModel)]="registerFormData['province']"
+                        [filter]="true" filterBy="name"
+                        placeholder="Selecciona una provincia" [disabled]="provinces.length==0"
+                        [class.ng-invalid]="isFieldInvalid('province')"
+                        [class.ng-dirty]="isFieldInvalid('province')"
+                        (blur)="validateField('province')"
+            >
+              <small *ngIf="isFieldInvalid('province')" class="text-red-500">{{ errors['province'] }}</small>
+              <ng-template pTemplate="selectedItem" let-selectedOption>
+                <div class="flex align-items-center gap-2">
+                  <div>{{ selectedOption.name }}</div>
+                </div>
+              </ng-template>
+              <ng-template let-country pTemplate="item">
+                <div class="flex align-items-center gap-2">
+                  <div>{{ country.name }}</div>
+                </div>
+              </ng-template>
+            </p-dropdown>
+
+          </div>
+        </div>
+
+        <p-button  [style]="{'width':'80%', 'margin-top':' 3rem', 'margin-left':'2rem'}"
+                   type="submit"
+                   (onClick)="onSubmit()"
+                   label="Registrarse"
+                   icon="pi pi-user"
+                   styleClass="icon-button"></p-button>
+
+
+
+      </div>
+    </div>
+  </div>
+</div>
+<p-toast></p-toast>
+
+
+
+
+

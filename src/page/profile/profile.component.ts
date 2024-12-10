@@ -94,8 +94,13 @@ export class ProfileComponent implements OnInit, OnDestroy {
     putDefaultBackground(this.renderer);
     this.appService.appUser$.subscribe(user => {
       this.activeUser = user;
+      if (this.activeUser.id) {
+        this.getData();
+      }
     });
+  }
 
+  getData() {
     Promise.all([
       callAPI(this.ticketService.getTicketsBoughtByActiveUser(this.activeUser)),
       callAPI(this.eventService.getAllEventsWithoutFilters()),
@@ -155,7 +160,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
    * @return Event[] La lista de eventos creados por el usuario activo.
    */
   getEventsCreatedByUser(events: Event[]): Event[] {
-    return events.filter(event => event.idOwner === this.activeUser.id);
+    return events.filter(event => event.idOwner == this.activeUser.id);
   }
 
   /**

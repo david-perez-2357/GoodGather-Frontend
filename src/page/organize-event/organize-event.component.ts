@@ -154,6 +154,7 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     });
   }
 
+
   /**
    * Carga la lista de países desde la API y la asigna a la variable de clase correspondiente.
    * @returns void

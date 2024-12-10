@@ -1,9 +1,8 @@
 import {Message} from 'primeng/api';
 
-/**
- * Return an error message based on the error status
+/**@
+ * Asocia códigos de error HTTP con mensajes detallados para mostrar al usuario.
  * @param error
- * @returns The error message
  */
 function returnErrorMessage(error: any): Message {
   if (error.status === 404) {

@@ -10,6 +10,9 @@ export class LocationService {
   constructor(private http: HttpClient) {
   }
 
+  /**@
+   * getAllCountries, getCountryByCode, getStatesByCountry, getStateByCode: Realizan solicitudes HTTP para obtener países y estados.
+   */
   getAllCountries(): Observable<any> {
     const headers = new HttpHeaders().set("X-CSCAPI-KEY", this.apiKey);
 

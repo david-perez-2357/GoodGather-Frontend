@@ -1,5 +1,6 @@
 <app-header></app-header>
 
+
 <div class="w-full p-2 pt-5 sm:p-5">
   <router-outlet *ngIf="!error"></router-outlet>
   <app-server-error [show]="error" [error]="errorText" [status]="status" (triggerError)=setError($event)></app-server-error>
