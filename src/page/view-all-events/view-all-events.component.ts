@@ -111,6 +111,10 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
 
   @ViewChild(BuyTicketDialogComponent) child!: BuyTicketDialogComponent;
 
+  /**
+   * Muestra el diálogo de compra de tickets
+   * @param event
+   */
   showBuyTicketDialog(event: Event) {
     this.buyTicketDialog.eventId = event.id;
     this.buyTicketDialog.eventName = event.name;
@@ -127,6 +131,10 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     }, 2);
   }
 
+  /**
+   * Cierra el diálogo de compra de tickets
+   * @return void
+   */
   ngOnInit(): void {
     this.renderer.addClass(document.body, 'default-bg');
     this.loadingData = true;
@@ -160,11 +168,18 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
       });
   }
 
-
+  /**
+   * Limpia los recursos de la página
+   * @return void
+   */
   ngOnDestroy(): void {
     this.renderer.removeClass(document.body, 'default-bg');
   }
 
+  /**
+   * Obtiene los eventos de la causa
+   * @return void
+   */
   updatePaginatedCauses(): void {
     const startIndex = this.first;
     const endIndex = this.first + this.rows;
@@ -173,6 +188,11 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.paginatedCauses = this.getUsedCauses(this.paginatedEvents);
   }
 
+  /**
+   * Obtiene las causas utilizadas en los eventos
+   * @param events
+   * @return Cause[]
+   */
   getUsedCauses(events: Event[]): Cause[] {
     const usedCauses: Cause[] = [];
     events.forEach((event) => {
@@ -184,6 +204,12 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     return usedCauses;
   }
 
+  /**
+   * Agrupa los eventos por causa
+   * @param events
+   * @param causes
+   * @return { [causeId: number]: Event[] }
+   * */
   groupEventsByCause(events: Event[], causes: Cause[]): { [causeId: number]: Event[] } {
     const groupedEvents: { [causeId: number]: Event[] } = {};
     causes.forEach((cause) => {
@@ -192,11 +218,19 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     return groupedEvents;
   }
 
+  /**
+   * Manejador de búsqueda
+   * @param query
+   */
   onSearch(query: string): void {
     this.searchQuery = query.toLowerCase();
     this.applyFilters();
   }
 
+  /**
+   * Manejador de cambio de página
+   * @param event
+   */
   onPageChange(event: any): void {
     this.first = event.first;
     this.rows = event.rows;
@@ -204,6 +238,10 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.scrollToTarget();
   }
 
+  /**
+   * Actualiza los filtros activos
+   * @return void
+   */
   updateActiveFilters(): void {
     this.activeFilters = 0;
 
@@ -221,6 +259,10 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Aplica los filtros
+   * @return void
+   */
   onRangeChange(): void {
     if (!this.sliderFilterActive) {
       this.sliderFilterActive = true;
@@ -230,6 +272,10 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.updateActiveFilters();
   }
 
+  /**
+   * Manejador de cambio en el filtro de ubicación
+   * @return void
+   */
   onSelectChange(): void {
     if (this.value && !this.selectFilterActive) {
       this.selectFilterActive = true;
@@ -242,6 +288,10 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.updateActiveFilters();
   }
 
+  /**
+   * Restablece los filtros / aplica filtros
+   * @return void
+   */
   applyFilters(): void {
     let result = [...this.events];
 
@@ -295,12 +345,18 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.updateActiveFilters();
   }
 
-
-
+  /**
+   * Muestra el overlay
+   * @param event
+   */
   toggleOverlay(event: MouseEvent): void {
     this.overlay.toggle(event);
   }
 
+  /**
+   * Manejador de click en el filtro de eventos más baratos
+   * @param searchInput
+   */
   onCheapestClick(searchInput: HTMLInputElement): void {
     if (this.activeFilter === 'cheapest') {
       this.resetFilter();
@@ -312,6 +368,10 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     searchInput.value = '';
   }
 
+  /**
+   * Manejador de click en el filtro de eventos más populares
+   * @param searchInput
+   */
   onPopularClick(searchInput: HTMLInputElement): void {
     if (this.activeFilter === 'popular') {
       this.resetFilter();
@@ -323,6 +383,10 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     searchInput.value = '';
   }
 
+  /**
+   * Manejador de click en el filtro de eventos más recientes
+   * @param searchInput
+   */
   onRecentClick(searchInput: HTMLInputElement): void {
     if (this.activeFilter === 'recent') {
       this.resetFilter();
@@ -334,6 +398,10 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     searchInput.value = '';
   }
 
+  /**
+   * Manejador de cambio en el filtro de cantidad mínima de tickets
+   * @return void
+   */
   onMinTicketsChange(): void {
     if (this.minTickets !== 1 && this.previousMinTicketsWasOne) {
       this.activeFilters++;
@@ -349,6 +417,9 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     this.updateActiveFilters();
   }
 
+  /**
+   * Desplaza la vista hacia el div de eventos
+   */
   scrollToTarget() {
     const target = document.getElementById('scrollDiv');
     if (target) {
@@ -356,6 +427,9 @@ export class ViewAllEventsComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Restablece el filtro activo
+   */
   resetFilter(): void {
     this.activeFilter = null;
     this.applyFilters();

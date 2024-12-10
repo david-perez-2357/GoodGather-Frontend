@@ -24,55 +24,55 @@ Before getting started, make sure you have the following installed:
 
 2. **Install dependecies**
 
-   When u have installed de project u can get the dependencies with the followed prompt:
+   When you have installed de project you can get the dependencies with the followed prompt:
    
 ```bash
    npm install
    ```
-## Pages Structure
+## 📖 Pages Information
 
-## Home Page (Index)  
+### Home Page (Index)  
 
   The home page serves as the main entry point for users and is designed to provide an efficient and engaging experience when browsing available events.
 
-  ### Features  
+  #### Features  
 - **Event Listing:**  Displays all available events in a clean, organized layout with details. 
 
 - **Search Functionality:** Includes a search bar to quickly locate specific events by entering keywords.  
 
 - **Advanced Filters:**  Allows users to refine their event search with filters like price, location or time.
 
-## Profile Page  
+### Profile Page  
 
 The **Profile Page** allows users to view and manage their personal information while providing insights into their event participation and contributions.  
 
-### Features  
+#### Features  
 
 - **Data Table Overview:**  A detailed table that provides total of bought tickets.
 - **Information:** Display of information of events whats user created and stadistics.
 
-## Cause Detail Page  
+### Cause Detail Page  
 
 The **Cause Detail Page** provides users with comprehensive information about a specific cause, helping them understand its purpose and how they can contribute.  
 
-### Features  
+#### Features  
 
 -  Shows key information of the cause like the total funds, number of contributors and number of total events associated to the cause.
 -  Display all events associated to the cause and can filter it.
 
-## Event Detail Page  
+### Event Detail Page  
 
 The **Event Detail Page** provides users with key information about a specific event, helping them decide whether to participate.  
 
-### Features  
+#### Features  
 - Shows up all detailed information of an event.
-- Display a modal where u can buy a tickets for that event.
+- Display a modal where you can buy a tickets for that event.
 
-## Organize event Form Page  
+### Organize event Form Page  
 
 The **Organize Event Form Page** allows users to create and submit new events by providing all the necessary details in a structured and user-friendly form.  
 
-### Features  
+#### Features  
 - Add a form to create an event.
 - Add a form in a modal to create a cause.
 
