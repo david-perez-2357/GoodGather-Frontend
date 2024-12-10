@@ -31,7 +31,7 @@ Before getting started, make sure you have the following installed:
    ```
 ## 📖 Pages Information
 
-### Home Page (Index)  
+### Home (Index)  
 
   The home page serves as the main entry point for users and is designed to provide an efficient and engaging experience when browsing available events.
 
@@ -42,7 +42,18 @@ Before getting started, make sure you have the following installed:
 
 - **Advanced Filters:**  Allows users to refine their event search with filters like price, location or time.
 
-### Profile Page  
+### Register and Login
+
+  The Register/Login module enables users to securely access the platform by creating a new account or signing in.
+
+  #### Features
+  - **Register:** Create an account with email and password, with real-time validation.
+  
+  - **Login:** Sign in with credentials.
+  
+  - **Security:** Password encryption.
+
+### Profile
 
 The **Profile Page** allows users to view and manage their personal information while providing insights into their event participation and contributions.  
 
@@ -51,7 +62,7 @@ The **Profile Page** allows users to view and manage their personal information 
 - **Data Table Overview:**  A detailed table that provides total of bought tickets.
 - **Information:** Display of information of events whats user created and stadistics.
 
-### Cause Detail Page  
+### Cause Detail
 
 The **Cause Detail Page** provides users with comprehensive information about a specific cause, helping them understand its purpose and how they can contribute.  
 
@@ -60,7 +71,7 @@ The **Cause Detail Page** provides users with comprehensive information about a 
 -  Shows key information of the cause like the total funds, number of contributors and number of total events associated to the cause.
 -  Display all events associated to the cause and can filter it.
 
-### Event Detail Page  
+### Event Detail
 
 The **Event Detail Page** provides users with key information about a specific event, helping them decide whether to participate.  
 
@@ -68,7 +79,7 @@ The **Event Detail Page** provides users with key information about a specific e
 - Shows up all detailed information of an event.
 - Display a modal where you can buy a tickets for that event.
 
-### Organize event Form Page  
+### Organize event Form
 
 The **Organize Event Form Page** allows users to create and submit new events by providing all the necessary details in a structured and user-friendly form.  
 
