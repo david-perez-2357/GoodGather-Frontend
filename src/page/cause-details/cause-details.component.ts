@@ -11,6 +11,8 @@ import {NgClass, NgForOf} from '@angular/common';
 import {EventComponent} from '@/component/event/event.component';
 import Event from '@/interface/Event';
 import {PaginatorModule} from 'primeng/paginator';
+import {MessageService} from 'primeng/api';
+import {ToastModule} from 'primeng/toast';
 
 @Component({
   selector: 'app-cause-details',
@@ -19,24 +21,27 @@ import {PaginatorModule} from 'primeng/paginator';
     NgForOf,
     EventComponent,
     NgClass,
-    PaginatorModule
+    PaginatorModule,
+    ToastModule
   ],
   templateUrl: './cause-details.component.html',
-  styleUrls: ['./cause-details.component.css']
+  styleUrls: ['./cause-details.component.css'],
+  providers: [MessageService]
 })
 export class CauseDetailsComponent implements OnInit, OnDestroy{
   constructor(private renderer: Renderer2,
               private causeService: CauseService,
               private eventService: EventService,
               private route: ActivatedRoute,
-              private appService: AppService) {
+              private appService: AppService,
+              private messageService: MessageService) {
   }
 
   causeId: number = 1
   cause: Cause = {} as Cause;
   events: Event[] = []
 
-  totalfunds: number = 0;
+  totalFunds: number = 0;
   totalEvents: number = 0;
   totalDonors: number = 0;
 
@@ -92,6 +97,14 @@ export class CauseDetailsComponent implements OnInit, OnDestroy{
       });
   }
 
+  /**
+   * Muestra un mensaje informativo en un toast.
+   * @return void
+   */
+  showInfoTicketButtonMessage() {
+    this.messageService.add({severity: 'info', summary: 'Info', detail: 'No se puede comprar un ticket aquí'});
+  }
+
   ngOnDestroy() {
     removeDefaultBackground(this.renderer);
   }
@@ -101,7 +114,7 @@ export class CauseDetailsComponent implements OnInit, OnDestroy{
     this.totalDonors = this.events.reduce((total, event) => {
       return total + (event.boughtTickets || 0);
     }, 0);
-    this.totalfunds = this.events.reduce((total, event) => {
+    this.totalFunds = this.events.reduce((total, event) => {
       return total + (event.boughtTickets * event.ticketPrice);
     }, 0);
   }

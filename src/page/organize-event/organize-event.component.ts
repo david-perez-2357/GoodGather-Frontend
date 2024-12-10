@@ -138,6 +138,11 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
 
   constructor(private renderer: Renderer2, private locationService: LocationService, private eventService: EventService, private messageService: MessageService, private confirmationService: ConfirmationService, private causeService: CauseService, private appService: AppService) {}
 
+  /**
+   * Inicializa el componente y carga la lista de países desde la API y las Causas en el rango del usuario.
+   * También inicializa el actualizador de imagen y establece el texto predeterminado del uploader.
+   * @returns void
+   */
   ngOnInit(): void {
     putFormBackground(this.renderer);
     this.loadCountries();
@@ -151,7 +156,8 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
 
 
   /**
-   * Loads the list of countries from the API and converts them to the desired format.
+   * Carga la lista de países desde la API y la asigna a la variable de clase correspondiente.
+   * @returns void
    */
   loadCountries(): void {
     callAPI(this.locationService.getAllCountries())
@@ -163,6 +169,10 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Carga las causas en el rango del usuario desde la API y las asigna a la variable de clase correspondiente.
+   * @returns void
+   */
   loadCausesInUsersRange(): void {
     const userId = 1; // Replace with your method to get the current user ID
 
@@ -180,7 +190,8 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Initializes a periodic function to update the event's image from the DOM.
+   * Inicializa el actualizador de imagen.
+   * @returns void
    */
   initializeImageUpdater(): void {
     setInterval(() => {
@@ -190,7 +201,8 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Updates the event's image property based on a specific DOM element's style attribute.
+   * Actualiza la imagen de fondo.
+   * @returns void
    */
   updateImageFromDOM(): void {
     const imageElement = document.querySelector('.uc-thumb');
@@ -203,16 +215,18 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * Sets default text for the uploader element on initialization.
+   * Establece el texto predeterminado del uploader.
+   * @returns void
    */
   setUploaderDefaultText(): void {
     this.updateUploaderText('.uc-visual-drop-area', 'Subir imagen');
   }
 
   /**
-   * Updates the inner text of an element selected by a query selector.
-   * @param selector The query selector for the element.
-   * @param text The text to set for the element.
+   * Actualiza el texto del elemento del uploader especificado por el selector.
+   * @param selector - El selector CSS del elemento a actualizar.
+   * @param text - El texto a establecer para el elemento.
+   * @returns void
    */
   updateUploaderText(selector: string, text: string): void {
     const element = document.querySelector(selector);
@@ -221,11 +235,19 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     }
   }
 
-
+  /**
+   * Método que se ejecuta cuando el componente se destruye.
+   * @returns void
+   */
   ngOnDestroy(): void {
     removeFormBackground(this.renderer);
   }
 
+  /**
+   * Valida la fecha y la hora del evento.
+   * @param $event - El evento que desencadena la validación.
+   * @returns void
+   */
   dateAndTimeValidator($event: any): void {
 
     const startDate = moment(this.formData['startDate'], 'YYYY-MM-DD');
@@ -241,6 +263,10 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Cambia el país seleccionado y carga las provincias correspondientes.
+   * @returns void
+   */
   countryChange(): void {
     const countryCode = this.formData['country']?.code;
     this.formData['province'] = '';
@@ -254,6 +280,10 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
       });
   }
 
+  /**
+   * Convierte los datos del formulario en un objeto Event.
+   * @returns Event
+   */
   convertFormDataToEvent(): Event {
     return {
       id: 0,
@@ -274,6 +304,10 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Envía el formulario para crear un evento y cambia los estados en los diferentes modales.
+   * @returns void
+   */
   onSubmit(): void {
     const event = this.convertFormDataToEvent();
     this.createEventProcessDialogStepActive = 1;
@@ -293,24 +327,48 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     }, 1500);
   }
 
+  /**
+   * Comprueba si el formulario es válido.
+   * @returns boolean
+   */
   isFormValid(): boolean {
     return Object.keys(this.formData).every((key) => this.formData[key] !== '' && !this.isFieldInvalid(key));
   }
 
+  /**
+   * Si la imagen no se puede cargar, se establece una imagen de marcador de posición.
+   * @param $event
+   * @returns void
+   */
   onImageError($event: ErrorEvent) {
     const target = $event.target as HTMLImageElement;
     target.src = 'gg-placeholder-image.png';
   }
+
+  /**
+   * Valida un campo del formulario.
+   * @param fieldName
+   * @returns void
+   */
   validateField(fieldName: string): void {
     const value = this.formData[fieldName];
     const rules = this.fieldRules[fieldName];
     this.errors[fieldName] = rules? validateField(value, rules) || '':'';
   }
 
+  /**
+   * Comprueba si un campo del formulario es inválido.
+   * @param fieldName
+   * @returns boolean
+   */
   isFieldInvalid(fieldName: string): boolean {
     return !!this.errors[fieldName];
   }
 
+  /**
+   * Abre el modal de confirmación para crear un evento.
+   * @returns void
+   */
   confirm() {
     if (!this.isFormValid()) {
       this.messageService.add({severity: 'error', summary: 'Error', detail: 'Por favor, rellena todos los campos'});
@@ -331,6 +389,10 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Abre el modal de creación de evento.
+   * @returns void
+   */
   openDialog() {
     this.createEventProcessDialogVisible = true;
     try {
@@ -340,15 +402,28 @@ export class OrganizeEventComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Cierra el modal de creación de evento.
+   * @returns void
+   */
   closeCreateEventProcessDialog() {
     this.createEventProcessDialogVisible = false;
     this.createEventProcessDialogStepActive = 0;
   }
 
+  /**
+   * Abre el modal de creación de causa.
+   * @returns void
+   */
   openCreateCauseDialog() {
     this.child.openDialog();
   }
 
+  /**
+   * Añade la causa creada en el modal de las causas al array de causas y la selecciona.
+   * @param $event
+   * @returns void
+   */
   addCause($event: Cause) {
     this.causes.push($event);
     this.formData['cause'] = $event.id;

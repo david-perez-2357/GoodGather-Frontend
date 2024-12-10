@@ -1,27 +1,83 @@
-# GoodGatherFrontend
+![Group 101](https://github.com/user-attachments/assets/afbee22d-5376-4fd9-8c1e-d06c7ab9fe9b)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 18.2.11.
+# GoodGather Frontend
 
-## Development server
+GoodGather is a charitable app where users can discover, create, and attend events for social causes. It connects people with meaningful initiatives, promoting donations and community support.
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+## 🚀 Getting Started
+### Prerequisites
+Before getting started, make sure you have the following installed:
+- **Java** >= version 17
+- **Angular** >= 18
+- **JDK:** Coretto 21
+- **Build tool:** Maven
+- **Node.js** => 20.11
 
-## Code scaffolding
+## 🔧 Installation
+1. **Clone the Repository**
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+   Clone the project repository to your local machine:
+   
+```bash
+   git clone https://github.com/david-perez-2357/GoodGather-Frontend.git
+   ```
 
-## Build
+2. **Install dependecies**
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+   When u have installed de project u can get the dependencies with the followed prompt:
+   
+```bash
+   npm install
+   ```
+## Pages Structure
 
-## Running unit tests
+## Home Page (Index)  
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+  The home page serves as the main entry point for users and is designed to provide an efficient and engaging experience when browsing available events.
 
-## Running end-to-end tests
+  ### Features  
+- **Event Listing:**  Displays all available events in a clean, organized layout with details. 
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+- **Search Functionality:** Includes a search bar to quickly locate specific events by entering keywords.  
 
-## Further help
+- **Advanced Filters:**  Allows users to refine their event search with filters like price, location or time.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Profile Page  
+
+The **Profile Page** allows users to view and manage their personal information while providing insights into their event participation and contributions.  
+
+### Features  
+
+- **Data Table Overview:**  A detailed table that provides total of bought tickets.
+- **Information:** Display of information of events whats user created and stadistics.
+
+## Cause Detail Page  
+
+The **Cause Detail Page** provides users with comprehensive information about a specific cause, helping them understand its purpose and how they can contribute.  
+
+### Features  
+
+-  Shows key information of the cause like the total funds, number of contributors and number of total events associated to the cause.
+-  Display all events associated to the cause and can filter it.
+
+## Event Detail Page  
+
+The **Event Detail Page** provides users with key information about a specific event, helping them decide whether to participate.  
+
+### Features  
+- Shows up all detailed information of an event.
+- Display a modal where u can buy a tickets for that event.
+
+## Organize event Form Page  
+
+The **Organize Event Form Page** allows users to create and submit new events by providing all the necessary details in a structured and user-friendly form.  
+
+### Features  
+- Add a form to create an event.
+- Add a form in a modal to create a cause.
+
+## 👷 Developers
+- [@MarioCastroRamirez](https://github.com/MarioCastroRamirez)
+- [@david-perez-2357](https://github.com/david-perez-2357)
+- [@jorgeariasmartin](https://github.com/jorgeariasmartin)
+- [@Pablo-R-B](https://github.com/Pablo-R-B)
