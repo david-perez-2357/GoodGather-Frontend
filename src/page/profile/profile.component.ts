@@ -121,20 +121,47 @@ export class ProfileComponent implements OnInit, OnDestroy {
     removeDefaultBackground(this.renderer);
   }
 
+  /**
+   * Scrolls to the top of the page.
+   * @returns void
+   */
+  scrollToTop() {
+    window.scrollTo(0, 0);
+  }
+
+  /**
+   * Obtiene un evento basado en su ID.
+   * @param idEvent number El ID del evento.
+   * @return Event El evento encontrado, o un objeto vacío si no se encuentra.
+   */
   getEvent(idEvent: number): Event {
     const event = this.events.find(event => event.id === idEvent);
     return event ?? {} as Event;
   }
 
+  /**
+   * Obtiene una causa basada en su ID.
+   * @param idCause number El ID de la causa.
+   * @return Cause La causa encontrada, o un objeto vacío si no se encuentra.
+   */
   getCause(idCause: number): Cause {
     const cause = this.causes.find(cause => cause.id === idCause);
     return cause ?? {} as Cause;
   }
 
+  /**
+   * Obtiene los eventos creados por el usuario activo.
+   * @param events Event[] La lista de eventos.
+   * @return Event[] La lista de eventos creados por el usuario activo.
+   */
   getEventsCreatedByUser(events: Event[]): Event[] {
     return events.filter(event => event.idOwner === this.activeUser.id);
   }
 
+  /**
+   * Obtiene los eventos en los que el usuario activo ha comprado tickets.
+   * @return Event[] La lista de eventos en los que el usuario activo ha comprado tickets.
+   */
   getUserDistinctEvents(): Event[] {
     const events: Set<Event> = new Set();
     this.usersBoughtTickets.forEach(ticket => {
@@ -143,24 +170,41 @@ export class ProfileComponent implements OnInit, OnDestroy {
     return Array.from(events);
   }
 
+  /**
+   * Obtiene el número de eventos a los que el usuario ha asistido.
+   * @return number El número de eventos a los que el usuario ha asistido.
+   */
   getUserNumOfAssistedEvents(): number {
     return this.getUserDistinctEvents().filter((event) => {
       return moment(event.endDate).isBefore(moment());
     }).length;
   }
 
+  /**
+   * Obtiene el número de eventos a los que el usuario asistirá.
+   * @return number El número de eventos a los que el usuario asistirá.
+   */
   getUserNumOfUpcomingEvents(): number {
     return this.getUserDistinctEvents().filter((event) => {
       return moment(event.startDate).isAfter(moment());
     }).length;
   }
 
+  /**
+   * Obtiene la cantidad total de dinero que el usuario ha contribuido.
+   * @return number La cantidad total de dinero que el usuario ha contribuido.
+   */
   getUserTotalContributions(): number {
     return this.usersBoughtTickets.reduce((acc, ticket) => {
       return acc + ticket.price;
     }, 0);
   }
 
+  /**
+   * Obtiene el estado de un evento basado en la fecha actual.
+   * @param eventId number El ID del evento.
+   * @return number El estado del evento:
+   */
   returnEventStatus(eventId: any): number {
     const event = this.getEvent(eventId);
     if (!event.id) {
@@ -180,18 +224,27 @@ export class ProfileComponent implements OnInit, OnDestroy {
     }
   }
 
+  /**
+   * Muestra un mensaje informativo en un toast.
+   * @return void
+   */
   showInfoTicketButtonMessage() {
     this.messageService.add({severity: 'info', summary: 'Info', detail: 'No se puede comprar un ticket aquí'});
   }
 
+  /**
+   * Obtiene el porcentaje de recaudación de un evento basado en el total de tickets vendidos.
+   * @param event Event El evento.
+   * @return number El porcentaje de recaudación.
+   */
   calculatePercentage(value: number, total: number): number {
     return Math.round((value / total) * 100);
   }
 
   /**
    * Obtiene la posición de un evento basado en la recaudación total de los eventos asociados a la misma causa.
-   * @param event - El evento cuya posición se desea calcular.
-   * @returns La posición del evento basado en la recaudación, con posiciones únicas.
+   * @param event Event El evento cuya posición se desea calcular.
+   * @return number La posición del evento basada en la recaudación total.
    */
   getEventFundPositionOnCause(event: Event): number {
     // Filtrar eventos relacionados con la misma causa
@@ -218,6 +271,7 @@ export class ProfileComponent implements OnInit, OnDestroy {
   onPageChange(event: PaginatorState) {
     this.first = event.first ?? 0;
     this.rows = event.rows ?? 5;
+    this.scrollToTop();
 
     this.paginatedEventsCreatedByUser = this.eventsCreatedByUser.slice(this.first, this.first + this.rows);
   }

@@ -1,3 +1,8 @@
+/**
+ * Convierte segundos a una cadena de texto como '1 mes'
+ * @param seconds number
+ * @returns string
+ */
 function convertSecondsToString(seconds: any) {
   const metrics: { [key: string]: number } = {
     'años': 31536000,

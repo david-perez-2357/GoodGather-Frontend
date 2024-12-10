@@ -20,6 +20,10 @@ export class BuyTicketButtonComponent {
   @Input() buttonClass: string = '';
   @Output() onButtonClick = new EventEmitter<void>();
 
+  /**
+   * Obtiene la etiqueta del botón de compra en función de las propiedades del componente
+   * @returns string
+   */
   getLabel(): string {
     if (!this.priceLoaded) {
       return 'Cargando precio...';

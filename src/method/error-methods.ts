@@ -1,6 +1,10 @@
 import {Message} from 'primeng/api';
 
-
+/**
+ * Return an error message based on the error status
+ * @param error
+ * @returns The error message
+ */
 function returnErrorMessage(error: any): Message {
   if (error.status === 404) {
     return {severity: 'error', summary: 'No se han encontrado datos', detail: 'Por favor, inténtelo de nuevo más tarde.'};
