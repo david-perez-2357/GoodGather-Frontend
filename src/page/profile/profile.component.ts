@@ -223,9 +223,9 @@ export class ProfileComponent implements OnInit, OnDestroy {
     if (eventStartDate.isAfter(now)) {
       return 1;
     }else if (eventEndDate.isAfter(now)) {
-      return 3;
-    }else {
       return 2;
+    }else {
+      return 3;
     }
   }
 
